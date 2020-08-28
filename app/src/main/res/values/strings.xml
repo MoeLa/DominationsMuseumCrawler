@@ -1,0 +1,171 @@
+<resources>
+    <string name="app_name" translatable="false">Dominations\' Museum Crawler</string>
+    <string name="keep_3_artifacts">Keep 3* artifacts</string>
+    <string name="id">Id</string>
+    <string name="name">Name</string>
+    <string name="category">Category</string>
+    <string name="amount_matched">Amount Matches</string>
+    <string name="save">Save</string>
+    <string-array name="array_categories">
+        <item>Weapon</item>
+        <item>Armor</item>
+        <item>Jewelry</item>
+        <item>Pottery</item>
+        <item>War Weapon</item>
+        <item>War Armor</item>
+        <item>War Equipment</item>
+    </string-array>
+    <string-array name="array_amount_matches">
+        <item>1 of 5</item>
+        <item>2 of 5</item>
+        <item>3 of 5</item>
+        <item>4 of 5</item>
+        <item>5 of 5</item>
+    </string-array>
+
+    <!-- Weapon-->
+    <string name="EnemyDefenderSpawnTime">Enemy Defender Spawn Time</string>
+    <string name="DefenderSpawnTime">Defender Spawn Time</string>
+    <string name="HeavyInfantryHitpoints">Heavy Infantry Hitpoints</string>
+    <string name="RangedInfantryHitpoints">Ranged Infantry Hitpoints</string>
+    <string name="HeavyCavalryHitpoints">Heavy Cavalry Hitpoints</string>
+    <string name="RaiderHitpoints">Raider Hitpoints</string>
+    <string name="WallSapperHitpoints">Wall Sapper Hitpoints</string>
+    <string name="SupplyVehicleHitpoints">Supply Vehicle Hitpoints</string>
+    <string name="RangedSiegeHitpoints">Ranged Siege Hitpoints</string>
+    <string name="MortarTroopHitpoints">Mortar Troop Hitpoints</string>
+    <string name="AttackHelicoptersHitpoints">Attack Helicopters Hitpoints</string>
+    <string name="MachineGunInfantryHitpoints">Machine Gun Infantry Hitpoints</string>
+    <string name="GuerrillaHitpoints">GuerrillaHitpoints</string>
+    <string name="HeavyTankHitpoints">Heavy Tank Hitpoints</string>
+    <string name="BazookaHitpoints">Bazooka Hitpoints</string>
+    <string name="APCHitpoints">APC Hitpoints</string>
+    <string name="ArmoredCarHitpoints">Armored Car Hitpoints</string>
+    <string name="TacticalHelicopterHitpoints">Tactical Helicopter Hitpoints</string>
+    <string name="MRLHitpoints">MRL Hitpoints</string>
+    <string name="FighterHitpoints">Fighter Hitpoints</string>
+    <string name="BomberHitpoints">Bomber Hitpoints</string>
+    <string name="ParatroopersFromTransportsHitpoints">Paratroopers From Transports Hitpoints</string>
+    <string name="GeneralsHitpoints">Generals Hitpoints</string>
+    <string name="HeavyInfantryDamage">Heavy Infantry Damage</string>
+    <string name="RangedInfantryDamage">Ranged Infantry Damage</string>
+    <string name="HeavyCavalryDamage">Heavy Cavalry Damage</string>
+    <string name="RaiderDamage">Raider Damage</string>
+    <string name="WallSapperDamage">Wall Sapper Damage</string>
+    <string name="SupplyVehicleHealing">Supply Vehicle Healing</string>
+    <string name="RangedSiegeDamage">Ranged Siege Damage</string>
+    <string name="MortarTroopDamage">Mortar Troop Damage</string>
+    <string name="AttackHelicoptersDamage">Attack Helicopters Damage</string>
+    <string name="MachineGunInfantryDamage">Machine Gun Infantry Damage</string>
+    <string name="GuerrillaDamage">GuerrillaDamage</string>
+    <string name="HeavyTankDamage">Heavy Tank Damage</string>
+    <string name="BazookaDamage">Bazooka Damage</string>
+    <string name="APCDamage">APC Damage</string>
+    <string name="ArmoredCarDamage">Armored Car Damage</string>
+    <string name="TacticalHelicopterHealing">Tactical Helicopter Healing</string>
+    <string name="MRLDamage">MRL Damage</string>
+    <string name="FighterDamage">Fighter Damage</string>
+    <string name="BomberDamage">Bomber Damage</string>
+    <string name="ParatroopersFromTransportsDamage">Paratroopers From Transports Damage</string>
+    <string name="GeneralsDamage">Generals Damage</string>
+
+    <!-- Armor -->
+    <string name="DefenderHitpoints">Defender Hitpoints</string>
+    <string name="DefenderDamage">Defender Damage</string>
+    <string name="InvadingHeavyInfantryHitpoints">Invading Heavy Infantry Hitpoints</string>
+    <string name="InvadingRangedInfantryHitpoints">Invading Ranged Infantry Hitpoints</string>
+    <string name="InvadingHeavyCavalryHitpoints">Invading Heavy Cavalry Hitpoints</string>
+    <string name="InvadingRaiderHitpoints">Invading Raider Hitpoints</string>
+    <string name="InvadingWallSapperHitpoints">Invading Wall Sapper Hitpoints</string>
+    <string name="InvadingSupplyVehicleHitpoints">Invading Supply Vehicle Hitpoints</string>
+    <string name="InvadingRangedSiegeHitpoints">InvadingRangedSiegeHitpoints</string>
+    <string name="InvadingMortarTroopHitpoints">InvadingMortarTroopHitpoints</string>
+    <string name="InvadingAttackHelicoptersHitpoints">Invading Attack Helicopters Hitpoints</string>
+    <string name="InvadingMachineGunInfantryHitpoints">Invading Machine Gun Infantry Hitpoints</string>
+    <string name="InvadingGuerrillaHitpoints">InvadingGuerrillaHitpoints</string>
+    <string name="InvadingHeavyTankHitpoints">InvadingHeavyTankHitpoints</string>
+    <string name="InvadingBazookaHitpoints">InvadingBazookaHitpoints</string>
+    <string name="InvadingAPCHitpoints">InvadingAPCHitpoints</string>
+    <string name="InvadingArmoredCarHitpoints">InvadingArmoredCarHitpoints</string>
+    <string name="InvadingTacticalHelicopterHitpoints">InvadingTacticalHelicopterHitpoints</string>
+    <string name="InvadingMRLHitpoints">InvadingMRLHitpoints</string>
+    <string name="InvadingFighterHitpoints">InvadingFighterHitpoints</string>
+    <string name="InvadingBomberHitpoints">InvadingBomberHitpoints</string>
+    <string name="InvadingParatroopersFromTransportsHitpoints">InvadingParatroopersFromTransportsHitpoints</string>
+    <string name="InvadingGeneralsHitpoints">InvadingGeneralsHitpoints</string>
+    <string name="InvadingHeavyInfantryDamage">InvadingHeavyInfantryDamage</string>
+    <string name="InvadingRangedInfantryDamage">InvadingRangedInfantryDamage</string>
+    <string name="InvadingHeavyCavalryDamage">InvadingHeavyCavalryDamage</string>
+    <string name="InvadingRaiderDamage">InvadingRaiderDamage</string>
+    <string name="InvadingWallSapperDamage">InvadingWallSapperDamage</string>
+    <string name="InvadingSupplyVehicleHealing">InvadingSupplyVehicleHealing</string>
+    <string name="InvadingRangedSiegeDamage">InvadingRangedSiegeDamage</string>
+    <string name="InvadingMortarTroopDamage">InvadingMortarTroopDamage</string>
+    <string name="InvadingAttackHelicoptersDamage">InvadingAttackHelicoptersDamage</string>
+    <string name="InvadingMachineGunInfantryDamage">InvadingMachineGunInfantryDamage</string>
+    <string name="InvadingGuerrillaDamage">InvadingGuerrillaDamage</string>
+    <string name="InvadingHeavyTankDamage">InvadingHeavyTankDamage</string>
+    <string name="InvadingBazookaDamage">Invading Bazooka Damage</string>
+    <string name="InvadingAPCDamage">InvadingAPCDamage</string>
+    <string name="InvadingArmoredCarDamage">InvadingArmoredCarDamage</string>
+    <string name="InvadingTacticalHelicopterHealing">InvadingTacticalHelicopterHealing</string>
+    <string name="InvadingMRLDamage">InvadingMRLDamage</string>
+    <string name="InvadingFighterDamage">InvadingFighterDamage</string>
+    <string name="InvadingBomberDamage">InvadingBomberDamage</string>
+    <string name="InvadingParatroopersFromTransportsDamage">InvadingParatroopersFromTransportsDamage</string>
+    <string name="InvadingGeneralsDamage">Invading Generals Damage</string>
+
+    <!-- Jewelry-->
+    <string name="OilLooted">Oil Looted</string>
+    <string name="GoldLooted">Gold Looted</string>
+    <string name="FoodLooted">Food Looted</string>
+    <string name="NationalTradeGoodLootChance">National Trade Good Loot Chance</string>
+    <string name="AllResourceLooted">All Resource Looted</string>
+    <string name="LootedResourceRefund">Looted Resource Refund</string>
+    <string name="LibraryTechGoldCost">Library Tech Gold Cost</string>
+    <string name="EnemyTowerHitpoints">Enemy Tower Hitpoints</string>
+    <string name="EnemyCatapultHitpoints">Enemy Catapult Hitpoints</string>
+    <string name="EnemyAntiTankGunHitpoints">Enemy Anti Tank Gun Hitpoints</string>
+    <string name="EnemyRedoubtHitpoints">Enemy Redoubt Hitpoints</string>
+    <string name="EnemySniperTowerHitpoints">Enemy Sniper Tower Hitpoints</string>
+    <string name="EnemyAirDefenseHitpoints">Enemy Air Defense Hitpoints</string>
+    <string name="EnemyMissileSiloHitpoints">Enemy Missile Silo Hitpoints</string>
+    <string name="EnemyTowerDamage">Enemy Tower Damage</string>
+    <string name="EnemyCatapultDamage">Enemy Catapult Damage</string>
+    <string name="EnemyAntiTankGunDamage">Enemy Anti Tank Gun Damage</string>
+    <string name="EnemyRedoubtDamage">Enemy Redoubt Damage</string>
+    <string name="EnemySniperTowerDamage">Enemy Sniper Tower Damage</string>
+    <string name="EnemyAirDefenseDamage">Enemy Air Defense Damage</string>
+    <string name="EnemyMissileSiloDamage">Enemy Missile Silo Damage</string>
+
+    <!-- Pottery -->
+    <string name="GoldFromGoldMines">Gold from Gold Mines</string>
+    <string name="FoodFromFruitTrees">Food from Fruit Trees</string>
+    <string name="AllResourcesFromHunting">All Resources from Hunting</string>
+    <string name="GoldFromCaravans">Gold from Caravans</string>
+    <string name="FoodFromFarms">Food from Farms</string>
+    <string name="OilFromOilWells">Oil from Oil Wells</string>
+    <string name="VaultCapacity">Vault Capacity</string>
+    <string name="VaultInterest">Vault Interest</string>
+    <string name="ForestExpansionCostRefund">Forest Expansion Cost Refund</string>
+    <string name="LibraryTechFoodCost">Library Tech Food Cost</string>
+    <string name="LibraryTechOilCost">Library Tech Oil Cost</string>
+    <string name="TowerHitpoints">Tower Hitpoints</string>
+    <string name="CatapultHitpoints">Catapult Hitpoints</string>
+    <string name="AntiTankGunHitpoints">Anti-Tank Gun Hitpoints</string>
+    <string name="RedoubtHitpoints">Redoubt Hitpoints</string>
+    <string name="SniperTowerHitpoints">Sniper Tower Hitpoints</string>
+    <string name="AirDefenseHitpoints">Air Defense Hitpoints</string>
+    <string name="MissileSiloHitpoints">Missile Silo Hitpoints</string>
+    <string name="TowerDamage">Tower Damage</string>
+    <string name="CatapultDamage">Catapult Damage</string>
+    <string name="AntiTankGunDamage">Anti-Tank Gun Damage</string>
+    <string name="RedoubtDamage">Redoubt Damage</string>
+    <string name="SniperTowerDamage">Sniper Tower Damage</string>
+    <string name="AirDefenseDamage">Air Defense Damage</string>
+    <string name="MissileSiloDamage">Missile Silo Damage</string>
+    <string name="AllEnemyDefensiveTowersHitpoints">All Enemy Defensive Towers Hitpoints</string>
+    <string name="AllEnemyDefensiveTowersDamage">All Enemy Defensive Towers Damage</string>
+    <string name="AllDefensiveTowersDamage">All Defensive Towers Damage</string>
+    <string name="AllDefensiveTowersHitpoints">All Defensive Towers Hitpoints</string>
+</resources>
