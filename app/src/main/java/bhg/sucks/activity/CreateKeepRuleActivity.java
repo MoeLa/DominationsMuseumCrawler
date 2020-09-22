@@ -69,8 +69,8 @@ public class CreateKeepRuleActivity extends AppCompatActivity implements Adapter
         this.keepRule = Optional.ofNullable(intent.getStringExtra("id"))
                 .map(id -> dao.get(id))
                 .orElse(KeepRule.builder()
-                        .name("RuleName to be set")
-                        .category(Category.Jewelry)
+                        .name("NewName")
+                        .category(Category.Weapon)
                         .amountMatches(AmountMatches.FOUR_OF_FIVE)
                         .skills(Sets.newHashSet())
                         .build());

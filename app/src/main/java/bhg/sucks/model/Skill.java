@@ -176,6 +176,7 @@ public enum Skill {
     WarRaiderDamage(Category.WarWeapon, R.string.RaiderDamage),
     WarMRLDamage(Category.WarWeapon, R.string.MRLDamage),
     WarInvadingTacticalHelicopterHitpoints(Category.WarWeapon, R.string.InvadingTacticalHelicopterHitpoints),
+    WarRangedSiegeDamage(Category.WarWeapon, R.string.RangedSiegeDamage),
 
 
     WarRangedInfantryHitpoints(Category.WarArmor, R.string.RangedInfantryHitpoints),
@@ -222,6 +223,8 @@ public enum Skill {
     WarFighterHitpoints(Category.WarArmor, R.string.FighterHitpoints),
     WarMRLHitpoints(Category.WarArmor, R.string.MRLHitpoints),
     WarInvadingMortarTroopDamage(Category.WarArmor, R.string.InvadingMortarTroopDamage),
+    WarInvadingRangedSiegeDamage(Category.WarArmor, R.string.InvadingRangedSiegeDamage),
+    WarInvadingHeavyTankDamage(Category.WarArmor, R.string.InvadingHeavyTankDamage),
 
 
     WarRedoubtDamage(Category.WarEquipment, R.string.RedoubtDamage),

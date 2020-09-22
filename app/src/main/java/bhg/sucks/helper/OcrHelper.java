@@ -272,26 +272,31 @@ public class OcrHelper {
                     .map(e -> Pair.create(e, applyDiffAndLev(context.getString(e.getValue().getResId()), skill)))
                     .min(Comparator.comparing(p -> p.second))
                     .ifPresent(p -> {
-                        File file = new File(context.getCacheDir(), "newSkillEnums.txt");
-                        CharSink charSink = Files.asCharSink(file, Charset.defaultCharset(), FileWriteMode.APPEND);
+                        String potSkillName = "War" + p.first.getValue().toString();
+                        try {
+                            Skill skill1 = Skill.valueOf(potSkillName);
+                            Log.i(TAG, "Skill '" + potSkillName + "' already exists.");
+                            return;
+                        } catch (IllegalArgumentException e) {
+                            // Skill doesn't exist yet => Write it to newSkillsEnums
+                            File file = new File(context.getCacheDir(), "newSkillEnums.txt");
+                            CharSink charSink = Files.asCharSink(file, Charset.defaultCharset(), FileWriteMode.APPEND);
 
-                        try
-                        // (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("newSkillEnums.txt", Context.MODE_PRIVATE)))
-                        {
-                            String x = String.format("// No match for '%s' in %s. Probably add...%n%s%n",
-                                    skill,
-                                    cat,
-                                    String.format("War%s(Category.%s, R.string.%s),",
-                                            p.first.getValue(),
-                                            cat,
-                                            p.first.getValue())
-                            );
-                            charSink.write(x);
-//                            outputStreamWriter.append(x);
-                            Log.d(TAG, x);
-                            countWrites.incrementAndGet();
-                        } catch (IOException ex) {
-                            Log.e("Exception", "File write failed: " + p.first.toString());
+                            try {
+                                String x = String.format("// No match for '%s' in %s. Probably add...%n%s%n",
+                                        skill,
+                                        cat,
+                                        String.format("%s(Category.%s, R.string.%s),",
+                                                potSkillName,
+                                                cat,
+                                                p.first.getValue())
+                                );
+                                charSink.write(x);
+                                Log.w(TAG, x);
+                                countWrites.incrementAndGet();
+                            } catch (IOException ex) {
+                                Log.e("Exception", "File write failed: " + p.first.toString());
+                            }
                         }
                     });
             if (countWrites.get() == 0) {
@@ -397,7 +402,8 @@ public class OcrHelper {
                 // No log entry
             } else if (bestGuess.first < 5) {
                 ret.add(bestGuess.second);
-                Log.d(TAG, String.format("Evaluating skills (lev = %s, '%s') in %s",
+                Log.d(TAG, String.format("Evaluating skill '%s' (lev = %s, '%s') in %s",
+                        text,
                         bestGuess.first,
                         context.getString(bestGuess.second.getResId()),
                         swFindSkill

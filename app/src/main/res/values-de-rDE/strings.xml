@@ -146,7 +146,7 @@
     <string name="MRLHitpoints">MRL-Trefferpunkte</string>
     <string name="TacticalHelicopterHitpoints">Taktischer-Helikopter-Trefferpunkte</string>
     <string name="DefenderSpawnTime">Verteidiger-Erscheinungszeit</string>
-    <string name="HeavyInfantryHitpoints">Schwere-Infaterie-Trefferpunkte</string>
+    <string name="HeavyInfantryHitpoints">Schwere-Infanterie-Trefferpunkte</string>
     <string name="BomberDamage">Bomber-Schaden</string>
     <string name="ParatroopersFromTransportsDamage">Fallschirmjäger-Schaden</string>
     <string name="InvadingWallSapperHitpoints">Invasions-Mauersappeur-Trefferpunkte</string>
