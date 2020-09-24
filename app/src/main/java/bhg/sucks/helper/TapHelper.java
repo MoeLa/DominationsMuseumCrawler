@@ -13,12 +13,8 @@ import bhg.sucks.thread.MyThread;
  */
 public class TapHelper {
 
-    private final static String TAG = "TapHelper";
-    private final static String hurryAnimationCommand = "input tap 1 1"; // "input tap 1900 200"
+    private final static String hurryAnimationCommand = "input tap 1 1";
     private final static String tapCommand = "input tap %s %s";
-    // private final static String fiveArtifactsCommand = "input tap 1550 745";
-    // private final static String sellCommand = "input tap 870 960";
-    // private final static String confirmCommand = "input tap 1300 715";
 
     private final MyThread.Delegate delegate;
     private final ScreenshotHelper screenshotHelper;
@@ -63,8 +59,7 @@ public class TapHelper {
             return false;
         }
 
-        boolean ret = fiveArtifactsExecutor.execute();
-        return ret;
+        return fiveArtifactsExecutor.execute();
     }
 
     /**
@@ -99,8 +94,7 @@ public class TapHelper {
             };
         }
 
-        boolean ret = sellExecutor.execute();
-        return ret;
+        return sellExecutor.execute();
     }
 
     /**

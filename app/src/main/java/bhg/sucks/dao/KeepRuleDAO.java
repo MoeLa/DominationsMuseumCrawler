@@ -10,6 +10,12 @@ import java.util.UUID;
 
 import bhg.sucks.model.KeepRule;
 
+/**
+ * DAO for persisting an fetching {@link KeepRule}s.
+ * <p>
+ * Currently uses the shared prefs. Not beautiful, but works.
+ * </p>
+ */
 public class KeepRuleDAO {
 
     private static final String KEY = "myKeepRules";

@@ -18,23 +18,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btnTestOcr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:onClick="testOcr"
-        android:text="Test OCR"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switchKeep3StarArtifacts" />
-
-    <Button
         android:id="@+id/btnAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:onClick="addRule"
-        android:text="Add Rule"
-        app:layout_constraintStart_toEndOf="@+id/btnTestOcr"
+        android:text="@string/add_rule"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/switchKeep3StarArtifacts" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -46,7 +36,7 @@
         app:layout_constraintBottom_toTopOf="@+id/btnSave"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnTestOcr" />
+        app:layout_constraintTop_toBottomOf="@+id/btnAdd" />
 
     <Button
         android:id="@+id/btnSave"
@@ -55,8 +45,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:onClick="save"
-        android:text="@string/save"
+        android:onClick="startService"
+        android:text="@string/start_service"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

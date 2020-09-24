@@ -2,6 +2,7 @@
 <resources>
     <string name="keep_3_artifacts">Behalte 3-Sterne Artefakte</string>
     <string name="save">Speichern</string>
+    <string name="start_service">Starte Service</string>
     <string-array name="array_categories">
         <item>Waffe</item>
         <item>Rüstung</item>
@@ -160,4 +161,7 @@
     <string name="AllEnemyDefensiveTowersDamage">Schaden aller feindlichen Verteidigungstürme</string>
     <string name="AllDefensiveTowersDamage">Schaden aller Verteidigungstürme</string>
     <string name="AllDefensiveTowersHitpoints">Trefferpunkte aller Verteidigungstürme</string>
+    <string name="add_rule">Regel hinzufügen</string>
+    <string name="edit_rule">Regel bearbeiten</string>
+    <string name="delete_rule">Regel löschen</string>
 </resources>

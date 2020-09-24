@@ -3,8 +3,6 @@ package bhg.sucks.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 
@@ -18,14 +16,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import bhg.sucks.dao.KeepRuleDAO;
-import bhg.sucks.helper.OcrHelper;
 import bhg.sucks.model.KeepRule;
 import bhg.sucks.service.MyService;
 import bhg.sucks.so.we.need.a.dominationsmuseumcrawler.R;
 
 public class MainActivity extends AppCompatActivity {
-
-    private static final String TAG = "MainActivity";
 
     private KeepRuleDAO dao;
     private SharedPreferences sharedPref;
@@ -49,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
 
     });
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,20 +65,6 @@ public class MainActivity extends AppCompatActivity {
         this.rvAdapter = new KeepRulesAdapter(keepRules);
         rvKeepRules.setAdapter(rvAdapter);
         rvKeepRules.setLayoutManager(new LinearLayoutManager(this));
-
-        Intent intent = new Intent(this, MyService.class);
-        startService(intent);
-    }
-
-    public void testOcr(View view) {
-        BitmapFactory.Options opts = new BitmapFactory.Options();
-        opts.inScaled = false;
-        Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.screenshot3, opts);
-//        Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.screenshot2, opts);
-//        Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.screenshot, opts);
-
-        OcrHelper h = new OcrHelper(this);
-        OcrHelper.Data d = h.convertItemScreenshot(b);
     }
 
     public void addRule(View view) {
@@ -103,7 +83,10 @@ public class MainActivity extends AppCompatActivity {
         rvAdapter.notifyItemRemoved(deletedKeepRule.getPosition());
     }
 
-    public void save(View view) {
+    public void startService(View view) {
+        Intent intent = new Intent(this, MyService.class);
+        startService(intent);
+
         finish();
     }
 

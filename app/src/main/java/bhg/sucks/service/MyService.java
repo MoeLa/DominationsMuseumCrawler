@@ -9,6 +9,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.IBinder;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,8 +18,11 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.core.view.GestureDetectorCompat;
+
 import java.util.List;
 
+import bhg.sucks.activity.MainActivity;
 import bhg.sucks.dao.KeepRuleDAO;
 import bhg.sucks.helper.ExecuteAsRootBase;
 import bhg.sucks.helper.OcrHelper;
@@ -27,23 +31,25 @@ import bhg.sucks.model.KeepRule;
 import bhg.sucks.so.we.need.a.dominationsmuseumcrawler.R;
 import bhg.sucks.thread.MyThread;
 
-public class MyService extends Service implements View.OnTouchListener, View.OnClickListener {
+public class MyService extends Service implements View.OnTouchListener, GestureDetector.OnGestureListener {
+
+    private static final String TAG = "MyService";
 
     private WindowManager windowManager;
     private WindowManager.LayoutParams params;
     private ImageView imageIcon;
+
+    private GestureDetectorCompat gestureDetector;
 
     private int mTouchSlop;
     private int initialX;
     private int initialY;
     private float initialTouchX;
     private float initialTouchY;
-    private boolean isClick = false;
     private boolean running = false;
 
     private ScreenshotHelper screenshotHelper;
     private OcrHelper ocrHelper;
-    private MyThread myThread;
     private KeepRuleDAO dao;
     private SharedPreferences sharedPref;
 
@@ -64,7 +70,6 @@ public class MyService extends Service implements View.OnTouchListener, View.OnC
         this.imageIcon = new ImageView(this);
         imageIcon.setImageResource(R.mipmap.red_circle);
         imageIcon.setOnTouchListener(this);
-        imageIcon.setOnClickListener(this);
 
         int LAYOUT_FLAG;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -90,6 +95,8 @@ public class MyService extends Service implements View.OnTouchListener, View.OnC
         ViewConfiguration vc = ViewConfiguration.get(this);
         this.mTouchSlop = vc.getScaledTouchSlop();
 
+        this.gestureDetector = new GestureDetectorCompat(imageIcon.getContext(), this);
+
 
         this.screenshotHelper = new ScreenshotHelper(this);
         this.ocrHelper = new OcrHelper(this);
@@ -102,49 +109,6 @@ public class MyService extends Service implements View.OnTouchListener, View.OnC
         super.onDestroy();
         if (imageIcon != null) {
             windowManager.removeView(imageIcon);
-        }
-    }
-
-    @Override
-    public boolean onTouch(View view, MotionEvent motionEvent) {
-        switch (motionEvent.getActionMasked()) {
-            case MotionEvent.ACTION_DOWN:
-                initialX = params.x;
-                initialY = params.y;
-                initialTouchX = motionEvent.getRawX();
-                initialTouchY = motionEvent.getRawY();
-                isClick = true;
-                break;
-            case MotionEvent.ACTION_MOVE:
-                int deltaX = (int) (motionEvent.getRawX() - initialTouchX);
-                int deltaY = (int) (motionEvent.getRawY() - initialTouchY);
-
-                if (Math.abs(deltaX) > mTouchSlop || Math.abs(deltaY) > mTouchSlop) {
-                    params.x = initialX + deltaX;
-                    params.y = initialY + deltaY;
-                    windowManager.updateViewLayout(view, params);
-                    isClick = false;
-                }
-
-                break;
-            case MotionEvent.ACTION_UP:
-                if (isClick)
-                    view.performClick();
-                break;
-            default:
-                return false;
-        }
-
-        return true;
-    }
-
-    @Override
-    public void onClick(View view) {
-        if (!running) {
-            start();
-        } else {
-            running = false;
-            imageIcon.setImageResource(R.mipmap.red_circle);
         }
     }
 
@@ -203,9 +167,71 @@ public class MyService extends Service implements View.OnTouchListener, View.OnC
 
         };
 
-        this.myThread = new MyThread(d);
+        MyThread myThread = new MyThread(d);
         myThread.start();
     }
 
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        // Forward event to gesture detector
+        return gestureDetector.onTouchEvent(motionEvent);
+    }
 
+    @Override
+    public boolean onDown(MotionEvent motionEvent) {
+        // Remember initial location of overlay icon
+        initialX = params.x;
+        initialY = params.y;
+        initialTouchX = motionEvent.getRawX();
+        initialTouchY = motionEvent.getRawY();
+        return true;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        // Move overlay icon
+        int deltaX = (int) (e2.getRawX() - initialTouchX); // delta to initial position
+        int deltaY = (int) (e2.getRawY() - initialTouchY); // delta to initial position
+
+        if (Math.abs(deltaX) > mTouchSlop || Math.abs(deltaY) > mTouchSlop) {
+            params.x = initialX + deltaX;
+            params.y = initialY + deltaY;
+            windowManager.updateViewLayout(imageIcon, params);
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent motionEvent) {
+        // empty by design
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent motionEvent) {
+        // Start crawling
+        if (!running) {
+            start();
+        } else {
+            running = false;
+            imageIcon.setImageResource(R.mipmap.red_circle);
+        }
+        return true;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent motionEvent) {
+        // Open Main activity
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+
+        stopSelf();
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        // empty by design
+        return false;
+    }
 }

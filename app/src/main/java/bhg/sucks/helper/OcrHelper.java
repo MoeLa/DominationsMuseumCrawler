@@ -226,11 +226,6 @@ public class OcrHelper {
         swParsingTextBlocks.stop();
         Log.d(TAG, "Parsing textBlocks in " + swParsingTextBlocks);
 
-//        if (!ret.isComplete()) {
-//            Log.i(TAG, String.format("Item's attributes could not be parsed (completely): %s", ret));
-//            return null;
-//        }
-
         return ret;
     }
 
@@ -481,6 +476,16 @@ public class OcrHelper {
         private List<Skill> skills;
         private int level;
 
+        /**
+         * A {@link Data} is considered complete, if
+         * <ul>
+         *     <li>a category was determined</li>
+         *     <li>at least some skills were determined and</li>
+         *     <li>the level could be determined</li>
+         * </ul>
+         *
+         * @return <i>true</i>, if this data has been filled completely
+         */
         public boolean isComplete() {
             return category != null
                     && skills != null // && skills.size() == 5

@@ -43,23 +43,28 @@ public class MyThread extends Thread {
      * @return <i>true</i>, if the artifact should be kept meaning the 'continue' button should be tapped
      */
     private boolean keepArtifact() {
-        if (!delegate.isKeepThreeStarArtifacts()) {
+        if (!delegate.isRunning()) {
+            // Quick exit, when user stopped crawling
+            return true;
+        }
+
+        List<KeepRule> keepRules = delegate.getKeepRules();
+        if (!delegate.isKeepThreeStarArtifacts() && keepRules.isEmpty()) {
+            // Quick exit, when no criteria to keep the artifact exists
             return false;
         }
 
-        OcrHelper.Data data;
-        int i = 0;
-        do {
+        for (int i = 0; i < 2; i++) {
             Bitmap bitmap = delegate.getScreenshotHelper().takeScreenshot();
-            data = delegate.getOcrHelper().convertItemScreenshot(bitmap);
+            OcrHelper.Data data = delegate.getOcrHelper().convertItemScreenshot(bitmap);
 
-            if (data == null) {
-                Log.d(TAG, "Screenshot couldn't be converted completely => Retrying");
+            if (data.isComplete()) {
+                return keepingBecauseOfLevel(data) || keepingBecauseOfRule(data, keepRules);
             }
-            i++;
-        } while ((data == null || !data.isComplete()) && i < 2);
+            Log.d(TAG, "keepArtifact: Second try, neglecting " + data);
+        }
 
-        return i < 2 && (keepingBecauseOfLevel(data) || keepingBecauseOfRule(data, delegate.getKeepRules()));
+        return false;
     }
 
     /**

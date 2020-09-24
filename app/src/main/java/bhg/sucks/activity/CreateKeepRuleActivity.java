@@ -58,8 +58,7 @@ public class CreateKeepRuleActivity extends AppCompatActivity implements Adapter
             skills.add(s);
         }
 
-        for (Category cat : skillsLookup.keySet()) {
-            List<Skill> skills = skillsLookup.get(cat);
+        for (List<Skill> skills : skillsLookup.values()) {
             Collections.sort(skills, Comparator.comparing(s -> getString(s.getResId())));
         }
 
@@ -98,7 +97,6 @@ public class CreateKeepRuleActivity extends AppCompatActivity implements Adapter
         } else {
             keepRule.getSkills().remove(s);
         }
-        Log.d(TAG, "Checkbox state changed -> " + keepRule.getSkills().toString());
     }
 
     public void save(View view) {
@@ -134,13 +132,11 @@ public class CreateKeepRuleActivity extends AppCompatActivity implements Adapter
         skills.clear();
         skills.addAll(getSkillsFromLookupFor(category));
         rvAdapter.notifyDataSetChanged();
-
-        Log.d(TAG, "onItemSelected -> pos " + position);
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-        Log.i(TAG, "onNothingSelected");
+        // empty by design
     }
 
 }

@@ -6,6 +6,7 @@
     <string name="category">Category</string>
     <string name="amount_matched">Amount Matches</string>
     <string name="save">Save</string>
+    <string name="start_service">Start Service</string>
     <string-array name="array_categories">
         <item>Weapon</item>
         <item>Armor</item>
@@ -168,4 +169,7 @@
     <string name="AllEnemyDefensiveTowersDamage">All Enemy Defensive Towers Damage</string>
     <string name="AllDefensiveTowersDamage">All Defensive Towers Damage</string>
     <string name="AllDefensiveTowersHitpoints">All Defensive Towers Hitpoints</string>
+    <string name="add_rule">Add Rule</string>
+    <string name="edit_rule">Edit Rule</string>
+    <string name="delete_rule">Delete Rule</string>
 </resources>
