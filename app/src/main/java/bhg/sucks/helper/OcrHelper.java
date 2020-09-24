@@ -19,24 +19,16 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
-import com.google.common.io.CharSink;
-import com.google.common.io.FileWriteMode;
-import com.google.common.io.Files;
 import com.google.gson.Gson;
 
 import org.bitbucket.cowwoc.diffmatchpatch.DiffMatchPatch;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -57,8 +49,8 @@ public class OcrHelper {
 
     private final static String TAG = "OcrHelper";
 
-    private final String artifactBonus; // = "Artefakt-Boni";
     private final String fiveArtifactsButtonText; // = "475";
+    private final String artifactBenefits; // = "Artefakt-Boni";
     private final String sellButtonPrefix; // = "Verkaufen für";
     private final String confirmButtonText; // = "Ja";
     private final String continueButtonText; // = "Fortfahren";
@@ -82,7 +74,7 @@ public class OcrHelper {
             skillLookup.put(s.getCategory(), s);
         }
 
-        this.artifactBonus = context.getString(R.string.artifact_bonus);
+        this.artifactBenefits = context.getString(R.string.artifact_benefits);
         this.fiveArtifactsButtonText = context.getString(R.string.five_artifacts_button_text);
         this.sellButtonPrefix = context.getString(R.string.sell_button_prefix);
         this.confirmButtonText = context.getString(R.string.confirm_button_text);
@@ -244,7 +236,7 @@ public class OcrHelper {
      * </p>
      */
     private void persistSkill(Category cat, String skill) {
-        if (skill.length() < 10 || skill.equals(artifactBonus) || skill.startsWith(sellButtonPrefix)) {
+        if (skill.length() < 10 || skill.equals(artifactBenefits) || skill.startsWith(sellButtonPrefix)) {
             Log.d(TAG, "persistSkill: Neglecting '" + skill + "'");
             return;
         }
@@ -269,42 +261,42 @@ public class OcrHelper {
         } else {
             // War hall artifact => We're here because of a missing enum
             // Assumption: There is a main hall enum with the same text (or wrong category in a war hall enum). Go, find it and write everything out.
-            AtomicInteger countWrites = new AtomicInteger(0);
-            skillLookup.entries().stream()
-                    .filter(e -> e.getKey().ordinal() <= 3) // Only keep main hall categories
-                    .map(e -> Pair.create(e, applyDiffAndLev(context.getString(e.getValue().getResId()), skill)))
-                    .min(Comparator.comparing(p -> p.second))
-                    .ifPresent(p -> {
-                        String potSkillName = "War" + p.first.getValue().toString();
-                        try {
-                            Skill skill1 = Skill.valueOf(potSkillName);
-                            Log.i(TAG, "Skill '" + potSkillName + "' already exists.");
-                            return;
-                        } catch (IllegalArgumentException e) {
-                            // Skill doesn't exist yet => Write it to newSkillsEnums
-                            File file = new File(context.getCacheDir(), "newSkillEnums.txt");
-                            CharSink charSink = Files.asCharSink(file, Charset.defaultCharset(), FileWriteMode.APPEND);
-
-                            try {
-                                String x = String.format("// No match for '%s' in %s. Probably add...%n%s%n",
-                                        skill,
-                                        cat,
-                                        String.format("%s(Category.%s, R.string.%s),",
-                                                potSkillName,
-                                                cat,
-                                                p.first.getValue())
-                                );
-                                charSink.write(x);
-                                Log.w(TAG, x);
-                                countWrites.incrementAndGet();
-                            } catch (IOException ex) {
-                                Log.e("Exception", "File write failed: " + p.first.toString());
-                            }
-                        }
-                    });
-            if (countWrites.get() == 0) {
-                Log.e(TAG, String.format("No writes for %s/%s", cat, skill));
-            }
+//            AtomicInteger countWrites = new AtomicInteger(0);
+//            skillLookup.entries().stream()
+//                    .filter(e -> e.getKey().ordinal() <= 3) // Only keep main hall categories
+//                    .map(e -> Pair.create(e, applyDiffAndLev(context.getString(e.getValue().getResId()), skill)))
+//                    .min(Comparator.comparing(p -> p.second))
+//                    .ifPresent(p -> {
+//                        String potSkillName = "War" + p.first.getValue().toString();
+//                        try {
+//                            Skill skill1 = Skill.valueOf(potSkillName);
+//                            Log.i(TAG, "Skill '" + potSkillName + "' already exists.");
+//                            return;
+//                        } catch (IllegalArgumentException e) {
+//                            // Skill doesn't exist yet => Write it to newSkillsEnums
+//                            File file = new File(context.getCacheDir(), "newSkillEnums.txt");
+//                            CharSink charSink = Files.asCharSink(file, Charset.defaultCharset(), FileWriteMode.APPEND);
+//
+//                            try {
+//                                String x = String.format("// No match for '%s' in %s. Probably add...%n%s%n",
+//                                        skill,
+//                                        cat,
+//                                        String.format("%s(Category.%s, R.string.%s),",
+//                                                potSkillName,
+//                                                cat,
+//                                                p.first.getValue())
+//                                );
+//                                charSink.write(x);
+//                                Log.w(TAG, x);
+//                                countWrites.incrementAndGet();
+//                            } catch (IOException ex) {
+//                                Log.e("Exception", "File write failed: " + p.first.toString());
+//                            }
+//                        }
+//                    });
+//            if (countWrites.get() == 0) {
+//                Log.e(TAG, String.format("No writes for %s/%s", cat, skill));
+//            }
         }
 
     }
@@ -358,7 +350,7 @@ public class OcrHelper {
         int idx = Integer.MIN_VALUE;
         Stopwatch swFindIntro = Stopwatch.createStarted();
         for (int i = 0; i < texts.size(); i++) {
-            if (artifactBonus.equals(texts.get(i))) {
+            if (artifactBenefits.equals(texts.get(i))) {
                 idx = i + 1; // idx shall point to next text after 'artifactBonus'
                 break;
             }
@@ -366,7 +358,7 @@ public class OcrHelper {
 
         swFindIntro.stop();
         if (idx == Integer.MIN_VALUE) {
-            Log.d(TAG, "Could not find '" + artifactBonus + "' in detected texts in " + swFindIntro);
+            Log.d(TAG, "Could not find '" + artifactBenefits + "' in detected texts in " + swFindIntro);
             return null;
         } else {
             Log.d(TAG, "Found intro to skills in " + swFindIntro);

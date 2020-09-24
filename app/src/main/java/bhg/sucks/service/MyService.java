@@ -21,6 +21,7 @@ import android.widget.Toast;
 import androidx.core.view.GestureDetectorCompat;
 
 import java.util.List;
+import java.util.Locale;
 
 import bhg.sucks.activity.MainActivity;
 import bhg.sucks.dao.KeepRuleDAO;
@@ -28,6 +29,7 @@ import bhg.sucks.helper.ExecuteAsRootBase;
 import bhg.sucks.helper.OcrHelper;
 import bhg.sucks.helper.ScreenshotHelper;
 import bhg.sucks.model.KeepRule;
+import bhg.sucks.service.util.ContextUtils;
 import bhg.sucks.so.we.need.a.dominationsmuseumcrawler.R;
 import bhg.sucks.thread.MyThread;
 
@@ -52,6 +54,8 @@ public class MyService extends Service implements View.OnTouchListener, GestureD
     private OcrHelper ocrHelper;
     private KeepRuleDAO dao;
     private SharedPreferences sharedPref;
+
+    private ContextUtils ctx;
 
     public MyService() {
         // empty
@@ -97,9 +101,9 @@ public class MyService extends Service implements View.OnTouchListener, GestureD
 
         this.gestureDetector = new GestureDetectorCompat(imageIcon.getContext(), this);
 
-
+        this.ctx = ContextUtils.updateLocale(this, Locale.getDefault());
         this.screenshotHelper = new ScreenshotHelper(this);
-        this.ocrHelper = new OcrHelper(this);
+        this.ocrHelper = new OcrHelper(ctx);
         this.sharedPref = getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE);
         this.dao = new KeepRuleDAO(sharedPref);
     }
