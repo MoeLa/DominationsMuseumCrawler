@@ -164,4 +164,8 @@
     <string name="add_rule">Regel hinzufügen</string>
     <string name="edit_rule">Regel bearbeiten</string>
     <string name="delete_rule">Regel löschen</string>
+    <string name="artifact_bonus">Artefakt-Boni</string>
+    <string name="sell_button_prefix">Verkaufen für</string>
+    <string name="confirm_button_text">Ja</string>
+    <string name="continue_button_text">Fortfahren</string>
 </resources>

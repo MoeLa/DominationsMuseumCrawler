@@ -5,22 +5,27 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Spinner;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
+import com.zeugmasolutions.localehelper.LocaleAwareCompatActivity;
 
+import java.util.List;
+import java.util.Locale;
+
+import bhg.sucks.converter.SpinnerConverter;
 import bhg.sucks.dao.KeepRuleDAO;
 import bhg.sucks.model.KeepRule;
 import bhg.sucks.service.MyService;
 import bhg.sucks.so.we.need.a.dominationsmuseumcrawler.R;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends LocaleAwareCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private KeepRuleDAO dao;
     private SharedPreferences sharedPref;
@@ -60,6 +65,10 @@ public class MainActivity extends AppCompatActivity {
             editor.apply();
         });
 
+        Spinner langSpinner = findViewById(R.id.inpLang);
+        langSpinner.setSelection(SpinnerConverter.toInt(Locale.getDefault()), false);
+        langSpinner.setOnItemSelectedListener(this);
+
         final RecyclerView rvKeepRules = findViewById(R.id.rvKeepRules);
         this.keepRules = dao.getAll();
         this.rvAdapter = new KeepRulesAdapter(keepRules);
@@ -90,4 +99,14 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
+        Locale lang = SpinnerConverter.toLocale(pos);
+        updateLocale(lang);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+        // empty by design
+    }
 }

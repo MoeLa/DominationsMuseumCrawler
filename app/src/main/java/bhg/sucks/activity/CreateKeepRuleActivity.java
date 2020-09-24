@@ -65,7 +65,7 @@ public class CreateKeepRuleActivity extends AppCompatActivity implements Adapter
         this.dao = new KeepRuleDAO(getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE));
 
         Intent intent = getIntent();
-        this.keepRule = Optional.ofNullable(intent.getStringExtra("id"))
+        this.keepRule = Optional.ofNullable(intent.getStringExtra(KeepRuleContract.KEY))
                 .map(id -> dao.get(id))
                 .orElse(KeepRule.builder()
                         .name("NewName")

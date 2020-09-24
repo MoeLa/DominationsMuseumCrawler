@@ -33,7 +33,7 @@ public abstract class ExecuteAsRootBase {
         }
 
         try (DataOutputStream os = new DataOutputStream(suProcess.getOutputStream());
-             BufferedReader osRes = new BufferedReader(new InputStreamReader(suProcess.getInputStream()));
+             BufferedReader osRes = new BufferedReader(new InputStreamReader(suProcess.getInputStream()))
         ) {
             // Getting the id of the current user to check if this is root
             os.writeBytes("id\n");

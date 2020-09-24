@@ -23,6 +23,10 @@
         <item>4 of 5</item>
         <item>5 of 5</item>
     </string-array>
+    <string-array name="array_languages">
+        <item>English</item>
+        <item>Deutsch</item>
+    </string-array>
 
     <!-- Weapon-->
     <string name="EnemyDefenderSpawnTime">Enemy Defender Spawn Time</string>
@@ -165,11 +169,19 @@
     <string name="SniperTowerDamage">Sniper Tower Damage</string>
     <string name="AirDefenseDamage">Air Defense Damage</string>
     <string name="MissileSiloDamage">Missile Silo Damage</string>
+
+    <!-- War Equipment (only)  -->
     <string name="AllEnemyDefensiveTowersHitpoints">All Enemy Defensive Towers Hitpoints</string>
     <string name="AllEnemyDefensiveTowersDamage">All Enemy Defensive Towers Damage</string>
     <string name="AllDefensiveTowersDamage">All Defensive Towers Damage</string>
     <string name="AllDefensiveTowersHitpoints">All Defensive Towers Hitpoints</string>
+
     <string name="add_rule">Add Rule</string>
     <string name="edit_rule">Edit Rule</string>
     <string name="delete_rule">Delete Rule</string>
+    <string name="artifact_bonus">artifactBonus-TODO</string>
+    <string name="sell_button_prefix">sellButtonPrefix-TODO</string>
+    <string name="confirm_button_text">confirmButtonText-TODO</string>
+    <string name="continue_button_text">continueButtonText-TODO</string>
+    <string name="five_artifacts_button_text" translatable="false">475</string>
 </resources>

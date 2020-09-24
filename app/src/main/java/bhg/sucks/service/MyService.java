@@ -122,7 +122,7 @@ public class MyService extends Service implements View.OnTouchListener, GestureD
             return;
         }
 
-        Bitmap b = screenshotHelper.takeScreenshot();
+        Bitmap b = screenshotHelper.takeScreenshot3();
 
         Point p = ocrHelper.isFiveArtifactsAvailable(b);
         if (p == null) {

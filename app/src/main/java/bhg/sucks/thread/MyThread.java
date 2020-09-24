@@ -55,12 +55,13 @@ public class MyThread extends Thread {
         }
 
         for (int i = 0; i < 2; i++) {
-            Bitmap bitmap = delegate.getScreenshotHelper().takeScreenshot();
+            Bitmap bitmap = delegate.getScreenshotHelper().takeScreenshot3();
             OcrHelper.Data data = delegate.getOcrHelper().convertItemScreenshot(bitmap);
 
             if (data.isComplete()) {
                 return keepingBecauseOfLevel(data) || keepingBecauseOfRule(data, keepRules);
             }
+            // else: Loop again
             Log.d(TAG, "keepArtifact: Second try, neglecting " + data);
         }
 

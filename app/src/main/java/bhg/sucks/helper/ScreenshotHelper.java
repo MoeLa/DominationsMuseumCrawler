@@ -35,6 +35,7 @@ public class ScreenshotHelper {
      *
      * @return the taken screenshot or <i>null</i>, if not possible
      */
+    @Deprecated
     public Bitmap takeScreenshot() {
         // TODO: Probably better/faster approach with MediaProjectionManager
         // MediaProjectionManager mpm = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
@@ -67,6 +68,11 @@ public class ScreenshotHelper {
         return ret;
     }
 
+    /**
+     * Takes a screenshot of the complete screen (without writing it to storage).
+     *
+     * @return the taken screenshot or <i>null</i>, if not possible
+     */
     public Bitmap takeScreenshot3() {
         Stopwatch swTakingScreenshot = Stopwatch.createStarted();
 
@@ -98,6 +104,7 @@ public class ScreenshotHelper {
     }
 
     // https://omerjerk.in/index.php/2016/03/03/take-screenshot-without-root-in-android/
+    @Deprecated
     public Bitmap takeScreenshot2() {
         ImageReader mImageReader = ImageReader.newInstance(1, 1, ImageFormat.RGB_565, 2);
 

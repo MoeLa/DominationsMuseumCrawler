@@ -35,8 +35,7 @@ public class KeepRulesAdapter extends RecyclerView.Adapter<KeepRulesAdapter.View
 
         View keepRulesView = inflater.inflate(R.layout.item_keep_rule, parent, false);
 
-        ViewHolder viewHolder = new ViewHolder(keepRulesView);
-        return viewHolder;
+        return new ViewHolder(keepRulesView);
     }
 
     @Override

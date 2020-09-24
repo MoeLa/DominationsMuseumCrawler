@@ -73,7 +73,7 @@ public class TapHelper {
         }
 
         if (sellExecutor == null) {
-            Bitmap b = screenshotHelper.takeScreenshot();
+            Bitmap b = screenshotHelper.takeScreenshot3();
             Point p = ocrHelper.isSellAvailable(b);
             if (p == null) {
                 return false;
@@ -108,7 +108,7 @@ public class TapHelper {
         }
 
         if (confirmExecutor == null) {
-            Bitmap b = screenshotHelper.takeScreenshot();
+            Bitmap b = screenshotHelper.takeScreenshot3();
             Point p = ocrHelper.isConfirmAvailable(b);
             if (p == null) {
                 return false;
@@ -146,7 +146,7 @@ public class TapHelper {
         }
 
         if (continueExecutor == null) {
-            Bitmap b = screenshotHelper.takeScreenshot();
+            Bitmap b = screenshotHelper.takeScreenshot3();
             Point p = ocrHelper.isContinueAvailable(b);
             if (p == null) {
                 return false;

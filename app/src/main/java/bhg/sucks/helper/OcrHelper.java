@@ -42,6 +42,7 @@ import java.util.stream.Collectors;
 
 import bhg.sucks.model.Category;
 import bhg.sucks.model.Skill;
+import bhg.sucks.so.we.need.a.dominationsmuseumcrawler.R;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -53,13 +54,14 @@ import lombok.Setter;
 public class OcrHelper {
 
     public final static int LEVEL_COULD_NOT_BE_DETERMINED = -1;
-    private static final String TAG = "OcrHelper";
 
-    private final static String artifactBonus = "Artefakt-Boni";
-    private final static String fiveArtifactsButtonText = "475";
-    private final static String sellButtonPrefix = "Verkaufen für";
-    private final static String confirmButtonText = "Ja";
-    private final static String continueButtonText = "Fortfahren";
+    private final static String TAG = "OcrHelper";
+
+    private final String artifactBonus; // = "Artefakt-Boni";
+    private final String fiveArtifactsButtonText; // = "475";
+    private final String sellButtonPrefix; // = "Verkaufen für";
+    private final String confirmButtonText; // = "Ja";
+    private final String continueButtonText; // = "Fortfahren";
 
     private final Context context;
     private final TextRecognizer textRecognizer;
@@ -79,6 +81,12 @@ public class OcrHelper {
         for (Skill s : Skill.values()) {
             skillLookup.put(s.getCategory(), s);
         }
+
+        this.artifactBonus = context.getString(R.string.artifact_bonus);
+        this.fiveArtifactsButtonText = context.getString(R.string.five_artifacts_button_text);
+        this.sellButtonPrefix = context.getString(R.string.sell_button_prefix);
+        this.confirmButtonText = context.getString(R.string.confirm_button_text);
+        this.continueButtonText = context.getString(R.string.continue_button_text);
     }
 
     /**
@@ -236,7 +244,7 @@ public class OcrHelper {
      * </p>
      */
     private void persistSkill(Category cat, String skill) {
-        if (skill.length() <= 10 || skill.equals(artifactBonus) || skill.startsWith(sellButtonPrefix)) {
+        if (skill.length() < 10 || skill.equals(artifactBonus) || skill.startsWith(sellButtonPrefix)) {
             Log.d(TAG, "persistSkill: Neglecting '" + skill + "'");
             return;
         }

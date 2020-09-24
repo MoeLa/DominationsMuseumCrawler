@@ -8,20 +8,18 @@ import androidx.activity.result.contract.ActivityResultContract;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import bhg.sucks.dao.KeepRuleDAO;
-import bhg.sucks.so.we.need.a.dominationsmuseumcrawler.R;
-
+/**
+ * This contract ensures type safety, when a keep rule shall be created or edited.
+ */
 public class KeepRuleContract extends ActivityResultContract<String, String> {
 
-    private KeepRuleDAO dao;
+    public static final String KEY = "id";
 
     @NonNull
     @Override
     public Intent createIntent(@NonNull Context context, String keepRuleId) {
-        this.dao = new KeepRuleDAO(context.getSharedPreferences(context.getString(R.string.app_name), Context.MODE_PRIVATE));
-
         Intent intent = new Intent(context, CreateKeepRuleActivity.class);
-        intent.putExtra("id", keepRuleId);
+        intent.putExtra(KEY, keepRuleId);
         return intent;
     }
 
@@ -31,8 +29,7 @@ public class KeepRuleContract extends ActivityResultContract<String, String> {
             return null;
         }
 
-        String id = result.getStringExtra("id");
-        return id;
+        return result.getStringExtra(KEY);
     }
 
 }
