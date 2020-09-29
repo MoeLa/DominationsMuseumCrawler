@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme">
 
         <service
-            android:name="bhg.sucks.service.MyService"
+            android:name="bhg.sucks.service.OverlayIconService"
             android:enabled="true"
             android:exported="true" />
 

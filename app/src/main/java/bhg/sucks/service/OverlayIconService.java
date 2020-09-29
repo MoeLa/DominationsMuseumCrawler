@@ -31,23 +31,21 @@ import bhg.sucks.helper.ScreenshotHelper;
 import bhg.sucks.model.KeepRule;
 import bhg.sucks.service.util.ContextUtils;
 import bhg.sucks.so.we.need.a.dominationsmuseumcrawler.R;
-import bhg.sucks.thread.MyThread;
+import bhg.sucks.thread.TappingThread;
 
-public class MyService extends Service implements View.OnTouchListener, GestureDetector.OnGestureListener {
+/**
+ * Background service, that display an overlay icon.
+ * <p>
+ * That icon can be dragged to another position, short-tapped to start {@link TappingThread} and long-tapped to open {@link MainActivity}.
+ */
+public class OverlayIconService extends Service implements View.OnTouchListener, GestureDetector.OnGestureListener {
 
     private static final String TAG = "MyService";
 
-    private WindowManager windowManager;
-    private WindowManager.LayoutParams params;
-    private ImageView imageIcon;
-
+    private OverlayData overlayData;
     private GestureDetectorCompat gestureDetector;
+    private ContextUtils ctx;
 
-    private int mTouchSlop;
-    private int initialX;
-    private int initialY;
-    private float initialTouchX;
-    private float initialTouchY;
     private boolean running = false;
 
     private ScreenshotHelper screenshotHelper;
@@ -55,9 +53,7 @@ public class MyService extends Service implements View.OnTouchListener, GestureD
     private KeepRuleDAO dao;
     private SharedPreferences sharedPref;
 
-    private ContextUtils ctx;
-
-    public MyService() {
+    public OverlayIconService() {
         // empty
     }
 
@@ -71,35 +67,10 @@ public class MyService extends Service implements View.OnTouchListener, GestureD
     public void onCreate() {
         super.onCreate();
 
-        this.imageIcon = new ImageView(this);
-        imageIcon.setImageResource(R.mipmap.red_circle);
-        imageIcon.setOnTouchListener(this);
+        this.overlayData = new OverlayData();
+        overlayData.init(this);
 
-        int LAYOUT_FLAG;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        } else {
-            LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_PHONE;
-        }
-
-        this.params = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                LAYOUT_FLAG,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                PixelFormat.TRANSLUCENT);
-
-        params.gravity = Gravity.TOP | Gravity.START;
-        params.x = 100;
-        params.y = 100;
-
-        this.windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        windowManager.addView(imageIcon, params);
-
-        ViewConfiguration vc = ViewConfiguration.get(this);
-        this.mTouchSlop = vc.getScaledTouchSlop();
-
-        this.gestureDetector = new GestureDetectorCompat(imageIcon.getContext(), this);
+        this.gestureDetector = new GestureDetectorCompat(overlayData.imageIcon.getContext(), this);
 
         this.ctx = ContextUtils.updateLocale(this, Locale.getDefault());
         this.screenshotHelper = new ScreenshotHelper(this);
@@ -111,8 +82,8 @@ public class MyService extends Service implements View.OnTouchListener, GestureD
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (imageIcon != null) {
-            windowManager.removeView(imageIcon);
+        if (overlayData.imageIcon != null) {
+            overlayData.windowManager.removeView(overlayData.imageIcon);
         }
     }
 
@@ -135,9 +106,9 @@ public class MyService extends Service implements View.OnTouchListener, GestureD
         }
 
         this.running = true;
-        imageIcon.setImageResource(R.mipmap.green_circle);
+        overlayData.imageIcon.setImageResource(R.mipmap.green_circle);
 
-        MyThread.Delegate d = new MyThread.Delegate() {
+        TappingThread.Delegate d = new TappingThread.Delegate() {
 
             @Override
             public ScreenshotHelper getScreenshotHelper() {
@@ -171,8 +142,8 @@ public class MyService extends Service implements View.OnTouchListener, GestureD
 
         };
 
-        MyThread myThread = new MyThread(d);
-        myThread.start();
+        TappingThread tappingThread = new TappingThread(d);
+        tappingThread.start();
     }
 
     @Override
@@ -184,23 +155,23 @@ public class MyService extends Service implements View.OnTouchListener, GestureD
     @Override
     public boolean onDown(MotionEvent motionEvent) {
         // Remember initial location of overlay icon
-        initialX = params.x;
-        initialY = params.y;
-        initialTouchX = motionEvent.getRawX();
-        initialTouchY = motionEvent.getRawY();
+        overlayData.initialX = overlayData.params.x;
+        overlayData.initialY = overlayData.params.y;
+        overlayData.initialTouchX = motionEvent.getRawX();
+        overlayData.initialTouchY = motionEvent.getRawY();
         return true;
     }
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         // Move overlay icon
-        int deltaX = (int) (e2.getRawX() - initialTouchX); // delta to initial position
-        int deltaY = (int) (e2.getRawY() - initialTouchY); // delta to initial position
+        int deltaX = (int) (e2.getRawX() - overlayData.initialTouchX); // delta to initial position
+        int deltaY = (int) (e2.getRawY() - overlayData.initialTouchY); // delta to initial position
 
-        if (Math.abs(deltaX) > mTouchSlop || Math.abs(deltaY) > mTouchSlop) {
-            params.x = initialX + deltaX;
-            params.y = initialY + deltaY;
-            windowManager.updateViewLayout(imageIcon, params);
+        if (Math.abs(deltaX) > overlayData.mTouchSlop || Math.abs(deltaY) > overlayData.mTouchSlop) {
+            overlayData.params.x = overlayData.initialX + deltaX;
+            overlayData.params.y = overlayData.initialY + deltaY;
+            overlayData.windowManager.updateViewLayout(overlayData.imageIcon, overlayData.params);
         }
 
         return true;
@@ -218,7 +189,7 @@ public class MyService extends Service implements View.OnTouchListener, GestureD
             start();
         } else {
             running = false;
-            imageIcon.setImageResource(R.mipmap.red_circle);
+            overlayData.imageIcon.setImageResource(R.mipmap.red_circle);
         }
         return true;
     }
@@ -237,5 +208,50 @@ public class MyService extends Service implements View.OnTouchListener, GestureD
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         // empty by design
         return false;
+    }
+
+    /**
+     * Encapsulates all data to make the overlay icon work and provides an initialization routine to keep that fuss out of onCreate.
+     */
+    private static class OverlayData {
+        private WindowManager windowManager;
+        private WindowManager.LayoutParams params;
+        private ImageView imageIcon;
+
+        private int mTouchSlop;
+        private int initialX;
+        private int initialY;
+        private float initialTouchX;
+        private float initialTouchY;
+
+        private void init(OverlayIconService s) {
+            imageIcon = new ImageView(s);
+            imageIcon.setImageResource(R.mipmap.red_circle);
+            imageIcon.setOnTouchListener(s);
+
+            int LAYOUT_FLAG;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+            } else {
+                LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_PHONE;
+            }
+
+            params = new WindowManager.LayoutParams(
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    LAYOUT_FLAG,
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                    PixelFormat.TRANSLUCENT);
+
+            params.gravity = Gravity.TOP | Gravity.START;
+            params.x = 100;
+            params.y = 100;
+
+            windowManager = (WindowManager) s.getSystemService(WINDOW_SERVICE);
+            windowManager.addView(imageIcon, params);
+
+            ViewConfiguration vc = ViewConfiguration.get(s);
+            mTouchSlop = vc.getScaledTouchSlop();
+        }
     }
 }

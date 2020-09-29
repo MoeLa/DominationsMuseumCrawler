@@ -109,7 +109,7 @@ public class ScreenshotHelper {
         ImageReader mImageReader = ImageReader.newInstance(1, 1, ImageFormat.RGB_565, 2);
 
         MediaProjectionManager mpm = (MediaProjectionManager) context.getSystemService(MEDIA_PROJECTION_SERVICE);
-//        mpm.getMediaProjection()
+        mpm.createScreenCaptureIntent();
 
         return null;
     }

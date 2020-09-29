@@ -22,7 +22,7 @@ import java.util.Locale;
 import bhg.sucks.converter.SpinnerConverter;
 import bhg.sucks.dao.KeepRuleDAO;
 import bhg.sucks.model.KeepRule;
-import bhg.sucks.service.MyService;
+import bhg.sucks.service.OverlayIconService;
 import bhg.sucks.so.we.need.a.dominationsmuseumcrawler.R;
 
 public class MainActivity extends LocaleAwareCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -93,7 +93,7 @@ public class MainActivity extends LocaleAwareCompatActivity implements AdapterVi
     }
 
     public void startService(View view) {
-        Intent intent = new Intent(this, MyService.class);
+        Intent intent = new Intent(this, OverlayIconService.class);
         startService(intent);
 
         finish();

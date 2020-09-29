@@ -6,7 +6,7 @@ import android.graphics.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import bhg.sucks.thread.MyThread;
+import bhg.sucks.thread.TappingThread;
 
 /**
  * Encapsulates all tap actions.
@@ -16,7 +16,7 @@ public class TapHelper {
     private final static String hurryAnimationCommand = "input tap 1 1";
     private final static String tapCommand = "input tap %s %s";
 
-    private final MyThread.Delegate delegate;
+    private final TappingThread.Delegate delegate;
     private final ScreenshotHelper screenshotHelper;
     private final OcrHelper ocrHelper;
     private final ExecuteAsRootBase fiveArtifactsExecutor;
@@ -25,7 +25,7 @@ public class TapHelper {
     private ExecuteAsRootBase confirmExecutor;
     private ExecuteAsRootBase continueExecutor;
 
-    public TapHelper(MyThread.Delegate delegate) {
+    public TapHelper(TappingThread.Delegate delegate) {
         this.delegate = delegate;
         this.screenshotHelper = delegate.getScreenshotHelper();
         this.ocrHelper = delegate.getOcrHelper();
