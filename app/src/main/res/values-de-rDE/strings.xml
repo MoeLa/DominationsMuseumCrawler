@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="keep_3_artifacts">Behalte 3-Sterne Artefakte</string>
+    <string name="save">Speichern</string>
+    <string name="start_service">Starte Service</string>
+    <string-array name="array_categories">
+        <item>Waffe</item>
+        <item>Rüstung</item>
+        <item>Schmuck</item>
+        <item>Töpferei</item>
+        <item>Waffe (Krieg)</item>
+        <item>Rüstung (Krieg)</item>
+        <item>Ausrüstung (Krieg)</item>
+    </string-array>
+    <string-array name="array_amount_matches">
+        <item>1 von 5</item>
+        <item>2 von 5</item>
+        <item>3 von 5</item>
+        <item>4 von 5</item>
+        <item>5 von 5</item>
+    </string-array>
+    <string name="InvadingGeneralsDamage">Invasions-Generäle-Schaden</string>
+    <string name="InvadingBazookaDamage">Invasionsbazooka-Schaden</string>
+    <string name="OilLooted">Erbeutetes Öl</string>
+    <string name="GoldLooted">Erbeutetes Gold</string>
+    <string name="FoodLooted">Erbeutete Nahrung</string>
+    <string name="AllResourceLooted">Alle erbeuteten Ressourcen</string>
+    <string name="LootedResourceRefund">Erbeutete-Ressourcen-Erstattung</string>
+    <string name="EnemyAntiTankGunDamage">Feindiche-Panzerabwehrwaffe-Schaden</string>
+    <string name="LibraryTechGoldCost">Bücherei-Technologie-Goldkosten</string>
+    <string name="EnemyMissileSiloHitpoints">Feindliches-Raketensilo-Trefferpunkte</string>
+    <string name="EnemyAirDefenseHitpoints">Feindliche-Luftabwehr-Trefferpunkte</string>
+    <string name="EnemySniperTowerHitpoints">Feindlicher-Scharfschützen-Turm-Trefferpunkte</string>
+    <string name="EnemyTowerHitpoints">Feindlicher-Turm-Trefferpunkte</string>
+    <string name="EnemySniperTowerDamage">Feindlicher-Scharfschützen-Turm-Schaden</string>
+    <string name="EnemyRedoubtDamage">Feindlicher Redouteschaden</string>
+    <string name="EnemyCatapultDamage">Feindlicher Katapultschaden</string>
+    <string name="EnemyAntiTankGunHitpoints">Feindliche Panzerabwehrwaffe-Trefferpunkte</string>
+    <string name="EnemyRedoubtHitpoints">Feindliche-Redoute-Trefferpunkte</string>
+    <string name="EnemyTowerDamage">Feindlicher Turmschaden</string>
+    <string name="EnemyAirDefenseDamage">Feindliche-Luftabwehr-Schaden</string>
+    <string name="DefenderHitpoints">Verteidiger-Trefferpunkte</string>
+    <string name="InvadingAPCHitpoints">Invasions-MTW-Trefferpunkte</string>
+    <string name="InvadingArmoredCarDamage">Invasionspanzerwagen-Schaden</string>
+    <string name="InvadingBomberDamage">Invasionsbomber-Schaden</string>
+    <string name="InvadingRaiderDamage">Invasionsräuber-Schaden</string>
+    <string name="InvadingHeavyInfantryDamage">Schwere-Invasionsinfanterie-Schaden</string>
+    <string name="InvadingHeavyTankHitpoints">Schwerer-Invasionspanzer-Trefferpunkte</string>
+    <string name="InvadingMortarTroopDamage">Invasions-Mörsertruppen-Schaden</string>
+    <string name="InvadingAPCDamage">Invasions-MTW-Schaden</string>
+    <string name="InvadingRaiderHitpoints">Invasionsräuber-Trefferpunkte</string>
+    <string name="InvadingHeavyInfantryHitpoints">Schwere-Invasionsinfanterie-Trefferpunkte</string>
+    <string name="InvadingMRLDamage">Invasions-MRL-Schaden</string>
+    <string name="InvadingRangedSiegeHitpoints">Invasions-Fernkampf-Belagerung-Trefferpunkte</string>
+    <string name="InvadingTacticalHelicopterHealing">Taktischer-Invasionshelikopter-Heilung</string>
+    <string name="InvadingParatroopersFromTransportsHitpoints">Invasions-Fallschirmjäger-Trefferpunkte</string>
+    <string name="InvadingAttackHelicoptersDamage">Invasions-Angriffshelikopter-Schaden</string>
+    <string name="InvadingFighterDamage">Invasionsjäger-Schaden</string>
+    <string name="InvadingRangedInfantryHitpoints">Fernkampf-Invasionsinfanterie-Trefferpunkte</string>
+    <string name="InvadingRangedInfantryDamage">Fernkampf-Invasionsinfanterie-Schaden</string>
+    <string name="InvadingMortarTroopHitpoints">Invasions-Mörsertruppen-Trefferpunkte</string>
+    <string name="InvadingMachineGunInfantryDamage">Maschinengewehr-Invasionsinfanterie-Schaden</string>
+    <string name="InvadingGuerrillaDamage">Invasions-Guerilla-Schaden</string>
+    <string name="InvadingGeneralsHitpoints">Invasions-Generäle-Trefferpunkte</string>
+    <string name="InvadingMRLHitpoints">Invasions-MRL-Trefferpunkte</string>
+    <string name="InvadingMachineGunInfantryHitpoints">Maschinengewehr-Invasionsinfanterie-Trefferpunkte</string>
+    <string name="InvadingBazookaHitpoints">Invasionsbazooka-Trefferpunkte</string>
+    <string name="InvadingHeavyCavalryHitpoints">Schwere-Invasionskavallerie-Trefferpunkte</string>
+    <string name="EnemyCatapultHitpoints">Feindliche Katapult-Trefferpunkte</string>
+    <string name="InvadingParatroopersFromTransportsDamage">Invasions-Fallschirmjäger-Schaden</string>
+    <string name="InvadingBomberHitpoints">Invasionsbomber-Trefferpunkte</string>
+    <string name="SniperTowerHitpoints">Scharfschützen-Turm-Trefferpunkte</string>
+    <string name="GoldFromGoldMines">Gold aus Goldminen</string>
+    <string name="MissileSiloHitpoints">Raketensilo-Trefferpunkte</string>
+    <string name="RedoubtHitpoints">Redoute-Trefferpunkte</string>
+    <string name="AirDefenseHitpoints">Luftabwehr-Trefferpunkte</string>
+    <string name="FoodFromFarms">Nahrung von Farmen</string>
+    <string name="AllResourcesFromHunting">Alle Ressourcen von der Jagd</string>
+    <string name="AntiTankGunHitpoints">Panzerabwehrwaffe-Trefferpunkte</string>
+    <string name="VaultCapacity">Schatzkammer-Kapazität</string>
+    <string name="FoodFromFruitTrees">Nahrung von Obstbäumen</string>
+    <string name="SniperTowerDamage">Scharfschützen-Turm-Schaden</string>
+    <string name="LibraryTechFoodCost">Bücherei-Technologie-Nahrungskosten</string>
+    <string name="TowerHitpoints">Turm-Trefferpunkte</string>
+    <string name="ForestExpansionCostRefund">Walderweiterung-Kostenerstattung</string>
+    <string name="AntiTankGunDamage">Panzerabwehrwaffe-Schaden</string>
+    <string name="OilFromOilWells">Öl von Ölbohrtürmen</string>
+    <string name="VaultInterest">Schatzkammer-Interesse</string>
+    <string name="LibraryTechOilCost">Bücherei-Technologie-Ölkosten</string>
+    <string name="AirDefenseDamage">Luftabwehr-Schaden</string>
+    <string name="RedoubtDamage">Redouteschaden</string>
+    <string name="CatapultHitpoints">Katapult-Trefferpunkte</string>
+    <string name="TowerDamage">Turmschaden</string>
+    <string name="CatapultDamage">Katapultschaden</string>
+    <string name="HeavyInfantryDamage">Schwere-Infanterie-Schaden</string>
+    <string name="MRLDamage">MRL-Schaden</string>
+    <string name="APCHitpoints">MTW-Trefferpunkte</string>
+    <string name="SupplyVehicleHitpoints">Versorgungsfahrzeug-Trefferpunkte</string>
+    <string name="GeneralsDamage">Generäle-Schaden</string>
+    <string name="RangedSiegeHitpoints">Fernkampf-Belagerung-Trefferpunkte</string>
+    <string name="WallSapperDamage">Mauersappeur-Schaden</string>
+    <string name="HeavyCavalryHitpoints">Schwere-Kavallerie-Trefferpunkte</string>
+    <string name="WallSapperHitpoints">Mauersappeur-Trefferpunkte</string>
+    <string name="MortarTroopDamage">Mörsertruppen-Schaden</string>
+    <string name="HeavyTankHitpoints">Schwerer-Panzer-Trefferpunkte</string>
+    <string name="HeavyCavalryDamage">Schwere-Kavallerie-Schaden</string>
+    <string name="SupplyVehicleHealing">Versorgungsfahrzeug-Heilung</string>
+    <string name="BomberHitpoints">Bomber-Trefferpunkte</string>
+    <string name="APCDamage">MTW-Schaden</string>
+    <string name="MortarTroopHitpoints">Mörsertruppen-Trefferpunkte</string>
+    <string name="RangedInfantryDamage">Fernkampf-Infanterie-Schaden</string>
+    <string name="GuerrillaDamage">Guerilla-Schaden</string>
+    <string name="AttackHelicoptersDamage">Angriffshelikopter-Schaden</string>
+    <string name="ParatroopersFromTransportsHitpoints">Fallschirmjäger-Trefferpunkte</string>
+    <string name="GeneralsHitpoints">Generäle-Trefferpunkte</string>
+    <string name="GuerrillaHitpoints">Guerilla-Trefferpunkte</string>
+    <string name="FighterDamage">Jäger-Schaden</string>
+    <string name="RaiderDamage">Räuber-Schaden</string>
+    <string name="TacticalHelicopterHealing">Taktischer-Helikopter-Heilung</string>
+    <string name="ArmoredCarHitpoints">Panzerwagen-Trefferpunkte</string>
+    <string name="BazookaHitpoints">Bazooka-Trefferpunkte</string>
+    <string name="id">Id</string>
+    <string name="name">Name</string>
+    <string name="category">Kategorie</string>
+    <string name="amount_matched">Anzahl Treffer</string>
+    <string name="EnemyDefenderSpawnTime">Feindlicher-Verteidiger-Erscheinungszeit</string>
+    <string name="NationalTradeGoodLootChance">Nationale-Handelsgüter-Beutechance</string>
+    <string name="EnemyMissileSiloDamage">Feindliches-Raketensilo-Schaden</string>
+    <string name="GoldFromCaravans">Gold von Karawanen</string>
+    <string name="MissileSiloDamage">Raketensilo-Schaden</string>
+    <string name="InvadingFighterHitpoints">Invasionsjäger-Trefferpunkte</string>
+    <string name="InvadingGuerrillaHitpoints">Invasionsguerilla-Trefferpunkte</string>
+    <string name="FighterHitpoints">Jäger-Trefferpunkte</string>
+    <string name="RangedSiegeDamage">Fernkampf-Belagerung-Schaden</string>
+    <string name="HeavyTankDamage">Schwerer-Panzer-Schaden</string>
+    <string name="BazookaDamage">Bazooka-Schaden</string>
+    <string name="RangedInfantryHitpoints">Fernkampf-Infanterie-Trefferpunkte</string>
+    <string name="AttackHelicoptersHitpoints">Angriffshelikopter-Trefferpunkte</string>
+    <string name="DefenderDamage">Verteidigerschaden</string>
+    <string name="InvadingSupplyVehicleHealing">Invasions-Versorgungsfahrzeug-Heilung</string>
+    <string name="InvadingRangedSiegeDamage">Invasions-Fernkampf-Belagerung-Schaden</string>
+    <string name="InvadingAttackHelicoptersHitpoints">Invasions-Angriffshelikopter-Trefferpunkte</string>
+    <string name="RaiderHitpoints">Räuber-Trefferpunkte</string>
+    <string name="MachineGunInfantryDamage">Maschinengewehr-Infanterie-Schaden</string>
+    <string name="ArmoredCarDamage">Panzerwagen-Schaden</string>
+    <string name="MachineGunInfantryHitpoints">Maschinengewehr-Infanterie-Trefferpunkte</string>
+    <string name="MRLHitpoints">MRL-Trefferpunkte</string>
+    <string name="TacticalHelicopterHitpoints">Taktischer-Helikopter-Trefferpunkte</string>
+    <string name="DefenderSpawnTime">Verteidiger-Erscheinungszeit</string>
+    <string name="HeavyInfantryHitpoints">Schwere-Infanterie-Trefferpunkte</string>
+    <string name="BomberDamage">Bomber-Schaden</string>
+    <string name="ParatroopersFromTransportsDamage">Fallschirmjäger-Schaden</string>
+    <string name="InvadingWallSapperHitpoints">Invasions-Mauersappeur-Trefferpunkte</string>
+    <string name="InvadingSupplyVehicleHitpoints">Invasions-Versorgungsfahrzeug-Trefferpunkte</string>
+    <string name="InvadingArmoredCarHitpoints">Invasionspanzerwagen-Trefferpunkte</string>
+    <string name="InvadingTacticalHelicopterHitpoints">Taktischer-Invasionshelikopter-Trefferpunkte</string>
+    <string name="InvadingHeavyCavalryDamage">Schwere-Invasionskavallerie-Schaden</string>
+    <string name="InvadingWallSapperDamage">Invasions-Mauersappeur-Schaden</string>
+    <string name="InvadingHeavyTankDamage">Schwerer-Invasionspanzer-Schaden</string>
+    <string name="AllEnemyDefensiveTowersHitpoints">Trefferpunkte aller feindlichen Verteidigungstürme</string>
+    <string name="AllEnemyDefensiveTowersDamage">Schaden aller feindlichen Verteidigungstürme</string>
+    <string name="AllDefensiveTowersDamage">Schaden aller Verteidigungstürme</string>
+    <string name="AllDefensiveTowersHitpoints">Trefferpunkte aller Verteidigungstürme</string>
+    <string name="add_rule">Regel hinzufügen</string>
+    <string name="edit_rule">Regel bearbeiten</string>
+    <string name="delete_rule">Regel löschen</string>
+    <string name="artifact_benefits">Artefakt-Boni</string>
+    <string name="sell_button_prefix">Verkaufen für</string>
+    <string name="confirm_button_text">Ja</string>
+    <string name="continue_button_text">Fortfahren</string>
+</resources>
