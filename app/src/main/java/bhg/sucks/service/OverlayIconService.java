@@ -12,7 +12,6 @@ import android.os.IBinder;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -38,12 +37,11 @@ import bhg.sucks.thread.TappingThread;
  * <p>
  * That icon can be dragged to another position, short-tapped to start {@link TappingThread} and long-tapped to open {@link MainActivity}.
  */
-public class OverlayIconService extends Service implements View.OnTouchListener, GestureDetector.OnGestureListener {
+public class OverlayIconService extends Service {
 
     private static final String TAG = "MyService";
 
     private OverlayData overlayData;
-    private GestureDetectorCompat gestureDetector;
     private ContextUtils ctx;
 
     private boolean running = false;
@@ -52,10 +50,6 @@ public class OverlayIconService extends Service implements View.OnTouchListener,
     private OcrHelper ocrHelper;
     private KeepRuleDAO dao;
     private SharedPreferences sharedPref;
-
-    public OverlayIconService() {
-        // empty
-    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -69,8 +63,6 @@ public class OverlayIconService extends Service implements View.OnTouchListener,
 
         this.overlayData = new OverlayData();
         overlayData.init(this);
-
-        this.gestureDetector = new GestureDetectorCompat(overlayData.imageIcon.getContext(), this);
 
         this.ctx = ContextUtils.updateLocale(this, Locale.getDefault());
         this.screenshotHelper = new ScreenshotHelper(this);
@@ -146,74 +138,15 @@ public class OverlayIconService extends Service implements View.OnTouchListener,
         tappingThread.start();
     }
 
-    @Override
-    public boolean onTouch(View view, MotionEvent motionEvent) {
-        // Forward event to gesture detector
-        return gestureDetector.onTouchEvent(motionEvent);
-    }
-
-    @Override
-    public boolean onDown(MotionEvent motionEvent) {
-        // Remember initial location of overlay icon
-        overlayData.initialX = overlayData.params.x;
-        overlayData.initialY = overlayData.params.y;
-        overlayData.initialTouchX = motionEvent.getRawX();
-        overlayData.initialTouchY = motionEvent.getRawY();
-        return true;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        // Move overlay icon
-        int deltaX = (int) (e2.getRawX() - overlayData.initialTouchX); // delta to initial position
-        int deltaY = (int) (e2.getRawY() - overlayData.initialTouchY); // delta to initial position
-
-        if (Math.abs(deltaX) > overlayData.mTouchSlop || Math.abs(deltaY) > overlayData.mTouchSlop) {
-            overlayData.params.x = overlayData.initialX + deltaX;
-            overlayData.params.y = overlayData.initialY + deltaY;
-            overlayData.windowManager.updateViewLayout(overlayData.imageIcon, overlayData.params);
-        }
-
-        return true;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent motionEvent) {
-        // empty by design
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent motionEvent) {
-        // Start crawling
-        if (!running) {
-            start();
-        } else {
-            running = false;
-            overlayData.imageIcon.setImageResource(R.mipmap.red_circle);
-        }
-        return true;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent motionEvent) {
-        // Open Main activity
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-
-        stopSelf();
-    }
-
-    @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        // empty by design
-        return false;
-    }
 
     /**
      * Encapsulates all data to make the overlay icon work and provides an initialization routine to keep that fuss out of onCreate.
      */
-    private static class OverlayData {
+    private static class OverlayData implements GestureDetector.OnGestureListener {
+
+        private OverlayIconService s;
+        private GestureDetectorCompat gestureDetector;
+
         private WindowManager windowManager;
         private WindowManager.LayoutParams params;
         private ImageView imageIcon;
@@ -225,9 +158,13 @@ public class OverlayIconService extends Service implements View.OnTouchListener,
         private float initialTouchY;
 
         private void init(OverlayIconService s) {
+            this.s = s;
+
+
             imageIcon = new ImageView(s);
             imageIcon.setImageResource(R.mipmap.red_circle);
-            imageIcon.setOnTouchListener(s);
+            imageIcon.setOnTouchListener((view, motionEvent) -> gestureDetector.onTouchEvent(motionEvent));
+            this.gestureDetector = new GestureDetectorCompat(imageIcon.getContext(), this);
 
             int LAYOUT_FLAG;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -252,6 +189,64 @@ public class OverlayIconService extends Service implements View.OnTouchListener,
 
             ViewConfiguration vc = ViewConfiguration.get(s);
             mTouchSlop = vc.getScaledTouchSlop();
+        }
+
+        @Override
+        public boolean onDown(MotionEvent motionEvent) {
+            // Remember initial location of overlay icon
+            initialX = params.x;
+            initialY = params.y;
+            initialTouchX = motionEvent.getRawX();
+            initialTouchY = motionEvent.getRawY();
+            return true;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            // Move overlay icon
+            int deltaX = (int) (e2.getRawX() - initialTouchX); // delta to initial position
+            int deltaY = (int) (e2.getRawY() - initialTouchY); // delta to initial position
+
+            if (Math.abs(deltaX) > mTouchSlop || Math.abs(deltaY) > mTouchSlop) {
+                params.x = initialX + deltaX;
+                params.y = initialY + deltaY;
+                windowManager.updateViewLayout(imageIcon, params);
+            }
+
+            return true;
+        }
+
+        @Override
+        public void onShowPress(MotionEvent motionEvent) {
+            // empty by design
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent motionEvent) {
+            // Start crawling
+            if (!s.running) {
+                s.start();
+            } else {
+                s.running = false;
+                imageIcon.setImageResource(R.mipmap.red_circle);
+            }
+            return true;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent motionEvent) {
+            // Open Main activity
+            Intent intent = new Intent(s, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            s.startActivity(intent);
+
+            s.stopSelf();
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            // empty by design
+            return false;
         }
     }
 }
