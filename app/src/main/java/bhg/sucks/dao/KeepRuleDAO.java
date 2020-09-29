@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import bhg.sucks.model.KeepRule;
@@ -56,20 +57,25 @@ public class KeepRuleDAO {
 
     public KeepRule update(KeepRule keepRule) {
         List<KeepRule> keepRules = getAll();
-        keepRules.stream()
+        Optional<KeepRule> toUpdate = keepRules.stream()
                 .filter(item -> item.getId().equals(keepRule.getId()))
-                .forEach(item -> {
-                    item.setName(keepRule.getName());
-                    item.setCategory(keepRule.getCategory());
-                    item.setAmountMatches(keepRule.getAmountMatches());
-                    item.setSkills(keepRule.getSkills());
-                });
+                .findAny();
+
+        if (!toUpdate.isPresent()) {
+            return null;
+        }
+
+        KeepRule item = toUpdate.get();
+        item.setName(keepRule.getName());
+        item.setCategory(keepRule.getCategory());
+        item.setAmountMatches(keepRule.getAmountMatches());
+        item.setSkills(keepRule.getSkills());
 
         sharedPrefs.edit()
                 .putString(KEY, gson.toJson(keepRules))
                 .apply();
 
-        return keepRule;
+        return item;
     }
 
     public KeepRule delete(String id) {
