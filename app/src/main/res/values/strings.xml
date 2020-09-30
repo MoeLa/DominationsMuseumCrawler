@@ -184,4 +184,5 @@
     <string name="sell_button_prefix">Sell for</string>
     <string name="confirm_button_text">Yes</string>
     <string name="continue_button_text">Continue</string>
+    <string name="exit">Exit</string>
 </resources>

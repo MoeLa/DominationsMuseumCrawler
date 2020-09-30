@@ -3,10 +3,13 @@ package bhg.sucks.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -26,6 +29,8 @@ import bhg.sucks.service.OverlayIconService;
 import bhg.sucks.so.we.need.a.dominationsmuseumcrawler.R;
 
 public class MainActivity extends LocaleAwareCompatActivity implements AdapterView.OnItemSelectedListener {
+
+    private static final int APP_PERMISSIONS = 1337;
 
     private KeepRuleDAO dao;
     private SharedPreferences sharedPref;
@@ -93,9 +98,33 @@ public class MainActivity extends LocaleAwareCompatActivity implements AdapterVi
     }
 
     public void startService(View view) {
-        Intent intent = new Intent(this, OverlayIconService.class);
-        startService(intent);
+        if (Settings.canDrawOverlays(this)) {
+            Intent intent = new Intent(this, OverlayIconService.class);
+            startService(intent);
 
+            finish();
+        } else {
+            Toast.makeText(this, "No permission to draw overlays", Toast.LENGTH_LONG).show();
+
+            // Open android settings to request overlay permissions
+            Intent myIntent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+            myIntent.setData(Uri.parse("package:" + getPackageName()));
+            startActivityForResult(myIntent, APP_PERMISSIONS);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == APP_PERMISSIONS) {
+            // Response to 'request for overlay permissions'
+            if (Settings.canDrawOverlays(this)) {
+                startService(findViewById(R.id.btnStartService));
+            }
+        }
+    }
+
+    public void exit(View view) {
         finish();
     }
 
