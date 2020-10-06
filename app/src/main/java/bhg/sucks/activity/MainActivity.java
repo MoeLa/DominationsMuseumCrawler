@@ -64,15 +64,19 @@ public class MainActivity extends LocaleAwareCompatActivity implements AdapterVi
 
         final SwitchCompat switchKeepThreeStarArtifacts = findViewById(R.id.switchKeep3StarArtifacts);
         switchKeepThreeStarArtifacts.setChecked(sharedPref.getBoolean(getString(R.string.keep_3_artifacts), false));
-        switchKeepThreeStarArtifacts.setOnCheckedChangeListener((btnView, isChecked) -> {
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean(getString(R.string.keep_3_artifacts), isChecked);
-            editor.apply();
-        });
+        switchKeepThreeStarArtifacts.setOnCheckedChangeListener((btnView, isChecked) -> sharedPref.edit()
+                .putBoolean(getString(R.string.keep_3_artifacts), isChecked)
+                .apply());
 
         Spinner langSpinner = findViewById(R.id.inpLang);
         langSpinner.setSelection(SpinnerConverter.toInt(Locale.getDefault()), false);
         langSpinner.setOnItemSelectedListener(this);
+
+        final SwitchCompat switchDebugMode = findViewById(R.id.switchDebugMode);
+        switchDebugMode.setChecked(sharedPref.getBoolean(getString(R.string.debug_mode), false));
+        switchDebugMode.setOnCheckedChangeListener((btnView, isChecked) -> sharedPref.edit()
+                .putBoolean(getString(R.string.debug_mode), isChecked)
+                .apply());
 
         final RecyclerView rvKeepRules = findViewById(R.id.rvKeepRules);
         this.keepRules = dao.getAll();
