@@ -32,9 +32,9 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import bhg.sucks.R;
 import bhg.sucks.model.Category;
 import bhg.sucks.model.Skill;
-import bhg.sucks.so.we.need.a.dominationsmuseumcrawler.R;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

@@ -22,6 +22,7 @@ import androidx.core.view.GestureDetectorCompat;
 import java.util.List;
 import java.util.Locale;
 
+import bhg.sucks.R;
 import bhg.sucks.activity.MainActivity;
 import bhg.sucks.dao.KeepRuleDAO;
 import bhg.sucks.helper.ExecuteAsRootBase;
@@ -29,7 +30,6 @@ import bhg.sucks.helper.OcrHelper;
 import bhg.sucks.helper.ScreenshotHelper;
 import bhg.sucks.model.KeepRule;
 import bhg.sucks.service.util.ContextUtils;
-import bhg.sucks.so.we.need.a.dominationsmuseumcrawler.R;
 import bhg.sucks.thread.TappingThread;
 
 /**

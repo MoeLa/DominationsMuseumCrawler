@@ -2,7 +2,7 @@ package bhg.sucks.model;
 
 import android.content.Context;
 
-import bhg.sucks.so.we.need.a.dominationsmuseumcrawler.R;
+import bhg.sucks.R;
 
 public enum Category {
 

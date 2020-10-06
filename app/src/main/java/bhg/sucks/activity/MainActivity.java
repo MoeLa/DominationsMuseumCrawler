@@ -22,11 +22,11 @@ import com.zeugmasolutions.localehelper.LocaleAwareCompatActivity;
 import java.util.List;
 import java.util.Locale;
 
+import bhg.sucks.R;
 import bhg.sucks.converter.SpinnerConverter;
 import bhg.sucks.dao.KeepRuleDAO;
 import bhg.sucks.model.KeepRule;
 import bhg.sucks.service.OverlayIconService;
-import bhg.sucks.so.we.need.a.dominationsmuseumcrawler.R;
 
 public class MainActivity extends LocaleAwareCompatActivity implements AdapterView.OnItemSelectedListener {
 
