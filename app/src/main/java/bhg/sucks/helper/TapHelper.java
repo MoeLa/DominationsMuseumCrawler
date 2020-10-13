@@ -2,6 +2,7 @@ package bhg.sucks.helper;
 
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ public class TapHelper {
 
     private final static String hurryAnimationCommand = "input tap 1 1";
     private final static String tapCommand = "input tap %s %s";
+    private static final String TAG = "TapHelper";
 
     private final TappingThread.Delegate delegate;
     private final ScreenshotHelper screenshotHelper;
@@ -73,9 +75,11 @@ public class TapHelper {
         }
 
         if (sellExecutor == null) {
+            Log.d(TAG, "tapSell > Screenshot for calculating bounds");
             Bitmap b = screenshotHelper.takeScreenshot3();
             Point p = ocrHelper.isSellAvailable(b);
             if (p == null) {
+                Log.d(TAG, "tapSell > Did not find 'Sell for' text");
                 return false;
             }
 
@@ -108,9 +112,11 @@ public class TapHelper {
         }
 
         if (confirmExecutor == null) {
+            Log.d(TAG, "tapConfirm > Screenshot for calculating bounds");
             Bitmap b = screenshotHelper.takeScreenshot3();
             Point p = ocrHelper.isConfirmAvailable(b);
             if (p == null) {
+                Log.d(TAG, "tapSell > Did not find 'Confirm' text");
                 return false;
             }
 
@@ -146,9 +152,11 @@ public class TapHelper {
         }
 
         if (continueExecutor == null) {
+            Log.d(TAG, "tapContinue > Screenshot for calculating bounds");
             Bitmap b = screenshotHelper.takeScreenshot3();
             Point p = ocrHelper.isContinueAvailable(b);
             if (p == null) {
+                Log.d(TAG, "tapSell > Did not find 'Continue' text");
                 return false;
             }
 

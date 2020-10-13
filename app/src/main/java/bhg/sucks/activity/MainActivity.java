@@ -25,6 +25,7 @@ import java.util.Locale;
 import bhg.sucks.R;
 import bhg.sucks.converter.SpinnerConverter;
 import bhg.sucks.dao.KeepRuleDAO;
+import bhg.sucks.helper.ExecuteAsRootBase;
 import bhg.sucks.model.KeepRule;
 import bhg.sucks.service.OverlayIconService;
 
@@ -36,7 +37,7 @@ public class MainActivity extends LocaleAwareCompatActivity implements AdapterVi
     private SharedPreferences sharedPref;
     private List<KeepRule> keepRules;
     private KeepRulesAdapter rvAdapter;
-    private ActivityResultLauncher<String> startCreateKeepRuleActivity = registerForActivityResult(new KeepRuleContract(), new ActivityResultCallback<String>() {
+    private final ActivityResultLauncher<String> startCreateKeepRuleActivity = registerForActivityResult(new KeepRuleContract(), new ActivityResultCallback<String>() {
 
         @Override
         public void onActivityResult(String keepRuleId) {
@@ -83,6 +84,11 @@ public class MainActivity extends LocaleAwareCompatActivity implements AdapterVi
         this.rvAdapter = new KeepRulesAdapter(keepRules);
         rvKeepRules.setAdapter(rvAdapter);
         rvKeepRules.setLayoutManager(new LinearLayoutManager(this));
+
+        boolean rootEnabled = ExecuteAsRootBase.canRunRootCommands();
+        if (!rootEnabled) {
+            Toast.makeText(this, "No root permissions", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void addRule(View view) {

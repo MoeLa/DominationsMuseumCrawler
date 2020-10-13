@@ -57,10 +57,12 @@ public class TappingThread extends Thread {
         List<KeepRule> keepRules = delegate.getKeepRules();
         if (!delegate.isKeepThreeStarArtifacts() && keepRules.isEmpty()) {
             // Quick exit, when no criteria to keep the artifact exists
+            Log.d(TAG, "keepArtifact > Quick Exit");
             return false;
         }
 
         for (int i = 0; i < 2; i++) {
+            Log.d(TAG, "keepArtifact > Screenshot for converting item");
             Bitmap bitmap = delegate.getScreenshotHelper().takeScreenshot3();
             OcrHelper.Data data = delegate.getOcrHelper().convertItemScreenshot(bitmap);
 
@@ -71,6 +73,7 @@ public class TappingThread extends Thread {
             Log.d(TAG, "keepArtifact: Second try, neglecting " + data);
         }
 
+        Log.d(TAG, "keepArtifact > Exiting after failing converting the screenshot twice");
         return false;
     }
 
