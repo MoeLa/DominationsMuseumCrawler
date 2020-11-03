@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import bhg.sucks.R;
 import bhg.sucks.model.KeepRule;
 import bhg.sucks.model.Skill;
-import bhg.sucks.so.we.need.a.dominationsmuseumcrawler.R;
 
 /**
  * Adapter for {@link CreateKeepRuleActivity}'s recycler view.

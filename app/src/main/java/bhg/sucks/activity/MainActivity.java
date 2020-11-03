@@ -3,10 +3,13 @@ package bhg.sucks.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -19,19 +22,22 @@ import com.zeugmasolutions.localehelper.LocaleAwareCompatActivity;
 import java.util.List;
 import java.util.Locale;
 
+import bhg.sucks.R;
 import bhg.sucks.converter.SpinnerConverter;
 import bhg.sucks.dao.KeepRuleDAO;
+import bhg.sucks.helper.ExecuteAsRootBase;
 import bhg.sucks.model.KeepRule;
-import bhg.sucks.service.MyService;
-import bhg.sucks.so.we.need.a.dominationsmuseumcrawler.R;
+import bhg.sucks.service.OverlayIconService;
 
 public class MainActivity extends LocaleAwareCompatActivity implements AdapterView.OnItemSelectedListener {
+
+    private static final int APP_PERMISSIONS = 1337;
 
     private KeepRuleDAO dao;
     private SharedPreferences sharedPref;
     private List<KeepRule> keepRules;
     private KeepRulesAdapter rvAdapter;
-    private ActivityResultLauncher<String> startCreateKeepRuleActivity = registerForActivityResult(new KeepRuleContract(), new ActivityResultCallback<String>() {
+    private final ActivityResultLauncher<String> startCreateKeepRuleActivity = registerForActivityResult(new KeepRuleContract(), new ActivityResultCallback<String>() {
 
         @Override
         public void onActivityResult(String keepRuleId) {
@@ -59,21 +65,30 @@ public class MainActivity extends LocaleAwareCompatActivity implements AdapterVi
 
         final SwitchCompat switchKeepThreeStarArtifacts = findViewById(R.id.switchKeep3StarArtifacts);
         switchKeepThreeStarArtifacts.setChecked(sharedPref.getBoolean(getString(R.string.keep_3_artifacts), false));
-        switchKeepThreeStarArtifacts.setOnCheckedChangeListener((btnView, isChecked) -> {
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean(getString(R.string.keep_3_artifacts), isChecked);
-            editor.apply();
-        });
+        switchKeepThreeStarArtifacts.setOnCheckedChangeListener((btnView, isChecked) -> sharedPref.edit()
+                .putBoolean(getString(R.string.keep_3_artifacts), isChecked)
+                .apply());
 
         Spinner langSpinner = findViewById(R.id.inpLang);
         langSpinner.setSelection(SpinnerConverter.toInt(Locale.getDefault()), false);
         langSpinner.setOnItemSelectedListener(this);
+
+        final SwitchCompat switchDebugMode = findViewById(R.id.switchDebugMode);
+        switchDebugMode.setChecked(sharedPref.getBoolean(getString(R.string.debug_mode), false));
+        switchDebugMode.setOnCheckedChangeListener((btnView, isChecked) -> sharedPref.edit()
+                .putBoolean(getString(R.string.debug_mode), isChecked)
+                .apply());
 
         final RecyclerView rvKeepRules = findViewById(R.id.rvKeepRules);
         this.keepRules = dao.getAll();
         this.rvAdapter = new KeepRulesAdapter(keepRules);
         rvKeepRules.setAdapter(rvAdapter);
         rvKeepRules.setLayoutManager(new LinearLayoutManager(this));
+
+        boolean rootEnabled = ExecuteAsRootBase.canRunRootCommands();
+        if (!rootEnabled) {
+            Toast.makeText(this, "No root permissions", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void addRule(View view) {
@@ -93,9 +108,33 @@ public class MainActivity extends LocaleAwareCompatActivity implements AdapterVi
     }
 
     public void startService(View view) {
-        Intent intent = new Intent(this, MyService.class);
-        startService(intent);
+        if (Settings.canDrawOverlays(this)) {
+            Intent intent = new Intent(this, OverlayIconService.class);
+            startService(intent);
 
+            finish();
+        } else {
+            Toast.makeText(this, "No permission to draw overlays", Toast.LENGTH_LONG).show();
+
+            // Open android settings to request overlay permissions
+            Intent myIntent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+            myIntent.setData(Uri.parse("package:" + getPackageName()));
+            startActivityForResult(myIntent, APP_PERMISSIONS);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == APP_PERMISSIONS) {
+            // Response to 'request for overlay permissions'
+            if (Settings.canDrawOverlays(this)) {
+                startService(findViewById(R.id.btnStartService));
+            }
+        }
+    }
+
+    public void exit(View view) {
         finish();
     }
 

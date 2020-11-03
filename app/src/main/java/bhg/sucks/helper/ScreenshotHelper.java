@@ -1,10 +1,15 @@
 package bhg.sucks.helper;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
+import android.hardware.display.DisplayManager;
+import android.hardware.display.VirtualDisplay;
 import android.media.ImageReader;
+import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.util.Log;
 
@@ -106,10 +111,27 @@ public class ScreenshotHelper {
     // https://omerjerk.in/index.php/2016/03/03/take-screenshot-without-root-in-android/
     @Deprecated
     public Bitmap takeScreenshot2() {
-        ImageReader mImageReader = ImageReader.newInstance(1, 1, ImageFormat.RGB_565, 2);
+        int width = 1;
+        int height = 1;
+        int resultCode = Activity.RESULT_OK;
+        ImageReader mImageReader = ImageReader.newInstance(width, height, ImageFormat.RGB_565, 2);
 
         MediaProjectionManager mpm = (MediaProjectionManager) context.getSystemService(MEDIA_PROJECTION_SERVICE);
-//        mpm.getMediaProjection()
+        Intent i = mpm.createScreenCaptureIntent();
+
+        MediaProjection mMediaProjection = mpm.getMediaProjection(resultCode, i);
+
+        VirtualDisplay virtualDisplay = mMediaProjection.createVirtualDisplay("Screenshotter",
+                width, height, 50,
+                DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
+                mImageReader.getSurface(), null, null);
+
+        mImageReader.setOnImageAvailableListener(new ImageReader.OnImageAvailableListener() {
+            @Override
+            public void onImageAvailable(ImageReader imageReader) {
+
+            }
+        }, null);
 
         return null;
     }

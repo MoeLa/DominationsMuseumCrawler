@@ -168,4 +168,6 @@
     <string name="sell_button_prefix">Verkaufen für</string>
     <string name="confirm_button_text">Ja</string>
     <string name="continue_button_text">Fortfahren</string>
+    <string name="exit">Beenden</string>
+    <string name="debug_mode">Debug-Modus</string>
 </resources>

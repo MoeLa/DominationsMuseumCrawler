@@ -1,6 +1,6 @@
 package bhg.sucks.model;
 
-import bhg.sucks.so.we.need.a.dominationsmuseumcrawler.R;
+import bhg.sucks.R;
 import lombok.Getter;
 
 @Getter

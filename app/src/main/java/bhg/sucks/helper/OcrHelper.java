@@ -32,9 +32,9 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import bhg.sucks.R;
 import bhg.sucks.model.Category;
 import bhg.sucks.model.Skill;
-import bhg.sucks.so.we.need.a.dominationsmuseumcrawler.R;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -45,9 +45,10 @@ import lombok.Setter;
  */
 public class OcrHelper {
 
-    public final static int LEVEL_COULD_NOT_BE_DETERMINED = -1;
+    public static final int LEVEL_COULD_NOT_BE_DETERMINED = -1;
 
-    private final static String TAG = "OcrHelper";
+    private static final String TAG = "OcrHelper";
+    private static final int LEV_OFFSET = 5;
 
     private final String fiveArtifactsButtonText; // = "475";
     private final String artifactBenefits; // = "Artefakt-Boni";
@@ -236,30 +237,36 @@ public class OcrHelper {
      * </p>
      */
     private void persistSkill(Category cat, String skill) {
+        boolean isDebugMode = context.getSharedPreferences(context.getString(R.string.app_name), Context.MODE_PRIVATE)
+                .getBoolean(context.getString(R.string.debug_mode), false);
+        if (!isDebugMode) {
+            return;
+        }
+
         if (skill.length() < 10 || skill.equals(artifactBenefits) || skill.startsWith(sellButtonPrefix)) {
             Log.d(TAG, "persistSkill: Neglecting '" + skill + "'");
             return;
         }
 
-        if (cat.ordinal() <= 3) {
-            // Main hall artifact => Persist skill in shared prefs
-            Stopwatch swUpdatingSharedPrefs = Stopwatch.createStarted();
-            final String key = Optional.ofNullable(cat.getText(context))
-                    .orElse(cat.toString());
+//        if (cat.ordinal() <= 3) {
+        // Persist skill in shared prefs
+        Stopwatch swUpdatingSharedPrefs = Stopwatch.createStarted();
+        final String key = Optional.ofNullable(cat.getText(context))
+                .orElse(cat.toString());
 
-            SharedPreferences myPrefs = context.getSharedPreferences("mainHallSkillTexts", Context.MODE_PRIVATE);
-            Set<String> skills = Sets.newTreeSet(Arrays.asList(gson.fromJson(myPrefs.getString(key, "[]"), String[].class)));
-            skills.add(skill);
+        SharedPreferences myPrefs = context.getSharedPreferences("skillTexts", Context.MODE_PRIVATE);
+        Set<String> skills = Sets.newTreeSet(Arrays.asList(gson.fromJson(myPrefs.getString(key, "[]"), String[].class)));
+        skills.add(skill);
 
-            String persistString = gson.toJson(skills);
-            myPrefs.edit()
+        String persistString = gson.toJson(skills);
+        myPrefs.edit()
                     .putString(key, persistString)
                     .apply();
 
             swUpdatingSharedPrefs.stop();
             Log.d(TAG, "Updating SharedPrefs (adding " + key + "/" + skill + ") in " + swUpdatingSharedPrefs);
-        } else {
-            // War hall artifact => We're here because of a missing enum
+//        } else {
+        // War hall artifact => We're here because of a missing enum
             // Assumption: There is a main hall enum with the same text (or wrong category in a war hall enum). Go, find it and write everything out.
 //            AtomicInteger countWrites = new AtomicInteger(0);
 //            skillLookup.entries().stream()
@@ -297,10 +304,9 @@ public class OcrHelper {
 //            if (countWrites.get() == 0) {
 //                Log.e(TAG, String.format("No writes for %s/%s", cat, skill));
 //            }
-        }
+//        }
 
     }
-
 
     private Category evaluateCategory(List<String> texts) {
         // Possible scenarios: 'text' might be
@@ -342,6 +348,15 @@ public class OcrHelper {
         return bestGuess.second;
     }
 
+    /**
+     * The 'Levenshtein Distance' is the minimal amount of insert/delete/replace operations to transfer
+     * a first string into a second. The fewer operations, the more equal the texts are. Thus being a
+     * good indicator, if two texts are equal besides some typos that occur during OCR.
+     * <p>
+     * Note: That number is always positive.
+     *
+     * @return the levenshtein distance between <i>text1</i> and <i>text2</i>
+     */
     private int applyDiffAndLev(String text1, String text2) {
         return diffMatchPatch.diffLevenshtein(diffMatchPatch.diffMain(text1, text2));
     }
@@ -372,7 +387,6 @@ public class OcrHelper {
 
             String text = texts.get(idx); // Get text
             int idxOfLastLetter = lastLetterIn(text);
-            //  int idxOfLastSpace = text.indexOf(' ', text.length() - 5); // Index of last space (with in the last five characters)
             if (idxOfLastLetter > 0) {
                 text = text.substring(0, idxOfLastLetter + 1); // Cut off chars beginning at last space
             }
@@ -393,9 +407,11 @@ public class OcrHelper {
 
             swFindSkill.stop();
             if (bestGuess.first == 0) {
+                // Perfect match
                 ret.add(bestGuess.second);
                 // No log entry
-            } else if (bestGuess.first < 5) {
+            } else if (bestGuess.first < LEV_OFFSET) {
+                // With lev < LEV_OFFSET, we assume that only some typos have appeared during OCR
                 ret.add(bestGuess.second);
                 Log.d(TAG, String.format("Evaluating skill '%s' (lev = %s, '%s') in %s",
                         text,
@@ -421,6 +437,14 @@ public class OcrHelper {
         return ret;
     }
 
+    /**
+     * Traverses <i>text</i> (backwards) to find the last letter, starting at text.length - 4.
+     * <p>
+     * Why <i>- 4</i>? - The texts end with something like '+1%' (three characters to skip) and
+     * one more to avoid IndexOutOfBounds exception.
+     *
+     * @return index of the last letter in <i>text</i>
+     */
     private int lastLetterIn(String text) {
         for (int i = text.length() - 1 - 3; i >= 0; i--) {
             if (Character.isLetter(text.charAt(i))) {

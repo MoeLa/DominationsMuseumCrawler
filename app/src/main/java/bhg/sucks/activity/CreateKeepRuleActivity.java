@@ -25,14 +25,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import bhg.sucks.R;
 import bhg.sucks.converter.SpinnerConverter;
 import bhg.sucks.dao.KeepRuleDAO;
+import bhg.sucks.databinding.ActivityCreateKeepRuleBinding;
 import bhg.sucks.model.AmountMatches;
 import bhg.sucks.model.Category;
 import bhg.sucks.model.KeepRule;
 import bhg.sucks.model.Skill;
-import bhg.sucks.so.we.need.a.dominationsmuseumcrawler.R;
-import bhg.sucks.so.we.need.a.dominationsmuseumcrawler.databinding.ActivityCreateKeepRuleBinding;
 
 /**
  * Activity to define a new {@link KeepRule} or update an existing one.

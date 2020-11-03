@@ -1,12 +1,29 @@
 <resources>
-    <string name="app_name" translatable="false">Dominations\' Museum Crawler</string>
-    <string name="keep_3_artifacts">Keep 3* artifacts</string>
-    <string name="id">Id</string>
-    <string name="name">Name</string>
-    <string name="category">Category</string>
+    <!-- Untranslatable -->
+    <string name="app_name" translatable="false">DomiNations\' Museum Crawler</string>
+
+    <!-- Common texts within this app -->
+    <string name="add_rule">Add Rule</string>
     <string name="amount_matched">Amount Matches</string>
+    <string name="category">Category</string>
+    <string name="delete_rule">Delete Rule</string>
+    <string name="edit_rule">Edit Rule</string>
+    <string name="exit">Exit</string>
+    <string name="id">Id</string>
+    <string name="keep_3_artifacts">Keep 3* artifacts</string>
+    <string name="name">Name</string>
     <string name="save">Save</string>
     <string name="start_service">Start Service</string>
+    <string name="debug_mode">Debug Mode</string>
+
+    <!-- OCR sensible -->
+    <string name="artifact_benefits">Artifact Benefits</string>
+    <string name="confirm_button_text">Yes</string>
+    <string name="continue_button_text">Continue</string>
+    <string name="five_artifacts_button_text" translatable="false">475</string>
+    <string name="sell_button_prefix">Sell for</string>
+
+    <!-- Entries from spinners -->
     <string-array name="array_categories">
         <item>Weapon</item>
         <item>Armor</item>
@@ -175,13 +192,4 @@
     <string name="AllEnemyDefensiveTowersDamage">All Enemy Defensive Towers Damage</string>
     <string name="AllDefensiveTowersDamage">All Defensive Towers Damage</string>
     <string name="AllDefensiveTowersHitpoints">All Defensive Towers Hitpoints</string>
-
-    <string name="add_rule">Add Rule</string>
-    <string name="edit_rule">Edit Rule</string>
-    <string name="delete_rule">Delete Rule</string>
-    <string name="five_artifacts_button_text" translatable="false">475</string>
-    <string name="artifact_benefits">Artifact Benefits</string>
-    <string name="sell_button_prefix">Sell for</string>
-    <string name="confirm_button_text">Yes</string>
-    <string name="continue_button_text">Continue</string>
 </resources>
