@@ -141,7 +141,10 @@ public class MainActivity extends LocaleAwareCompatActivity implements AdapterVi
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
         Locale lang = SpinnerConverter.toLocale(pos);
-        updateLocale(lang);
+        Locale oldVal = Locale.getDefault();
+        if (!oldVal.equals(lang)) {
+            updateLocale(lang);
+        }
     }
 
     @Override
