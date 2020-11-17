@@ -6,6 +6,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 import bhg.sucks.thread.TappingThread;
 
@@ -58,6 +59,13 @@ public class TapHelper {
      */
     public boolean tapFiveArtifacts() {
         if (!delegate.isRunning()) {
+            return false;
+        }
+
+        Bitmap b = screenshotHelper.takeScreenshot3();
+        Point p = ocrHelper.isFiveArtifactsAvailable(b);
+        if (p == null) {
+            Log.d(TAG, "tapFiveArtifacts > Did not find '475' text");
             return false;
         }
 
@@ -179,6 +187,33 @@ public class TapHelper {
         }
 
         return continueExecutor.execute();
+    }
+
+    /**
+     * @return <i>true</i>, if we could return to the 'five artifacts' screen
+     */
+    public boolean rescueProcess(BooleanSupplier keepArtifact) {
+        for (int i = 0; i < 5; i++) {
+            Bitmap b = screenshotHelper.takeScreenshot3();
+            if (i != 0 && ocrHelper.isFiveArtifactsAvailable(b) != null) {
+                Log.d(TAG, "rescueProcess > Could rescue process with " + i + " actions.");
+                return true;
+            }
+
+            if (ocrHelper.isConfirmAvailable(b) != null) {
+                tapConfirm();
+            } else if (ocrHelper.isContinueAvailable(b) != null) {
+                if (keepArtifact.getAsBoolean()) {
+                    tapContinue();
+                } else {
+                    tapSell();
+                    tapConfirm();
+                }
+            }
+        }
+
+        Log.i(TAG, "rescueProcess > Could not rescue process");
+        return false;
     }
 
 }

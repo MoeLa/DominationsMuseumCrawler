@@ -32,15 +32,20 @@ public class TappingThread extends Thread {
     @Override
     public void run() {
         while (delegate.isRunning()) {
-            tapHelper.tapFiveArtifacts();
+            boolean ok = tapHelper.tapFiveArtifacts();
 
-            for (int i = 0; i <= 4; i++) {
-                if (keepArtifact()) {
-                    tapHelper.tapContinue();
-                } else {
-                    tapHelper.tapSell();
-                    tapHelper.tapConfirm();
+            if (ok) {
+                for (int i = 0; i <= 4; i++) {
+                    if (keepArtifact()) {
+                        tapHelper.tapContinue();
+                    } else {
+                        tapHelper.tapSell();
+                        tapHelper.tapConfirm();
+                    }
                 }
+            } else {
+                boolean success = tapHelper.rescueProcess(() -> keepArtifact());
+                delegate.setRunning(success);
             }
         }
     }
@@ -61,7 +66,7 @@ public class TappingThread extends Thread {
             return false;
         }
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 3; i++) {
             Log.d(TAG, "keepArtifact > Screenshot for converting item");
             Bitmap bitmap = delegate.getScreenshotHelper().takeScreenshot3();
             OcrHelper.Data data = delegate.getOcrHelper().convertItemScreenshot(bitmap);
@@ -70,10 +75,10 @@ public class TappingThread extends Thread {
                 return tappingThreadHelper.keepingBecauseOfLevel(data) || tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
             }
             // else: Loop again
-            Log.d(TAG, "keepArtifact: Second try, neglecting " + data);
+            Log.d(TAG, "keepArtifact: Next try, neglecting " + data);
         }
 
-        Log.d(TAG, "keepArtifact > Exiting after failing converting the screenshot twice");
+        Log.d(TAG, "keepArtifact > Exiting after failing converting the screenshot three times");
         return false;
     }
 
@@ -92,6 +97,8 @@ public class TappingThread extends Thread {
         Point getPoint();
 
         boolean isRunning();
+
+        void setRunning(boolean running);
 
         boolean isKeepThreeStarArtifacts();
 

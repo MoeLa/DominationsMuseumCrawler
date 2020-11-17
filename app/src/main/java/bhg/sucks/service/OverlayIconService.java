@@ -123,6 +123,11 @@ public class OverlayIconService extends Service {
             }
 
             @Override
+            public void setRunning(boolean running) {
+                OverlayIconService.this.running = running;
+            }
+
+            @Override
             public boolean isKeepThreeStarArtifacts() {
                 return sharedPref.getBoolean(getString(R.string.keep_3_artifacts), false);
             }
