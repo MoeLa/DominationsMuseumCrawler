@@ -40,13 +40,13 @@ After having set up the crawler, you start the crafting, put your mobile aside f
 ### How Do Rules Work?
 Each crafted artifact is checked against all rules. If a rule describes the artifact, it is kept. If no rule applies, it is sold.
 The name of a rule is completely irrelevant for the decision to keep/sell an artifact. You should choose a significant and meaningful name to distinguish your rules.
-The category obvious.
+The meaning of 'Category' should be obvious.
 'Amount Matches' determines, how many of the checked skills an artifact must have to be kept. Example: A rule with just Fighter Damage and Fighter Hitpoints checked plus '4 of 5' matches a weapon artifact with each twice those skills and a random fifth one.
 The skills to be checked apply to the selected category.
 
 ### Why Is Root Needed?
 As you might have already noticed, the Museum Crawler simulates real taps. For good (security) reasons, you cannot do that without full control of the device. So you either trust me that the crawler doesn't misuse that power or you should not use this app! Those of you that are more or less fluent in Java, can take a look at the source code.
-Further root is used to take the screenshots during crawling. There might by a way to do this without root privileges, but I was too lazy to check that out and since root is already available... you know ;-)
+Further, root is used to take the screenshots during crawling. There might by a way to do this without root privileges, but I was too lazy to check that out and since root is already available... you know ;-)
 
 ### Why Should I Keep 3* Artifacts?
 I'm always short of Blueprints. To maximize the Blueprints outcome, you should upgrade each of the three skills to level 2 of any artifact before selling it. Thus, I implemented an option to keep those artifacts.
