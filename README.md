@@ -57,6 +57,7 @@ Note: Upgrading and selling of those artifacts is not done by the crawler.
  - If you take too long to grant (or revoke) root when promted, the app might hang up. Just wait for Android to offer you to kill it and take that offer. Then, start the Museum Crawler again.
  - The language of the game and the Museum Crawler must be the same. Otherwise, when starting the crafting, just the '475' fragments button is tapped and the crawler is caught in a loop.
  - In the first loop, some coordinates of buttons are gathered. Don't become impatient. Give the app a couple (like ten) seconds to perform the next tap.
+ - There is no check for enough storage space or fragments. If you run out of either, you should stop the process. Otherwise you risk spending crowns!
 
 ### How To Contribute
 Just file a pull request ;-)
