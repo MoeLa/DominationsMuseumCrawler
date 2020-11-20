@@ -3,4 +3,7 @@
     <option name="processCloseConfirmation" value="TERMINATE" />
     <option name="showTipsOnStartup" value="false" />
   </component>
+  <component name="Registry">
+    <entry key="external.system.auto.import.disabled" value="true" />
+  </component>
 </application>
