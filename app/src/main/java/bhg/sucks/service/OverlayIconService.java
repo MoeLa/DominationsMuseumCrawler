@@ -4,9 +4,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
-import android.graphics.Point;
 import android.os.Build;
 import android.os.IBinder;
 import android.view.GestureDetector;
@@ -42,7 +40,6 @@ public class OverlayIconService extends Service {
     private static final String TAG = "MyService";
 
     private OverlayData overlayData;
-    private ContextUtils ctx;
 
     private boolean running = false;
 
@@ -64,7 +61,7 @@ public class OverlayIconService extends Service {
         this.overlayData = new OverlayData();
         overlayData.init(this);
 
-        this.ctx = ContextUtils.updateLocale(this, Locale.getDefault());
+        ContextUtils ctx = ContextUtils.updateLocale(this, Locale.getDefault());
         this.screenshotHelper = new ScreenshotHelper(this);
         this.ocrHelper = new OcrHelper(ctx);
         this.sharedPref = getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE);
@@ -89,14 +86,6 @@ public class OverlayIconService extends Service {
             return;
         }
 
-        Bitmap b = screenshotHelper.takeScreenshot3();
-
-        Point p = ocrHelper.isFiveArtifactsAvailable(b);
-        if (p == null) {
-            Toast.makeText(this, "Not in 'create artifact' screen", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         this.running = true;
         overlayData.imageIcon.setImageResource(R.mipmap.green_circle);
 
@@ -113,13 +102,13 @@ public class OverlayIconService extends Service {
             }
 
             @Override
-            public Point getPoint() {
-                return p;
+            public boolean isRunning() {
+                return running;
             }
 
             @Override
-            public boolean isRunning() {
-                return running;
+            public void setRunning(boolean running) {
+                OverlayIconService.this.running = running;
             }
 
             @Override

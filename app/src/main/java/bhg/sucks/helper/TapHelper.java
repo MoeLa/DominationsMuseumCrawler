@@ -14,41 +14,24 @@ import bhg.sucks.thread.TappingThread;
  */
 public class TapHelper {
 
-    private final static String hurryAnimationCommand = "input tap 1 1";
+    private final static String hurryAnimationCommand = "input tap 50 50";
     private final static String tapCommand = "input tap %s %s";
     private static final String TAG = "TapHelper";
 
     private final TappingThread.Delegate delegate;
     private final ScreenshotHelper screenshotHelper;
     private final OcrHelper ocrHelper;
-    private final ExecuteAsRootBase fiveArtifactsExecutor;
 
+    private ExecuteAsRootBase fiveArtifactsExecutor;
     private ExecuteAsRootBase sellExecutor;
     private ExecuteAsRootBase confirmExecutor;
     private ExecuteAsRootBase continueExecutor;
+    private ExecuteAsRootBase nopExecutor;
 
     public TapHelper(TappingThread.Delegate delegate) {
         this.delegate = delegate;
         this.screenshotHelper = delegate.getScreenshotHelper();
         this.ocrHelper = delegate.getOcrHelper();
-
-        // Note: Concat command here, because the point might be collected by GC
-        Point p = delegate.getPoint();
-        final String fiveArtifactsCommand = String.format(tapCommand, p.x, p.y);
-
-        this.fiveArtifactsExecutor = new ExecuteAsRootBase() {
-
-            @Override
-            protected List<String> getCommandsToExecute() {
-                List<String> result = new ArrayList<>();
-                result.add(fiveArtifactsCommand);
-                result.add(hurryAnimationCommand);
-                result.add(hurryAnimationCommand);
-                result.add(hurryAnimationCommand);
-                return result;
-            }
-
-        };
     }
 
     /**
@@ -59,6 +42,34 @@ public class TapHelper {
     public boolean tapFiveArtifacts() {
         if (!delegate.isRunning()) {
             return false;
+        }
+
+        if (fiveArtifactsExecutor == null) {
+            Log.d(TAG, "tapFiveArtifacts > Screenshot for calculating bounds");
+            Bitmap b = screenshotHelper.takeScreenshot3();
+            Point p = ocrHelper.isFiveArtifactsAvailable(b);
+            if (p == null) {
+                Log.d(TAG, "tapFiveArtifacts > Did not find '5 Artifacts' text");
+                return false;
+            }
+
+            // Note: Concat command here, because the point might be collected by GC
+            final String fiveArtifactsCommand = String.format(tapCommand, p.x, p.y);
+
+            this.fiveArtifactsExecutor = new ExecuteAsRootBase() {
+
+                @Override
+                protected List<String> getCommandsToExecute() {
+                    List<String> result = new ArrayList<>();
+                    result.add(fiveArtifactsCommand);
+                    result.add(hurryAnimationCommand);
+                    result.add(hurryAnimationCommand);
+                    result.add(hurryAnimationCommand);
+                    result.add(hurryAnimationCommand);
+                    return result;
+                }
+
+            };
         }
 
         return fiveArtifactsExecutor.execute();
@@ -181,4 +192,27 @@ public class TapHelper {
         return continueExecutor.execute();
     }
 
+
+    public boolean tapHurryAnimation() {
+        if (!delegate.isRunning()) {
+            return false;
+        }
+
+        if (nopExecutor == null) {
+            this.nopExecutor = new ExecuteAsRootBase() {
+
+                @Override
+                protected List<String> getCommandsToExecute() {
+                    List<String> result = new ArrayList<>();
+                    result.add(hurryAnimationCommand);
+                    result.add(hurryAnimationCommand);
+                    result.add(hurryAnimationCommand);
+                    return result;
+                }
+
+            };
+        }
+
+        return nopExecutor.execute();
+    }
 }

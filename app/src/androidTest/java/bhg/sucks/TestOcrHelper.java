@@ -16,7 +16,6 @@ import java.util.List;
 import bhg.sucks.helper.OcrHelper;
 import bhg.sucks.model.Category;
 import bhg.sucks.model.Skill;
-import bhg.sucks.so.we.need.a.dominationsmuseumcrawler.R;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -92,6 +91,65 @@ public class TestOcrHelper {
                 .build();
 
         assertThat(data, equalTo(expected));
+    }
+
+    @Test
+    public void testConvertScreenshot4() {
+        Bitmap b = bitmapFrom(R.drawable.screenshot4);
+        assertNotNull("Bitmap shall not be null", b);
+
+        OcrHelper.Data data = ocrHelper.convertItemScreenshot(b);
+
+        OcrHelper.Data expected = OcrHelper.Data.builder()
+                .category(Category.WarWeapon)
+                .skills(List.of(Skill.WarAttackHelicoptersDamage, Skill.WarInvadingTacticalHelicopterHitpoints, Skill.WarInvadingAttackHelicoptersHitpoints, Skill.WarAPCDamage, Skill.WarInvadingTacticalHelicopterHitpoints))
+                .level(3)
+                .build();
+
+        assertThat(data, equalTo(expected));
+    }
+
+    @Test
+    public void testConvertScreenshot5() {
+        Bitmap b = bitmapFrom(R.drawable.screenshot5);
+        assertNotNull("Bitmap shall not be null", b);
+
+        OcrHelper.Data data = ocrHelper.convertItemScreenshot(b);
+
+        OcrHelper.Data expected = OcrHelper.Data.builder()
+                .category(Category.WarEquipment)
+                .skills(List.of(Skill.WarAllEnemyDefensiveTowersHitpoints, Skill.WarEnemyMissileSiloDamage, Skill.WarAllDefensiveTowersHitpoints, Skill.WarEnemyRedoubtDamage, Skill.WarAllEnemyDefensiveTowersHitpoints))
+                .level(2)
+                .build();
+
+        assertThat(data, equalTo(expected));
+    }
+
+    @Test
+    public void testAnalyseScreenshot_CraftAnimation() {
+        Bitmap b = bitmapFrom(R.drawable.screenshot_no_buttons);
+        assertNotNull("Bitmap shall not be null", b);
+
+        OcrHelper.AnalysisResult ar = ocrHelper.analyseScreenshot(b);
+        assertThat(ar.getScreen(), equalTo(OcrHelper.Screen.ARTIFACT_CRAFT_ANIMATION));
+    }
+
+    @Test
+    public void testAnalyseScreenshot_ConfirmButton() {
+        Bitmap b = bitmapFrom(R.drawable.screenshot_confirm_button);
+        assertNotNull("Bitmap shall not be null", b);
+
+        OcrHelper.AnalysisResult ar = ocrHelper.analyseScreenshot(b);
+        assertThat(ar.getScreen(), equalTo(OcrHelper.Screen.ARTIFACT_DESTROY_DIALOG));
+    }
+
+    @Test
+    public void testAnalyseScreenshot_FullyLoaded() {
+        Bitmap b = bitmapFrom(R.drawable.screenshot_fully_loaded);
+        assertNotNull("Bitmap shall not be null", b);
+
+        OcrHelper.AnalysisResult ar = ocrHelper.analyseScreenshot(b);
+        assertThat(ar.getScreen(), equalTo(OcrHelper.Screen.ARTIFACT_FULLY_LOADED));
     }
 
     private Bitmap bitmapFrom(int redId) {
