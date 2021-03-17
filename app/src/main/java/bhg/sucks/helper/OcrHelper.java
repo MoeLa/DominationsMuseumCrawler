@@ -61,7 +61,7 @@ public class OcrHelper {
     private final DiffMatchPatch diffMatchPatch;
     private final Gson gson;
     private final Map<String, Category> categoryLookup;
-    private Multimap<Category, Skill> skillLookup;
+    private final Multimap<Category, Skill> skillLookup;
 
     public OcrHelper(Context context) {
         this.context = context;
@@ -76,7 +76,7 @@ public class OcrHelper {
         }
 
         this.artifactBenefits = context.getString(R.string.artifact_benefits);
-        this.fiveArtifactsButtonText = context.getString(R.string.five_artifacts_button_text);
+        this.fiveArtifactsButtonText = context.getString(R.string.five_artifacts_button_text); // oder 450 oder 425
         this.sellButtonPrefix = context.getString(R.string.sell_button_prefix);
         this.confirmButtonText = context.getString(R.string.confirm_button_text);
         this.continueButtonText = context.getString(R.string.continue_button_text);
@@ -97,7 +97,16 @@ public class OcrHelper {
                 .setBitmap(bitmap)
                 .build();
         SparseArray<TextBlock> textBlocks = textRecognizer.detect(frame);
+        return isFiveArtifactsAvailable(textBlocks);
+    }
 
+    /**
+     * Tests, if the '5 Artifacts' button is visible.
+     *
+     * @param textBlocks Detected text blocks
+     * @return A {@link Point} to click the button or <i>null</i>, if not found.
+     */
+    public Point isFiveArtifactsAvailable(SparseArray<TextBlock> textBlocks) {
         for (int i = 0; i < textBlocks.size(); i++) {
             TextBlock textBlock = textBlocks.valueAt(i);
 
@@ -124,7 +133,16 @@ public class OcrHelper {
                 .setBitmap(bitmap)
                 .build();
         SparseArray<TextBlock> textBlocks = textRecognizer.detect(frame);
+        return isSellAvailable(textBlocks);
+    }
 
+    /**
+     * Tests, if the 'sell' button is visible.
+     *
+     * @param textBlocks Detected text blocks
+     * @return A {@link Point} to click 'sell' or <i>null</i>, if not found.
+     */
+    public Point isSellAvailable(SparseArray<TextBlock> textBlocks) {
         for (int i = 0; i < textBlocks.size(); i++) {
             TextBlock textBlock = textBlocks.valueAt(i);
 
@@ -151,7 +169,16 @@ public class OcrHelper {
                 .setBitmap(bitmap)
                 .build();
         SparseArray<TextBlock> textBlocks = textRecognizer.detect(frame);
+        return isConfirmAvailable(textBlocks);
+    }
 
+    /**
+     * Tests, if the 'Confirm' button is visible.
+     *
+     * @param textBlocks Detected text blocks
+     * @return A {@link Point} to click the button or <i>null</i>, if not found.
+     */
+    public Point isConfirmAvailable(SparseArray<TextBlock> textBlocks) {
         for (int i = 0; i < textBlocks.size(); i++) {
             TextBlock textBlock = textBlocks.valueAt(i);
 
@@ -178,7 +205,16 @@ public class OcrHelper {
                 .setBitmap(bitmap)
                 .build();
         SparseArray<TextBlock> textBlocks = textRecognizer.detect(frame);
+        return isContinueAvailable(textBlocks);
+    }
 
+    /**
+     * Tests, if the 'Continue' button is visible.
+     *
+     * @param textBlocks Detected text blocks
+     * @return A {@link Point} to click the button or <i>null</i>, if not found.
+     */
+    public Point isContinueAvailable(SparseArray<TextBlock> textBlocks) {
         for (int i = 0; i < textBlocks.size(); i++) {
             TextBlock textBlock = textBlocks.valueAt(i);
 
@@ -206,16 +242,20 @@ public class OcrHelper {
                 .setBitmap(bitmap)
                 .build();
         SparseArray<TextBlock> textBlocks = textRecognizer.detect(frame); // Duration about 1.4s (emulator) and 220ms (OnePlus 5T)
+        swDetectImage.stop();
+        Log.d(TAG, "Detecting image in " + swDetectImage);
+        return convertItemScreenshot(textBlocks);
+    }
+
+    public Data convertItemScreenshot(SparseArray<TextBlock> textBlocks) {
         final List<String> texts = Lists.newArrayList();
         for (int i = 0; i < textBlocks.size(); i++) {
             texts.add(textBlocks.valueAt(i).getValue());
         }
-        swDetectImage.stop();
-        Log.d(TAG, "Detecting image in " + swDetectImage);
 
         Stopwatch swParsingTextBlocks = Stopwatch.createStarted();
 
-        Category category = evaluateCategory(texts);
+        Category category = evaluateCategory(texts).second;
         List<Skill> skills = evaluateSkills(texts, category);
         int level = evaluateLevel(texts);
         Data ret = Data.builder()
@@ -260,14 +300,14 @@ public class OcrHelper {
 
         String persistString = gson.toJson(skills);
         myPrefs.edit()
-                    .putString(key, persistString)
-                    .apply();
+                .putString(key, persistString)
+                .apply();
 
-            swUpdatingSharedPrefs.stop();
-            Log.d(TAG, "Updating SharedPrefs (adding " + key + "/" + skill + ") in " + swUpdatingSharedPrefs);
+        swUpdatingSharedPrefs.stop();
+        Log.d(TAG, "Updating SharedPrefs (adding " + key + "/" + skill + ") in " + swUpdatingSharedPrefs);
 //        } else {
         // War hall artifact => We're here because of a missing enum
-            // Assumption: There is a main hall enum with the same text (or wrong category in a war hall enum). Go, find it and write everything out.
+        // Assumption: There is a main hall enum with the same text (or wrong category in a war hall enum). Go, find it and write everything out.
 //            AtomicInteger countWrites = new AtomicInteger(0);
 //            skillLookup.entries().stream()
 //                    .filter(e -> e.getKey().ordinal() <= 3) // Only keep main hall categories
@@ -308,7 +348,7 @@ public class OcrHelper {
 
     }
 
-    private Category evaluateCategory(List<String> texts) {
+    private Pair<Integer, Category> evaluateCategory(List<String> texts) {
         // Possible scenarios: 'text' might be
         // 1. the name of the item + '\n' + the category
         // 2. the category alone
@@ -334,7 +374,7 @@ public class OcrHelper {
                     swEvaluateCategory.stop();
                     Log.d(TAG, "Evaluating category (perfect match) in " + swEvaluateCategory);
 
-                    return e.getValue();
+                    return Pair.create(0, e.getValue());
                 }
 
                 if (bestGuess.first > lev) {
@@ -345,7 +385,7 @@ public class OcrHelper {
 
         swEvaluateCategory.stop();
         Log.d(TAG, "Evaluating category (lev=" + bestGuess.first + ", " + bestGuess.second.getText(context) + ") in " + swEvaluateCategory);
-        return bestGuess.second;
+        return bestGuess;
     }
 
     /**
@@ -475,20 +515,78 @@ public class OcrHelper {
             return LEVEL_COULD_NOT_BE_DETERMINED;
         }
 
-        if (sellForText.contains("25")) {
+        if (sellForText.contains("25\n") || sellForText.contains("26\n") || sellForText.contains("27\n") || sellForText.contains("+30\n")) { // oder 26, 27, 30
             return 1;
         }
 
-        if (sellForText.contains("90")) {
+        if (sellForText.contains("90\n") || sellForText.contains("94\n") || sellForText.contains("99\n") || sellForText.contains("108\n")) { // oder 94, 99, 108
             return 2;
         }
 
-        if (sellForText.contains("300")) {
+        if (sellForText.contains("300\n") || sellForText.contains("315\n") || sellForText.contains("330\n") || sellForText.contains("360\n")) { // oder 315, 330, 360
             return 3;
         }
 
         return LEVEL_COULD_NOT_BE_DETERMINED;
     }
+
+    public AnalysisResult analyseScreenshot(Bitmap bitmap) {
+        Frame frame = new Frame.Builder()
+                .setBitmap(bitmap)
+                .build();
+        SparseArray<TextBlock> textBlocks = textRecognizer.detect(frame);
+
+        Screen s;
+        if (isConfirmAvailable(textBlocks) != null) {
+            // That dialog to confirm selling an artifact is open
+            s = Screen.ARTIFACT_DESTROY_DIALOG;
+        } else if (isContinueAvailable(textBlocks) != null) {
+            // The continue button is visible => Next step would be to sell/continue
+            s = Screen.ARTIFACT_FULLY_LOADED;
+        } else {
+            final List<String> texts = Lists.newArrayList();
+            for (int i = 0; i < textBlocks.size(); i++) {
+                texts.add(textBlocks.valueAt(i).getValue());
+            }
+
+            Pair<Integer, Category> pair = evaluateCategory(texts);
+            if (pair.first < 4) {
+                // lev is good enough to assume, we're during a crafting animation
+                s = Screen.ARTIFACT_CRAFT_ANIMATION;
+            } else if (isFiveArtifactsAvailable(textBlocks) != null) {
+                // '5 Artifacts' button is visible => Assume that we're at crafting home
+                s = Screen.ARTIFACT_CRAFTING_HOME;
+            } else {
+                // lev is too bad to assume, that we're during a crafting animation (where the category is already visible)
+                s = Screen.COULD_NOT_DETERMINE;
+            }
+        }
+
+        return AnalysisResult.builder()
+                .screen(s)
+                .textBlocks(textBlocks)
+                .build();
+    }
+
+    public enum Screen {
+
+        ARTIFACT_CRAFTING_HOME,
+        ARTIFACT_CRAFT_ANIMATION,
+        ARTIFACT_FULLY_LOADED,
+        ARTIFACT_DESTROY_DIALOG,
+        COULD_NOT_DETERMINE
+
+    }
+
+    @Getter
+    @Builder
+    public static class AnalysisResult {
+
+        private final Screen screen;
+        private final SparseArray<TextBlock> textBlocks;
+
+    }
+
 
     @Getter
     @Setter
