@@ -1,5 +1,9 @@
 <keymap version="1" name="Eclipse copy" parent="Eclipse">
   <action id="ChooseNextSubsequentPropertyValueEditorAction" />
+  <action id="CloseActiveTab" />
+  <action id="CloseEditor">
+    <keyboard-shortcut first-keystroke="ctrl w" />
+  </action>
   <action id="CommentByLineComment">
     <keyboard-shortcut first-keystroke="ctrl slash" />
     <keyboard-shortcut first-keystroke="ctrl divide" />
