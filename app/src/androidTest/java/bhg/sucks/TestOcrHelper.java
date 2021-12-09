@@ -1,5 +1,10 @@
 package bhg.sucks;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,11 +21,6 @@ import java.util.List;
 import bhg.sucks.helper.OcrHelper;
 import bhg.sucks.model.Category;
 import bhg.sucks.model.Skill;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -150,6 +150,16 @@ public class TestOcrHelper {
 
         OcrHelper.AnalysisResult ar = ocrHelper.analyseScreenshot(b);
         assertThat(ar.getScreen(), equalTo(OcrHelper.Screen.ARTIFACT_FULLY_LOADED));
+    }
+
+    @Test
+    public void testBlubb() {
+        Bitmap b = bitmapFrom(R.drawable.test2);
+        assertNotNull("Bitmap shall not be null", b);
+
+        OcrHelper.Data d = ocrHelper.convertItemScreenshot(b);
+        System.out.println("Blubb");
+
     }
 
     private Bitmap bitmapFrom(int redId) {

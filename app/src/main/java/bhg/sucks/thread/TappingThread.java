@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.util.Log;
 import android.util.SparseArray;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.google.android.gms.vision.text.TextBlock;
 
 import java.util.List;
@@ -83,7 +85,8 @@ public class TappingThread extends Thread {
     /**
      * @return <i>true</i>, if the artifact should be kept meaning the 'continue' button should be tapped
      */
-    private boolean keepArtifact(SparseArray<TextBlock> textBlocks) {
+    @VisibleForTesting
+    public boolean keepArtifact(SparseArray<TextBlock> textBlocks) {
         if (!delegate.isRunning()) {
             // Quick exit, when user stopped crawling
             return true;
@@ -99,7 +102,8 @@ public class TappingThread extends Thread {
         // First try with detected text blocks from parameter
         OcrHelper.Data data = delegate.getOcrHelper().convertItemScreenshot(textBlocks);
         if (data.isComplete()) {
-            return tappingThreadHelper.keepingBecauseOfLevel(data) || tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
+            return (tappingThreadHelper.keepingBecauseOfLevel(data) && delegate.isKeepThreeStarArtifacts()) ||
+                    tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
         }
 
         // Some more tries with new screenshots, since animation might have blocked some text
@@ -109,7 +113,8 @@ public class TappingThread extends Thread {
             data = delegate.getOcrHelper().convertItemScreenshot(bitmap);
 
             if (data.isComplete()) {
-                return tappingThreadHelper.keepingBecauseOfLevel(data) || tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
+                return (tappingThreadHelper.keepingBecauseOfLevel(data) && delegate.isKeepThreeStarArtifacts()) ||
+                        tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
             }
             // else: Loop again
             Log.d(TAG, "keepArtifact: Next try, neglecting " + data);
