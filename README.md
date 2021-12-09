@@ -58,6 +58,8 @@ Note: Upgrading and selling of those artifacts is not done by the crawler.
  - The language of the game and the Museum Crawler must be the same. Otherwise, when starting the crafting, just the '475' fragments button is tapped and the crawler is caught in a loop.
  - In the first loop, some coordinates of buttons are gathered. Don't become impatient. Give the app a couple (like ten) seconds to perform the next tap.
  - There is no check for enough storage space or fragments. If you run out of either, you should stop the process. Otherwise you risk spending crowns!
+ - One of the later DomiNation versions introduced more shelves in the library allowing to lower the crafting costs once a day. That change is **not** yet considered, meaning: If the button to start crafting shows less than 475 fragments, tap it manually and start the bot afterwards.
+ - The screen is captured and parsed several times. If the amount exceeds 4, the bot stops and the icon turns orange. Just tap it once to continue, when you think it could.
 
 ### How To Contribute
 Just file a pull request ;-)
