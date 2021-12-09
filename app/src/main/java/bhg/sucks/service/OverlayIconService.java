@@ -109,6 +109,12 @@ public class OverlayIconService extends Service {
             @Override
             public void setRunning(boolean running) {
                 OverlayIconService.this.running = running;
+
+                if (!running) {
+                    overlayData.imageIcon.post(() -> {
+                        overlayData.imageIcon.setImageResource(R.mipmap.orange_circle);
+                    });
+                }
             }
 
             @Override
@@ -149,8 +155,7 @@ public class OverlayIconService extends Service {
         private void init(OverlayIconService s) {
             this.s = s;
 
-
-            imageIcon = new ImageView(s);
+            this.imageIcon = new ImageView(s);
             imageIcon.setImageResource(R.mipmap.red_circle);
             imageIcon.setOnTouchListener((view, motionEvent) -> gestureDetector.onTouchEvent(motionEvent));
             this.gestureDetector = new GestureDetectorCompat(imageIcon.getContext(), this);
