@@ -1,10 +1,10 @@
 <application>
   <component name="CodeInsightSettings">
     <option name="AUTO_POPUP_JAVADOC_INFO" value="true" />
+    <option name="JAVADOC_INFO_DELAY" value="500" />
   </component>
   <component name="EditorSettings">
     <option name="USE_SOFT_WRAPS" value="" />
     <option name="SOFT_WRAP_FILE_MASKS" value="*.md; *.txt; *.rst; *.adoc" />
-    <option name="SHOW_QUICK_DOC_ON_MOUSE_OVER_ELEMENT" value="true" />
   </component>
 </application>
