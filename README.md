@@ -8,7 +8,8 @@ Are you collecting more and more Mysterious Fragments? Are you too lazy to spend
 
 ### Prerequisites
  - An Android device <ins>with Root</ins>
- - Download this app: [app-debug.apk](https://github.com/MoeLa/DominationsMuseumCrawler/raw/master/app/build/outputs/apk/debug/app-debug.apk)
+ - Download and install:
+ [![](https://img.shields.io/badge/Dominations%20Museum%20Crawler-v1.0.1-blue)](https://github.com/MoeLa/DominationsMuseumCrawler/releases/download/1.0.1/app-debug.apk)
 
 ### How Does The Museum Crawler Work?
 The crawler automates the hard and repetitive work of tapping 'craft 5 artifacts' > hurring the animation > decide to keep/sell the item > repeat four times > start all over again.
@@ -17,19 +18,19 @@ After having set up the crawler, you start the crafting, put your mobile aside f
 
 ### First Steps
  1. Install the .apk. Note: You'll be asked to trust this app from an unknown source.
- 2. Start the app. You'll be asked to grant root privileges. Note: Without root permissions, this app is completely useless and you can directly uninstall it. See [Why Is Root Needed](#why-is-root-needed), if you're unsure about that topic.
+ 2. Start the app. You'll be asked to grant root privileges. Note: Without root permissions, this app is completely useless and you can directly uninstall it. See [Why Is Root Needed](#why-is-root-needed), if you're unsure about that topic. Further, please ensure, that there is no toast or any other visual notification, each time a root action is performed.
  3. Check/note the language of Museum Crawler on the top right corner.
- 4. Tap the START SERVICE button -> You will be asked to allow drawing of overlays. Of course, that permission is needed as well.
- 5. Enable that permission and return by tapping BACK -> A red circle shall appear on the top left of the screen. Note: You can drag that icon to a different position, if desired.
- 6. Open Dominations. Ensure, that Dominations runs on the same language as the Museum Crawler. If not, change one's language.
- 7.  Switch into the Museum's Artifact Crafting screen. You should now see the button to start crafting five artifacts for 475 fragments and of course our red overlay icon.
+ 4. Tap the START SERVICE button -> You will be asked to allow drawing of overlays. Of course, that permission is needed, too.
+ 5. Enable that permission and return by tapping BACK -> A red circle shall appear on the top left of the screen. Note: You can drag that icon to a different position, if desired, but it must not hide anything important for crafting Artifacts..
+ 6. Open Dominations. Ensure, that Dominations runs on the same language as the Museum Crawler. If not, change either's language.
+ 7.  Switch into the Museum's Artifact Crafting screen. You should now see the button to start crafting five artifacts for 475 fragments and of course our red overlay icon. Note: If the first craft is cheaper (since you've researched that skill in the Library), you have to tap that button manually before continuing to the next step.
  8. Tap the red overlay icon. It should turn green and start crafting. Every item is sold directly. After the five items, 475 fragments are spent again to craft another round of artifacts.
  9. Stop the process any time by pressing the green overlay icon. It should turn back to red.
 
 ### Second steps
 
  1. Long-tap the red overlay icon. The Museum Crawler opens and the icon disappears.
- 2. If you're Space Age (or higher) and have researched Archaeology level 5 in the Library, you should [enable 'Keep 3* artifacts'](#why-should-i-keep-3-artifacts).
+ 2. If you're in Space Age (or higher) and have researched Archaeology level 5 in the Library, you should [enable 'Keep 3* artifacts'](#why-should-i-keep-3-artifacts).
  3. Tap the ADD RULE button
  4. Provide a signifant name, select a category, select '1 of 5' amount of matches, and check some skills. Tipp: For testing purposes, you should check quite a lot skills.
  5. Tap the SAVE button. The rule appears in the list below the ADD RULE button.
@@ -59,7 +60,7 @@ Note: Upgrading and selling of those artifacts is not done by the crawler.
  - In the first loop, some coordinates of buttons are gathered. Don't become impatient. Give the app a couple (like ten) seconds to perform the next tap.
  - There is no check for enough storage space or fragments. If you run out of either, you should stop the process. Otherwise you risk spending crowns!
  - One of the later DomiNation versions introduced more shelves in the library allowing to lower the crafting costs once a day. That change is **not** yet considered, meaning: If the button to start crafting shows less than 475 fragments, tap it manually and start the bot afterwards.
- - The screen is captured and parsed several times. If the amount exceeds 4, the bot stops and the icon turns orange. Just tap it once to continue, when you think it could.
+ - The screen is captured and parsed several times to determine the next step/tap. If the amount exceeds 4 and a decision could not be made, the bot stops and the icon turns orange. Just tap it once to continue, when you think it could.
 
 ### How To Contribute
 Just file a pull request ;-)
