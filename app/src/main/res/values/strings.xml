@@ -192,4 +192,6 @@
     <string name="AllEnemyDefensiveTowersDamage">All Enemy Defensive Towers Damage</string>
     <string name="AllDefensiveTowersDamage">All Defensive Towers Damage</string>
     <string name="AllDefensiveTowersHitpoints">All Defensive Towers Hitpoints</string>
+    <string name="mandatory_skills">Mandatory Skills</string>
+    <string name="optional_skills">Optional Skills</string>
 </resources>

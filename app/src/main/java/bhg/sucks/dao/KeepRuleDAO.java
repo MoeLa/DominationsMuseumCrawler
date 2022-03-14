@@ -70,6 +70,8 @@ public class KeepRuleDAO {
         item.setCategory(keepRule.getCategory());
         item.setAmountMatches(keepRule.getAmountMatches());
         item.setSkills(keepRule.getSkills());
+        item.setMandatorySkills(keepRule.getMandatorySkills());
+        item.setOptionalSkills(keepRule.getOptionalSkills());
 
         sharedPrefs.edit()
                 .putString(KEY, gson.toJson(keepRules))
