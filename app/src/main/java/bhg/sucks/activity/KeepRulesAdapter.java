@@ -4,11 +4,12 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import net.steamcrafted.materialiconlib.MaterialIconView;
 
 import java.util.List;
 
@@ -52,10 +53,10 @@ public class KeepRulesAdapter extends RecyclerView.Adapter<KeepRulesAdapter.View
         TextView categoryView = holder.categoryView;
         categoryView.setText(keepRule.getCategory().getText(context));
 
-        ImageButton editView = holder.editView;
+        MaterialIconView editView = holder.editView;
         editView.setTag(keepRule.getId());
 
-        ImageButton deleteView = holder.deleteView;
+        MaterialIconView deleteView = holder.deleteView;
         deleteView.setTag(keepRule.getId());
     }
 
@@ -69,8 +70,8 @@ public class KeepRulesAdapter extends RecyclerView.Adapter<KeepRulesAdapter.View
         public TextView nameView;
         public TextView amountMatchesView;
         public TextView categoryView;
-        public ImageButton editView;
-        public ImageButton deleteView;
+        public MaterialIconView editView;
+        public MaterialIconView deleteView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

@@ -12,15 +12,17 @@ import android.graphics.BitmapFactory;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.google.common.collect.Lists;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
-import java.util.Set;
 
 import bhg.sucks.helper.OcrHelper;
 import bhg.sucks.helper.ScreenshotHelper;
+import bhg.sucks.helper.UIHelper;
 import bhg.sucks.model.AmountMatches;
 import bhg.sucks.model.KeepRule;
 import bhg.sucks.thread.TappingThread;
@@ -104,8 +106,9 @@ public class TestTappingThread {
 
             @Override
             public List<KeepRule> getKeepRules() {
-                return List.of(KeepRule.builder()
-                        .skills(Set.of())
+                return Lists.newArrayList(KeepRule.builder()
+                        .mandatorySkills(UIHelper.createEmptySkillsMap())
+                        .optionalSkills(UIHelper.createEmptySkillsMap())
                         .amountMatches(AmountMatches.FIVE_OF_FIVE)
                         .build());
             }

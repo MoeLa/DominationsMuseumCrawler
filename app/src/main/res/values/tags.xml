@@ -1,0 +1,4 @@
+<resources>
+    <item name="TAG_SKILL_DELETE_BUTTON_KEY" type="id" />
+    <item name="TAG_SKILL_DELETE_BUTTON_SKILL" type="id" />
+</resources>
