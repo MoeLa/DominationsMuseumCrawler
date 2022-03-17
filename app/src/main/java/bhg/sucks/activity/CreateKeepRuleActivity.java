@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.CheckBox;
 import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,11 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +30,7 @@ import bhg.sucks.R;
 import bhg.sucks.converter.SpinnerConverter;
 import bhg.sucks.dao.KeepRuleDAO;
 import bhg.sucks.databinding.ActivityCreateKeepRuleBinding;
+import bhg.sucks.helper.UIHelper;
 import bhg.sucks.model.AmountMatches;
 import bhg.sucks.model.Category;
 import bhg.sucks.model.KeepRule;
@@ -48,13 +45,8 @@ public class CreateKeepRuleActivity extends AppCompatActivity implements Adapter
     private final Comparator<Skill> SKILL_COMPARATOR = Comparator.comparing(s -> getString(s.getResId()));
 
     private Map<Category, List<Skill>> skillsLookup;
-    /**
-     * Skills displayed in rvSelectedSkills (old)
-     */
-    private List<Skill> skills;
     private KeepRuleDAO dao;
     private KeepRule keepRule;
-    private SelectSkillsAdapter rvAdapter;
     private SkillsAdapter rvMandatorySkillsAdapter;
     private SkillsAdapter rvOptionalSkillsAdapter;
 
@@ -82,9 +74,8 @@ public class CreateKeepRuleActivity extends AppCompatActivity implements Adapter
                         .name("NewName")
                         .category(Category.Weapon)
                         .amountMatches(AmountMatches.FOUR_OF_FIVE)
-                        .skills(Sets.newHashSet())
-                        .mandatorySkills(createEmptySkillsMap())
-                        .optionalSkills(createEmptySkillsMap())
+                        .mandatorySkills(UIHelper.createEmptySkillsMap())
+                        .optionalSkills(UIHelper.createEmptySkillsMap())
                         .build());
 
         ActivityCreateKeepRuleBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_create_keep_rule);
@@ -94,13 +85,7 @@ public class CreateKeepRuleActivity extends AppCompatActivity implements Adapter
         categorySpinner.setSelection(SpinnerConverter.toInt(keepRule.getCategory()));
         categorySpinner.setOnItemSelectedListener(this);
 
-        // Initializing the recycler view must happen after initializing data binding
-        final RecyclerView rvSelectedSkills = findViewById(R.id.rvSelectedSkills);
-        this.skills = getSkillsFromLookupFor(keepRule.getCategory());
-        this.rvAdapter = new SelectSkillsAdapter(skills, keepRule);
-        rvSelectedSkills.setAdapter(rvAdapter);
-        rvSelectedSkills.setLayoutManager(new LinearLayoutManager(this));
-
+        // Initializing the recycler views must happen after initializing data binding
         final RecyclerView rvMandatorySkills = findViewById(R.id.rvMandatorySkills);
         rvMandatorySkills.setLayoutManager(new LinearLayoutManager(this));
         this.rvMandatorySkillsAdapter = new SkillsAdapter(keepRule, SkillsAdapter.SkillsAdapterKey.MANDATORY);
@@ -112,27 +97,8 @@ public class CreateKeepRuleActivity extends AppCompatActivity implements Adapter
         rvOptionalSkills.setAdapter(rvOptionalSkillsAdapter);
     }
 
-    private Map<Category, List<Skill>> createEmptySkillsMap() {
-        Map<Category, List<Skill>> result = new HashMap<>();
-        for (Category c : Category.values()) {
-            result.put(c, new ArrayList<>());
-        }
-
-        return result;
-    }
-
-    public void onCheckboxClicked(View view) {
-        CheckBox cb = (CheckBox) view;
-        Skill s = Skill.values()[(int) cb.getTag()];
-        if (cb.isChecked()) {
-            keepRule.getSkills().add(s);
-        } else {
-            keepRule.getSkills().remove(s);
-        }
-    }
-
     public void onAddMandatorySkillClicked(View view) {
-        List<Skill> mandatorySkills = keepRule.getMandatorySkills().get(keepRule.getCategory());
+        List<Skill> mandatorySkills = keepRule.getMandatorySkillsOfCategory();
 
         final Long maxCount = 2L; // How often may a skill be picked
         Set<Skill> doNotShowLookup = mandatorySkills.stream()
@@ -169,7 +135,7 @@ public class CreateKeepRuleActivity extends AppCompatActivity implements Adapter
     }
 
     public void onAddOptionalSkillClicked(View view) {
-        List<Skill> optionalSkills = keepRule.getOptionalSkills().get(keepRule.getCategory());
+        List<Skill> optionalSkills = keepRule.getOptionalSkillsOfCategory();
 
         Set<Skill> doNotShowLookup = new HashSet<>(optionalSkills);
 
@@ -204,28 +170,26 @@ public class CreateKeepRuleActivity extends AppCompatActivity implements Adapter
         Skill skill = (Skill) view.getTag(R.id.TAG_SKILL_DELETE_BUTTON_SKILL);
 
         switch (key) {
-            case MANDATORY:
-                Optional.ofNullable(
-                        keepRule.getMandatorySkills().get(keepRule.getCategory()))
-                        .ifPresent(skills -> {
-                            int idx = skills.indexOf(skill);
-                            if (idx >= 0) {
-                                skills.remove(idx);
-                                rvMandatorySkillsAdapter.notifyItemRemoved(idx);
-                            }
-                        });
+            case MANDATORY: {
+                List<Skill> skills = keepRule.getMandatorySkillsOfCategory();
+
+                int idx = skills.indexOf(skill);
+                if (idx >= 0) {
+                    skills.remove(idx);
+                    rvMandatorySkillsAdapter.notifyItemRemoved(idx);
+                }
                 break;
-            case OPTIONAL:
-                Optional.ofNullable(
-                        keepRule.getOptionalSkills().get(keepRule.getCategory()))
-                        .ifPresent(skills -> {
-                            int idx = skills.indexOf(skill);
-                            if (idx >= 0) {
-                                skills.remove(idx);
-                                rvOptionalSkillsAdapter.notifyItemRemoved(idx);
-                            }
-                        });
+            }
+            case OPTIONAL: {
+                List<Skill> skills = keepRule.getOptionalSkillsOfCategory();
+
+                int idx = skills.indexOf(skill);
+                if (idx >= 0) {
+                    skills.remove(idx);
+                    rvOptionalSkillsAdapter.notifyItemRemoved(idx);
+                }
                 break;
+            }
             default:
         }
     }
@@ -260,25 +224,19 @@ public class CreateKeepRuleActivity extends AppCompatActivity implements Adapter
         Category oldCategory = keepRule.getCategory();
         Category newCategory = SpinnerConverter.toCategory(position);
 
-        keepRule.setCategory(newCategory);
+        int amountOldMandatorySkills = keepRule.getMandatorySkillsOfCategory().size();
+        int amountOldOptionalSkills = keepRule.getOptionalSkillsOfCategory().size();
 
-        // Reset skills shown to skills of picked category
-        int amountSkills = skills.size();
-        skills.clear();
-        rvAdapter.notifyItemRangeRemoved(0, amountSkills);
-        skills.addAll(getSkillsFromLookupFor(newCategory));
-        rvAdapter.notifyItemRangeInserted(0, skills.size());
+        keepRule.setCategory(newCategory); // Setting new category in keep rule
 
         // Reset mandatory skills
-        int amountOldMandatorySkills = keepRule.getMandatorySkills().get(oldCategory).size();
         rvMandatorySkillsAdapter.notifyItemRangeRemoved(0, amountOldMandatorySkills);
-        int amountNewMandatorySkills = keepRule.getMandatorySkills().get(newCategory).size();
+        int amountNewMandatorySkills = keepRule.getMandatorySkillsOfCategory().size();
         rvMandatorySkillsAdapter.notifyItemRangeInserted(0, amountNewMandatorySkills);
 
         // Reset optional skills
-        int amountOldOptionalSkills = keepRule.getOptionalSkills().get(oldCategory).size();
         rvOptionalSkillsAdapter.notifyItemRangeRemoved(0, amountOldOptionalSkills);
-        int amountNewOptionalSkills = keepRule.getOptionalSkills().get(newCategory).size();
+        int amountNewOptionalSkills = keepRule.getOptionalSkillsOfCategory().size();
         rvOptionalSkillsAdapter.notifyItemRangeInserted(0, amountNewOptionalSkills);
     }
 

@@ -194,4 +194,6 @@
     <string name="AllDefensiveTowersHitpoints">All Defensive Towers Hitpoints</string>
     <string name="mandatory_skills">Mandatory Skills</string>
     <string name="optional_skills">Optional Skills</string>
+    <string name="add_mandatory_skill">Add mandatory skill</string>
+    <string name="add_optional_skill">Add optional skill</string>
 </resources>

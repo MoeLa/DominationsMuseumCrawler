@@ -4,6 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/layout/activity_create_keep_rule.xml" value="0.264" />
+        <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/layout/activity_main.xml" value="0.4" />
+        <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/layout/item_keep_rule.xml" value="0.4" />
         <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/layout/item_mandatory_skill.xml" value="0.536" />
         <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/layout/item_select_skill.xml" value="0.23981481481481481" />
         <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/layout/item_skill.xml" value="0.6" />

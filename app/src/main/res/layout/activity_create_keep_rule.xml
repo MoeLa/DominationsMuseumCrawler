@@ -132,17 +132,6 @@
             app:layout_constraintStart_toEndOf="@+id/id"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvSelectedSkills"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/inpAmountMatches" />
-
         <androidx.cardview.widget.CardView
             android:id="@+id/mandatorySkillsCard"
             android:layout_width="0dp"
@@ -152,7 +141,7 @@
             android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rvSelectedSkills">
+            app:layout_constraintTop_toBottomOf="@+id/inpAmountMatches">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/mandatorySkillsLayout"
@@ -177,6 +166,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:background="@android:color/darker_gray"
+                    android:contentDescription="@string/add_mandatory_skill"
                     android:onClick="onAddMandatorySkillClicked"
                     android:padding="6dp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -234,6 +224,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:background="@android:color/darker_gray"
+                    android:contentDescription="@string/add_optional_skill"
                     android:onClick="onAddOptionalSkillClicked"
                     android:padding="6dp"
                     app:layout_constraintEnd_toEndOf="parent"

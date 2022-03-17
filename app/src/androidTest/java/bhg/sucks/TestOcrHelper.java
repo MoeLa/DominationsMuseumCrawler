@@ -12,11 +12,11 @@ import android.graphics.BitmapFactory;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.google.common.collect.Lists;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.List;
 
 import bhg.sucks.helper.OcrHelper;
 import bhg.sucks.model.Category;
@@ -54,7 +54,7 @@ public class TestOcrHelper {
 
         OcrHelper.Data expected = OcrHelper.Data.builder()
                 .category(Category.Jewelry)
-                .skills(List.of(Skill.OilLooted, Skill.EnemyAntiTankGunDamage, Skill.OilLooted, Skill.LootedResourceRefund, Skill.AllResourceLooted))
+                .skills(Lists.newArrayList(Skill.OilLooted, Skill.EnemyAntiTankGunDamage, Skill.OilLooted, Skill.LootedResourceRefund, Skill.AllResourceLooted))
                 .level(1)
                 .build();
 
@@ -70,7 +70,7 @@ public class TestOcrHelper {
 
         OcrHelper.Data expected = OcrHelper.Data.builder()
                 .category(Category.WarArmor)
-                .skills(List.of(Skill.WarInvadingBazookaDamage, Skill.WarHeavyTankHitpoints, Skill.WarInvadingGeneralsDamage, Skill.WarHeavyCavalryHitpoints, Skill.WarMortarTroopHitpoints))
+                .skills(Lists.newArrayList(Skill.WarInvadingBazookaDamage, Skill.WarHeavyTankHitpoints, Skill.WarInvadingGeneralsDamage, Skill.WarHeavyCavalryHitpoints, Skill.WarMortarTroopHitpoints))
                 .level(1)
                 .build();
 
@@ -86,7 +86,7 @@ public class TestOcrHelper {
 
         OcrHelper.Data expected = OcrHelper.Data.builder()
                 .category(Category.WarArmor)
-                .skills(List.of(Skill.WarRangedInfantryHitpoints, Skill.WarInvadingHeavyInfantryDamage, Skill.WarInvadingBazookaDamage, Skill.WarInvadingArmoredCarDamage, Skill.WarAttackHelicoptersHitpoints))
+                .skills(Lists.newArrayList(Skill.WarRangedInfantryHitpoints, Skill.WarInvadingHeavyInfantryDamage, Skill.WarInvadingBazookaDamage, Skill.WarInvadingArmoredCarDamage, Skill.WarAttackHelicoptersHitpoints))
                 .level(1)
                 .build();
 
@@ -102,7 +102,7 @@ public class TestOcrHelper {
 
         OcrHelper.Data expected = OcrHelper.Data.builder()
                 .category(Category.WarWeapon)
-                .skills(List.of(Skill.WarAttackHelicoptersDamage, Skill.WarInvadingTacticalHelicopterHitpoints, Skill.WarInvadingAttackHelicoptersHitpoints, Skill.WarAPCDamage, Skill.WarInvadingTacticalHelicopterHitpoints))
+                .skills(Lists.newArrayList(Skill.WarAttackHelicoptersDamage, Skill.WarInvadingTacticalHelicopterHitpoints, Skill.WarInvadingAttackHelicoptersHitpoints, Skill.WarAPCDamage, Skill.WarInvadingTacticalHelicopterHitpoints))
                 .level(3)
                 .build();
 
@@ -118,7 +118,7 @@ public class TestOcrHelper {
 
         OcrHelper.Data expected = OcrHelper.Data.builder()
                 .category(Category.WarEquipment)
-                .skills(List.of(Skill.WarAllEnemyDefensiveTowersHitpoints, Skill.WarEnemyMissileSiloDamage, Skill.WarAllDefensiveTowersHitpoints, Skill.WarEnemyRedoubtDamage, Skill.WarAllEnemyDefensiveTowersHitpoints))
+                .skills(Lists.newArrayList(Skill.WarAllEnemyDefensiveTowersHitpoints, Skill.WarEnemyMissileSiloDamage, Skill.WarAllDefensiveTowersHitpoints, Skill.WarEnemyRedoubtDamage, Skill.WarAllEnemyDefensiveTowersHitpoints))
                 .level(2)
                 .build();
 

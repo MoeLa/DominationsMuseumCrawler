@@ -69,7 +69,6 @@ public class KeepRuleDAO {
         item.setName(keepRule.getName());
         item.setCategory(keepRule.getCategory());
         item.setAmountMatches(keepRule.getAmountMatches());
-        item.setSkills(keepRule.getSkills());
         item.setMandatorySkills(keepRule.getMandatorySkills());
         item.setOptionalSkills(keepRule.getOptionalSkills());
 
