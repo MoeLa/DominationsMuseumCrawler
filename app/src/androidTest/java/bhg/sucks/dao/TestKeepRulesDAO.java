@@ -1,12 +1,21 @@
 package bhg.sucks.dao;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -15,18 +24,12 @@ import org.junit.runner.RunWith;
 import java.util.Collections;
 import java.util.List;
 
+import bhg.sucks.helper.UIHelper;
 import bhg.sucks.matcher.KeepRuleMatcher;
 import bhg.sucks.model.AmountMatches;
 import bhg.sucks.model.Category;
 import bhg.sucks.model.KeepRule;
 import bhg.sucks.model.Skill;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
 
 @RunWith(AndroidJUnit4.class)
 public class TestKeepRulesDAO {
@@ -46,9 +49,17 @@ public class TestKeepRulesDAO {
         this.dao = new KeepRuleDAO(sharedPrefs);
 
         // Create three dummy keep rules to set up some data
-        this.kr0 = dao.create(KeepRule.builder().skills(Collections.emptySet()).build());
-        this.kr1 = dao.create(KeepRule.builder().skills(Collections.emptySet()).build());
-        this.kr2 = dao.create(KeepRule.builder().skills(Collections.emptySet()).build());
+        this.kr0 = dao.create(KeepRule.builder().mandatorySkills(Collections.emptyMap()).build());
+        this.kr1 = dao.create(KeepRule.builder()
+                .category(Category.WarEquipment)
+                .mandatorySkills(UIHelper.createEmptySkillsMap())
+                .optionalSkills(UIHelper.createEmptySkillsMap())
+                .build());
+        this.kr2 = dao.create(KeepRule.builder()
+                .category(Category.Armor)
+                .mandatorySkills(UIHelper.createEmptySkillsMap())
+                .optionalSkills(UIHelper.createEmptySkillsMap())
+                .build());
     }
 
     @Test
@@ -57,7 +68,8 @@ public class TestKeepRulesDAO {
         KeepRule toCreate = KeepRule.builder()
                 .name("a Name")
                 .category(Category.Weapon)
-                .skills(Sets.newHashSet(Skill.APCDamage))
+                .mandatorySkills(ImmutableMap.of(Category.Weapon, ImmutableList.of(Skill.APCDamage)))
+                .optionalSkills(ImmutableMap.of(Category.Weapon, ImmutableList.of(Skill.APCHitpoints)))
                 .amountMatches(AmountMatches.ONE_OF_FIVE)
                 .build();
 
@@ -69,7 +81,8 @@ public class TestKeepRulesDAO {
                 .name("a Name")
                 .category(Category.Weapon)
                 .amountMatches(AmountMatches.ONE_OF_FIVE)
-                .skills(Sets.newHashSet(Skill.APCDamage))
+                .mandatorySkills(ImmutableMap.of(Category.Weapon, ImmutableList.of(Skill.APCDamage)))
+                .optionalSkills(ImmutableMap.of(Category.Weapon, ImmutableList.of(Skill.APCHitpoints)))
                 .position(3)
                 .build();
 
@@ -85,7 +98,8 @@ public class TestKeepRulesDAO {
                 .name("updated")
                 .category(Category.Armor)
                 .amountMatches(AmountMatches.TWO_OF_FIVE)
-                .skills(Sets.newHashSet(Skill.AirDefenseHitpoints, Skill.BazookaHitpoints))
+                .mandatorySkills(ImmutableMap.of(Category.Armor, ImmutableList.of(Skill.AirDefenseHitpoints, Skill.BazookaHitpoints)))
+                .optionalSkills(ImmutableMap.of(Category.Armor, ImmutableList.of(Skill.AirDefenseDamage, Skill.BazookaDamage)))
                 .build();
 
         // Execute
@@ -98,7 +112,8 @@ public class TestKeepRulesDAO {
                 .name("updated")
                 .category(Category.Armor)
                 .amountMatches(AmountMatches.TWO_OF_FIVE)
-                .skills(Sets.newHashSet(Skill.AirDefenseHitpoints, Skill.BazookaHitpoints))
+                .mandatorySkills(ImmutableMap.of(Category.Armor, ImmutableList.of(Skill.AirDefenseHitpoints, Skill.BazookaHitpoints)))
+                .optionalSkills(ImmutableMap.of(Category.Armor, ImmutableList.of(Skill.AirDefenseDamage, Skill.BazookaDamage)))
                 .position(kr1.getPosition())
                 .build();
 
@@ -130,12 +145,16 @@ public class TestKeepRulesDAO {
 
         KeepRule expected = KeepRule.builder()
                 .id(kr1.getId())
-                .skills(Collections.emptySet())
+                .category(Category.WarEquipment)
+                .mandatorySkills(Maps.newHashMap())
+                .optionalSkills(Maps.newHashMap())
                 .position(0)
                 .build();
         KeepRule expected1 = KeepRule.builder()
                 .id(kr2.getId())
-                .skills(Collections.emptySet())
+                .category(Category.Armor)
+                .mandatorySkills(Maps.newHashMap())
+                .optionalSkills(Maps.newHashMap())
                 .position(1)
                 .build();
 
@@ -169,7 +188,9 @@ public class TestKeepRulesDAO {
         // Check
         KeepRule expected = KeepRule.builder()
                 .id(kr2.getId())
-                .skills(Collections.emptySet())
+                .category(Category.Armor)
+                .mandatorySkills(Maps.newHashMap())
+                .optionalSkills(Maps.newHashMap())
                 .position(2)
                 .build();
         assertThat(actual, is(KeepRuleMatcher.sameWithId(expected)));

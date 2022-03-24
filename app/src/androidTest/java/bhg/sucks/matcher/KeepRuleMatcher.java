@@ -1,5 +1,9 @@
 package bhg.sucks.matcher;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.core.AllOf.allOf;
+
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
 
@@ -7,10 +11,6 @@ import bhg.sucks.model.AmountMatches;
 import bhg.sucks.model.Category;
 import bhg.sucks.model.KeepRule;
 import bhg.sucks.model.Skill;
-
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.core.AllOf.allOf;
 
 /**
  * Provides Hamcrest matcher for checking a {@link KeepRule}.
@@ -34,7 +34,8 @@ public class KeepRuleMatcher {
         return allOf(
                 name(equalTo(keepRule.getName())),
                 category(equalTo(keepRule.getCategory())),
-                skills(containsInAnyOrder(keepRule.getSkills().toArray(new Skill[0]))),
+                mandatorySkills(containsInAnyOrder(keepRule.getMandatorySkillsOfCategory().toArray(new Skill[0]))),
+                optionalSkills(containsInAnyOrder(keepRule.getOptionalSkillsOfCategory().toArray(new Skill[0]))),
                 amountMatches(equalTo(keepRule.getAmountMatches())),
                 position(equalTo(keepRule.getPosition()))
         );
@@ -67,11 +68,20 @@ public class KeepRuleMatcher {
         };
     }
 
-    public static Matcher<KeepRule> skills(Matcher<Iterable<? extends Skill>> matcher) {
-        return new FeatureMatcher<KeepRule, Iterable<? extends Skill>>(matcher, "KeepRule with skills =", "skills") {
+    public static Matcher<KeepRule> mandatorySkills(Matcher<Iterable<? extends Skill>> matcher) {
+        return new FeatureMatcher<KeepRule, Iterable<? extends Skill>>(matcher, "KeepRule with mandatorySkills =", "mandatorySkills") {
             @Override
             protected Iterable<? extends Skill> featureValueOf(KeepRule actual) {
-                return actual.getSkills();
+                return actual.getMandatorySkillsOfCategory();
+            }
+        };
+    }
+
+    public static Matcher<KeepRule> optionalSkills(Matcher<Iterable<? extends Skill>> matcher) {
+        return new FeatureMatcher<KeepRule, Iterable<? extends Skill>>(matcher, "KeepRule with optionalSkills =", "optionalSkills") {
+            @Override
+            protected Iterable<? extends Skill> featureValueOf(KeepRule actual) {
+                return actual.getOptionalSkillsOfCategory();
             }
         };
     }

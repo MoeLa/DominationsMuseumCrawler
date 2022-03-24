@@ -49,6 +49,7 @@ dependencies {
     implementation 'androidx.fragment:fragment:1.5.0-alpha03'
     implementation 'org.bitbucket.cowwoc:diff-match-patch:1.2'
     implementation 'com.zeugmasolutions.localehelper:locale-helper-android:1.0.4'
+    implementation 'net.steamcrafted:materialiconlib:1.1.5'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
     compileOnly 'org.projectlombok:lombok:1.18.12'
     testImplementation 'junit:junit:4.13'

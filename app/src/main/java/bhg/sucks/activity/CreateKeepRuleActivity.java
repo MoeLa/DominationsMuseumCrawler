@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.CheckBox;
 import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,20 +14,23 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
-import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import bhg.sucks.R;
 import bhg.sucks.converter.SpinnerConverter;
 import bhg.sucks.dao.KeepRuleDAO;
 import bhg.sucks.databinding.ActivityCreateKeepRuleBinding;
+import bhg.sucks.helper.UIHelper;
 import bhg.sucks.model.AmountMatches;
 import bhg.sucks.model.Category;
 import bhg.sucks.model.KeepRule;
@@ -40,12 +42,13 @@ import bhg.sucks.model.Skill;
 public class CreateKeepRuleActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private static final String TAG = "CreateKeepRuleActivity";
+    private final Comparator<Skill> SKILL_COMPARATOR = Comparator.comparing(s -> getString(s.getResId()));
 
     private Map<Category, List<Skill>> skillsLookup;
-    private List<Skill> skills;
     private KeepRuleDAO dao;
     private KeepRule keepRule;
-    private SelectSkillsAdapter rvAdapter;
+    private SkillsAdapter rvMandatorySkillsAdapter;
+    private SkillsAdapter rvOptionalSkillsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +62,7 @@ public class CreateKeepRuleActivity extends AppCompatActivity implements Adapter
         }
 
         for (List<Skill> skills : skillsLookup.values()) {
-            Collections.sort(skills, Comparator.comparing(s -> getString(s.getResId())));
+            skills.sort(SKILL_COMPARATOR);
         }
 
         this.dao = new KeepRuleDAO(getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE));
@@ -71,7 +74,8 @@ public class CreateKeepRuleActivity extends AppCompatActivity implements Adapter
                         .name("NewName")
                         .category(Category.Weapon)
                         .amountMatches(AmountMatches.FOUR_OF_FIVE)
-                        .skills(Sets.newHashSet())
+                        .mandatorySkills(UIHelper.createEmptySkillsMap())
+                        .optionalSkills(UIHelper.createEmptySkillsMap())
                         .build());
 
         ActivityCreateKeepRuleBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_create_keep_rule);
@@ -81,21 +85,112 @@ public class CreateKeepRuleActivity extends AppCompatActivity implements Adapter
         categorySpinner.setSelection(SpinnerConverter.toInt(keepRule.getCategory()));
         categorySpinner.setOnItemSelectedListener(this);
 
-        // Initializing the recycler view must happen after initializing data binding
-        final RecyclerView rvSelectedSkills = findViewById(R.id.rvSelectedSkills);
-        this.skills = getSkillsFromLookupFor(keepRule.getCategory());
-        this.rvAdapter = new SelectSkillsAdapter(skills, keepRule);
-        rvSelectedSkills.setAdapter(rvAdapter);
-        rvSelectedSkills.setLayoutManager(new LinearLayoutManager(this));
+        // Initializing the recycler views must happen after initializing data binding
+        final RecyclerView rvMandatorySkills = findViewById(R.id.rvMandatorySkills);
+        rvMandatorySkills.setLayoutManager(new LinearLayoutManager(this));
+        this.rvMandatorySkillsAdapter = new SkillsAdapter(keepRule, SkillsAdapter.SkillsAdapterKey.MANDATORY);
+        rvMandatorySkills.setAdapter(rvMandatorySkillsAdapter);
+
+        final RecyclerView rvOptionalSkills = findViewById(R.id.rvOptionalSkills);
+        rvOptionalSkills.setLayoutManager(new LinearLayoutManager(this));
+        this.rvOptionalSkillsAdapter = new SkillsAdapter(keepRule, SkillsAdapter.SkillsAdapterKey.OPTIONAL);
+        rvOptionalSkills.setAdapter(rvOptionalSkillsAdapter);
     }
 
-    public void onCheckboxClicked(View view) {
-        CheckBox cb = (CheckBox) view;
-        Skill s = Skill.values()[(int) cb.getTag()];
-        if (cb.isChecked()) {
-            keepRule.getSkills().add(s);
-        } else {
-            keepRule.getSkills().remove(s);
+    public void onAddMandatorySkillClicked(View view) {
+        List<Skill> mandatorySkills = keepRule.getMandatorySkillsOfCategory();
+
+        final Long maxCount = 2L; // How often may a skill be picked
+        Set<Skill> doNotShowLookup = mandatorySkills.stream()
+                .collect(Collectors.groupingBy(e -> e, Collectors.counting()))
+                .entrySet().stream()
+                .filter(e -> maxCount.equals(e.getValue())) // Keep skills in set, that have been picked twice
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
+
+        List<Skill> skillsToShow = getSkillsFromLookupFor(keepRule.getCategory()).stream()
+                .filter(skill -> !doNotShowLookup.contains(skill))
+                .collect(Collectors.toList());
+
+        String[] items = skillsToShow.stream()
+                .map(skill -> getString(skill.getResId()))
+                .toArray(String[]::new);
+
+        new MaterialAlertDialogBuilder(view.getContext())
+                .setTitle(String.format("%s > %s",
+                        getString(R.string.mandatory_skills),
+                        keepRule.getCategory().getText(view.getContext())))
+                .setItems(items, (dialog, which) -> {
+                    Skill picked = skillsToShow.get(which);
+
+                    // Add picked skill to keep rule
+                    mandatorySkills.add(picked);
+                    mandatorySkills.sort(SKILL_COMPARATOR);
+
+                    // Update mandatory skills recycler view
+                    int posAfterSort = mandatorySkills.indexOf(picked);
+                    rvMandatorySkillsAdapter.notifyItemInserted(posAfterSort);
+                })
+                .show();
+    }
+
+    public void onAddOptionalSkillClicked(View view) {
+        List<Skill> optionalSkills = keepRule.getOptionalSkillsOfCategory();
+
+        Set<Skill> doNotShowLookup = new HashSet<>(optionalSkills);
+
+        List<Skill> skillsToShow = getSkillsFromLookupFor(keepRule.getCategory()).stream()
+                .filter(skill -> !doNotShowLookup.contains(skill))
+                .collect(Collectors.toList());
+
+        String[] items = skillsToShow.stream()
+                .map(skill -> getString(skill.getResId()))
+                .toArray(String[]::new);
+
+        new MaterialAlertDialogBuilder(view.getContext())
+                .setTitle(String.format("%s > %s",
+                        getString(R.string.optional_skills),
+                        keepRule.getCategory().getText(view.getContext())))
+                .setItems(items, (dialog, which) -> {
+                    Skill picked = skillsToShow.get(which);
+
+                    // Add picked skill to keep rule
+                    optionalSkills.add(picked);
+                    optionalSkills.sort(SKILL_COMPARATOR);
+
+                    // Update optional skills recycler view
+                    int posAfterSort = optionalSkills.indexOf(picked);
+                    rvOptionalSkillsAdapter.notifyItemInserted(posAfterSort);
+                })
+                .show();
+    }
+
+    public void onDeleteSkillClicked(View view) {
+        SkillsAdapter.SkillsAdapterKey key = (SkillsAdapter.SkillsAdapterKey) view.getTag(R.id.TAG_SKILL_DELETE_BUTTON_KEY);
+        Skill skill = (Skill) view.getTag(R.id.TAG_SKILL_DELETE_BUTTON_SKILL);
+
+        switch (key) {
+            case MANDATORY: {
+                List<Skill> skills = keepRule.getMandatorySkillsOfCategory();
+
+                int idx = skills.indexOf(skill);
+                if (idx >= 0) {
+                    skills.remove(idx);
+                    rvMandatorySkillsAdapter.notifyItemRemoved(idx);
+                }
+                break;
+            }
+            case OPTIONAL: {
+                List<Skill> skills = keepRule.getOptionalSkillsOfCategory();
+
+                int idx = skills.indexOf(skill);
+                if (idx >= 0) {
+                    skills.remove(idx);
+                    rvOptionalSkillsAdapter.notifyItemRemoved(idx);
+                }
+                break;
+            }
+            default:
         }
     }
 
@@ -126,12 +221,23 @@ public class CreateKeepRuleActivity extends AppCompatActivity implements Adapter
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Category category = SpinnerConverter.toCategory(position);
-        keepRule.setCategory(category);
+        Category oldCategory = keepRule.getCategory();
+        Category newCategory = SpinnerConverter.toCategory(position);
 
-        skills.clear();
-        skills.addAll(getSkillsFromLookupFor(category));
-        rvAdapter.notifyDataSetChanged();
+        int amountOldMandatorySkills = keepRule.getMandatorySkillsOfCategory().size();
+        int amountOldOptionalSkills = keepRule.getOptionalSkillsOfCategory().size();
+
+        keepRule.setCategory(newCategory); // Setting new category in keep rule
+
+        // Reset mandatory skills
+        rvMandatorySkillsAdapter.notifyItemRangeRemoved(0, amountOldMandatorySkills);
+        int amountNewMandatorySkills = keepRule.getMandatorySkillsOfCategory().size();
+        rvMandatorySkillsAdapter.notifyItemRangeInserted(0, amountNewMandatorySkills);
+
+        // Reset optional skills
+        rvOptionalSkillsAdapter.notifyItemRangeRemoved(0, amountOldOptionalSkills);
+        int amountNewOptionalSkills = keepRule.getOptionalSkillsOfCategory().size();
+        rvOptionalSkillsAdapter.notifyItemRangeInserted(0, amountNewOptionalSkills);
     }
 
     @Override
