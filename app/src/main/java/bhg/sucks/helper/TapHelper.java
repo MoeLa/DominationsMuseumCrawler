@@ -36,162 +36,173 @@ public class TapHelper {
 
     /**
      * Taps the button "5 Artifacts" and three more times to hurry the following animation.
-     *
-     * @return <i>true</i>, if the operation could be executed
      */
-    public boolean tapFiveArtifacts() {
+    public void tapFiveArtifacts() {
         if (!delegate.isRunning()) {
-            return false;
+            return;
         }
 
         if (fiveArtifactsExecutor == null) {
             Log.d(TAG, "tapFiveArtifacts > Screenshot for calculating bounds");
             Bitmap b = screenshotHelper.takeScreenshot3();
-            Point p = ocrHelper.isFiveArtifactsAvailable(b);
-            if (p == null) {
-                Log.d(TAG, "tapFiveArtifacts > Did not find '5 Artifacts' text");
-                return false;
-            }
+            ocrHelper.isFiveArtifactsAvailable(b, this::setAndTapFiveArtifacts);
+        } else {
+            fiveArtifactsExecutor.execute();
+        }
+    }
 
-            // Note: Concat command here, because the point might be collected by GC
-            final String fiveArtifactsCommand = String.format(tapCommand, p.x, p.y);
-
-            this.fiveArtifactsExecutor = new ExecuteAsRootBase() {
-
-                @Override
-                protected List<String> getCommandsToExecute() {
-                    List<String> result = new ArrayList<>();
-                    result.add(fiveArtifactsCommand);
-                    result.add(hurryAnimationCommand);
-                    result.add(hurryAnimationCommand);
-                    result.add(hurryAnimationCommand);
-                    result.add(hurryAnimationCommand);
-                    return result;
-                }
-
-            };
+    private void setAndTapFiveArtifacts(Point p) {
+        if (p == null) {
+            Log.d(TAG, "tapFiveArtifacts > Did not find '5 Artifacts' text");
+            return;
         }
 
-        return fiveArtifactsExecutor.execute();
+        // Note: Concat command here, because the point might be collected by GC
+        final String fiveArtifactsCommand = String.format(tapCommand, p.x, p.y);
+
+        this.fiveArtifactsExecutor = new ExecuteAsRootBase() {
+
+            @Override
+            protected List<String> getCommandsToExecute() {
+                List<String> result = new ArrayList<>();
+                result.add(fiveArtifactsCommand);
+                result.add(hurryAnimationCommand);
+                result.add(hurryAnimationCommand);
+                result.add(hurryAnimationCommand);
+                result.add(hurryAnimationCommand);
+                return result;
+            }
+
+        };
+
+        fiveArtifactsExecutor.execute();
     }
 
     /**
      * Taps the button "Sell".
-     *
-     * @return <i>true</i>, if the operation could be executed
      */
-    public boolean tapSell() {
+    public void tapSell() {
         if (!delegate.isRunning()) {
-            return false;
+            return;
         }
 
         if (sellExecutor == null) {
             Log.d(TAG, "tapSell > Screenshot for calculating bounds");
             Bitmap b = screenshotHelper.takeScreenshot3();
-            Point p = ocrHelper.isSellAvailable(b);
-            if (p == null) {
-                Log.d(TAG, "tapSell > Did not find 'Sell for' text");
-                return false;
-            }
+            ocrHelper.isSellAvailable(b, this::setAndTapsSell);
+        } else {
+            sellExecutor.execute();
+        }
+    }
 
-            // Note: Concat command here, because p might be collected by GC
-            final String sellCommand = String.format(tapCommand, p.x, p.y);
-
-            this.sellExecutor = new ExecuteAsRootBase() {
-
-                @Override
-                protected List<String> getCommandsToExecute() {
-                    List<String> result = new ArrayList<>();
-                    result.add(sellCommand);
-                    return result;
-                }
-
-            };
+    private void setAndTapsSell(Point p) {
+        if (p == null) {
+            Log.d(TAG, "tapSell > Did not find 'Sell for' text");
+            return;
         }
 
-        return sellExecutor.execute();
+        // Note: Concat command here, because p might be collected by GC
+        final String sellCommand = String.format(tapCommand, p.x, p.y);
+
+        this.sellExecutor = new ExecuteAsRootBase() {
+
+            @Override
+            protected List<String> getCommandsToExecute() {
+                List<String> result = new ArrayList<>();
+                result.add(sellCommand);
+                return result;
+            }
+
+        };
+
+        sellExecutor.execute();
     }
 
     /**
      * Taps the button "Confirm" and hurries the following animation.
-     *
-     * @return <i>true</i>, if the operation could be executed
      */
-    public boolean tapConfirm() {
+    public void tapConfirm() {
         if (!delegate.isRunning()) {
-            return false;
+            return;
         }
 
         if (confirmExecutor == null) {
             Log.d(TAG, "tapConfirm > Screenshot for calculating bounds");
             Bitmap b = screenshotHelper.takeScreenshot3();
-            Point p = ocrHelper.isConfirmAvailable(b);
-            if (p == null) {
-                Log.d(TAG, "tapSell > Did not find 'Confirm' text");
-                return false;
-            }
+            ocrHelper.isConfirmAvailable(b, this::setAndTapConfirm);
+        } else {
+            confirmExecutor.execute();
+        }
+    }
 
-            // Note: Concat command here, because p might be collected by GC
-            final String confirmCommand = String.format(tapCommand, p.x, p.y);
-
-            this.confirmExecutor = new ExecuteAsRootBase() {
-
-                @Override
-                protected List<String> getCommandsToExecute() {
-                    List<String> result = new ArrayList<>();
-                    result.add(confirmCommand);
-                    result.add(hurryAnimationCommand);
-                    result.add(hurryAnimationCommand);
-                    result.add(hurryAnimationCommand);
-                    return result;
-                }
-
-            };
+    private void setAndTapConfirm(Point p) {
+        if (p == null) {
+            Log.d(TAG, "tapSell > Did not find 'Confirm' text");
+            return;
         }
 
-        return confirmExecutor.execute();
+        // Note: Concat command here, because p might be collected by GC
+        final String confirmCommand = String.format(tapCommand, p.x, p.y);
+
+        this.confirmExecutor = new ExecuteAsRootBase() {
+
+            @Override
+            protected List<String> getCommandsToExecute() {
+                List<String> result = new ArrayList<>();
+                result.add(confirmCommand);
+                result.add(hurryAnimationCommand);
+                result.add(hurryAnimationCommand);
+                result.add(hurryAnimationCommand);
+                return result;
+            }
+
+        };
+
+        confirmExecutor.execute();
     }
 
     /**
      * Taps the button "Continue" and hurries the following animation.
-     *
-     * @return <i>true</i>, if the operation could be executed
      */
-    public boolean tapContinue() {
+    public void tapContinue() {
         if (!delegate.isRunning()) {
-            return false;
+            return;
         }
 
         if (continueExecutor == null) {
             Log.d(TAG, "tapContinue > Screenshot for calculating bounds");
             Bitmap b = screenshotHelper.takeScreenshot3();
-            Point p = ocrHelper.isContinueAvailable(b);
-            if (p == null) {
-                Log.d(TAG, "tapSell > Did not find 'Continue' text");
-                return false;
-            }
-
-            // Note: Concat command here, because p might be collected by GC
-            final String continueCommand = String.format(tapCommand, p.x, p.y);
-
-            this.continueExecutor = new ExecuteAsRootBase() {
-
-                @Override
-                protected List<String> getCommandsToExecute() {
-                    List<String> result = new ArrayList<>();
-                    result.add(continueCommand);
-                    result.add(hurryAnimationCommand);
-                    result.add(hurryAnimationCommand);
-                    result.add(hurryAnimationCommand);
-                    return result;
-                }
-
-            };
+            ocrHelper.isContinueAvailable(b, this::setAndTapContinue);
+        } else {
+            continueExecutor.execute();
         }
-
-        return continueExecutor.execute();
     }
 
+    private void setAndTapContinue(Point p) {
+        if (p == null) {
+            Log.d(TAG, "tapSell > Did not find 'Continue' text");
+            return;
+        }
+
+        // Note: Concat command here, because p might be collected by GC
+        final String continueCommand = String.format(tapCommand, p.x, p.y);
+
+        this.continueExecutor = new ExecuteAsRootBase() {
+
+            @Override
+            protected List<String> getCommandsToExecute() {
+                List<String> result = new ArrayList<>();
+                result.add(continueCommand);
+                result.add(hurryAnimationCommand);
+                result.add(hurryAnimationCommand);
+                result.add(hurryAnimationCommand);
+                return result;
+            }
+
+        };
+
+        continueExecutor.execute();
+    }
 
     public boolean tapHurryAnimation() {
         if (!delegate.isRunning()) {

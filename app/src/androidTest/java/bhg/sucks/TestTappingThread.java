@@ -3,16 +3,14 @@ package bhg.sucks;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNotNull;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.google.common.collect.Lists;
+import com.google.mlkit.vision.text.Text;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,27 +24,27 @@ import bhg.sucks.helper.UIHelper;
 import bhg.sucks.model.AmountMatches;
 import bhg.sucks.model.KeepRule;
 import bhg.sucks.thread.TappingThread;
+import bhg.sucks.util.AndroidTestUtil;
 
 @RunWith(AndroidJUnit4.class)
 public class TestTappingThread {
 
     private Context appContext;
     private OcrHelper ocrHelper;
+    private AndroidTestUtil util;
 
     @Before
     public void setup() {
         this.appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         this.ocrHelper = new OcrHelper(appContext);
+        this.util = new AndroidTestUtil(appContext, ocrHelper);
     }
 
     @Test
-    public void testKeepThreeStarArtifactSwitchOff() {
-        // Prepare - Get screenshot
-        Bitmap b = bitmapFrom(R.drawable.screenshot4);
-        assertNotNull("Bitmap shall not be null", b);
-
-        // Prepare - Analyze screenshot
-        OcrHelper.AnalysisResult ar = ocrHelper.analyseScreenshot(b);
+    public void testKeepThreeStarArtifactSwitchOff() throws InterruptedException {
+        // Prepare
+        List<Text.TextBlock> textBlocks = util.resourceToTextBlocks(R.drawable.screenshot4);
+        OcrHelper.AnalysisResult ar = ocrHelper.toAnalyseResult(textBlocks);
 
         // Prepare - Create TappingThread with 'don't keep 3* artifacts'
         TappingThread t = new TappingThread(createDelegate(false));
@@ -59,13 +57,10 @@ public class TestTappingThread {
     }
 
     @Test
-    public void testKeepThreeStarArtifactSwitchOn() {
-        // Prepare - Get screenshot
-        Bitmap b = bitmapFrom(R.drawable.screenshot4);
-        assertNotNull("Bitmap shall not be null", b);
-
-        // Prepare - Analyze screenshot
-        OcrHelper.AnalysisResult ar = ocrHelper.analyseScreenshot(b);
+    public void testKeepThreeStarArtifactSwitchOn() throws InterruptedException {
+        // Prepare
+        List<Text.TextBlock> textBlocks = util.resourceToTextBlocks(R.drawable.screenshot4);
+        OcrHelper.AnalysisResult ar = ocrHelper.toAnalyseResult(textBlocks);
 
         // Prepare - Create TappingThread with 'don't keep 3* artifacts'
         TappingThread t = new TappingThread(createDelegate(true));
@@ -115,10 +110,4 @@ public class TestTappingThread {
         };
     }
 
-    private Bitmap bitmapFrom(int redId) {
-        BitmapFactory.Options opts = new BitmapFactory.Options();
-        opts.inScaled = false;
-
-        return BitmapFactory.decodeResource(appContext.getResources(), redId, opts);
-    }
 }
