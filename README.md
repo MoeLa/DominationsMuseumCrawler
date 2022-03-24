@@ -45,7 +45,7 @@ The meaning of 'Category' should be obvious.
 'Amount Matches' determines, how many of the below selected skills an artifact must have to be kept. Example: A rule with optional skills Fighter Damage and Fighter Hitpoints plus '4 of 5' matches a weapon artifact with each twice those skills and a random fifth one.
 The selection of skills applies to the selected category. Note:
  * If an artifact shall have one skill twice, add that skill twice to _mandatory skills_.
- * See [Known Bugs/Issues(#known-bugsissues)].
+ * See [Known Bugs/Issues](#known-bugsissues).
 
 ### Why Is Root Needed?
 As you might have already noticed, the Museum Crawler simulates real taps. For good (security) reasons, you cannot do that without full control of the device. So you either trust me that the crawler doesn't misuse that power or you should not use this app! Those of you that are more or less fluent in Java, can take a look at the source code.
