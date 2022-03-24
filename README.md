@@ -32,9 +32,9 @@ After having set up the crawler, you start the crafting, put your mobile aside f
  1. Long-tap the red overlay icon. The Museum Crawler opens and the icon disappears.
  2. If you're in Space Age (or higher) and have researched Archaeology level 5 in the Library, you should [enable 'Keep 3* artifacts'](#why-should-i-keep-3-artifacts).
  3. Tap the ADD RULE button
- 4. Provide a signifant name, select a category, select '1 of 5' amount of matches, and check some skills. Tipp: For testing purposes, you should check quite a lot skills.
+ 4. Provide a signifant name, select a category, select '1 of 5' amount of matches, and add some optional skills. Tipp: For testing purposes, you should add quite a lot skills.
  5. Tap the SAVE button. The rule appears in the list below the ADD RULE button.
- 6. Start the service and then the crafting again. Remember: You need to be in the Museum in the screen with the '475' fragments button!
+ 6. Start the service and then the crafting again.
  7. Watch the process. If an item is crafted, that matches your rule(s) or has level 3, it is kept. All other items are sold directly.
  8. Stop the process of crafting and create further rules. You can also edit and delete existing ones.
 
@@ -42,8 +42,10 @@ After having set up the crawler, you start the crafting, put your mobile aside f
 Each crafted artifact is checked against all rules. If a rule describes the artifact, it is kept. If no rule applies, it is sold.
 The name of a rule is completely irrelevant for the decision to keep/sell an artifact. You should choose a significant and meaningful name to distinguish your rules.
 The meaning of 'Category' should be obvious.
-'Amount Matches' determines, how many of the checked skills an artifact must have to be kept. Example: A rule with just Fighter Damage and Fighter Hitpoints checked plus '4 of 5' matches a weapon artifact with each twice those skills and a random fifth one.
-The skills to be checked apply to the selected category.
+'Amount Matches' determines, how many of the below selected skills an artifact must have to be kept. Example: A rule with optional skills Fighter Damage and Fighter Hitpoints plus '4 of 5' matches a weapon artifact with each twice those skills and a random fifth one.
+The selection of skills applies to the selected category. Note:
+ * If an artifact shall have one skill twice, add that skill twice to _mandatory skills_.
+ * See [Known Bugs/Issues(#known-bugsissues)].
 
 ### Why Is Root Needed?
 As you might have already noticed, the Museum Crawler simulates real taps. For good (security) reasons, you cannot do that without full control of the device. So you either trust me that the crawler doesn't misuse that power or you should not use this app! Those of you that are more or less fluent in Java, can take a look at the source code.
@@ -61,6 +63,8 @@ Note: Upgrading and selling of those artifacts is not done by the crawler.
  - There is no check for enough storage space or fragments. If you run out of either, you should stop the process. Otherwise you risk spending crowns!
  - One of the later DomiNation versions introduced more shelves in the library allowing to lower the crafting costs once a day. That change is **not** yet considered, meaning: If the button to start crafting shows less than 475 fragments, tap it manually and start the bot afterwards.
  - The screen is captured and parsed several times to determine the next step/tap. If the amount exceeds 4 and a decision could not be made, the bot stops and the icon turns orange. Just tap it once to continue, when you think it could.
+ - A keep rule's _amount matches_ is not validated against its mandatory and optional skills. You won't be informed, if those attributes exclude each other.
+ - The same applies to mandatory and optional skills: You can select a skill twice as mandatory and additionally as optional, resulting effectivly in that optional skill being considered void.
 
 ### How To Contribute
 Just file a pull request ;-)
