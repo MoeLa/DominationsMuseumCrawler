@@ -1,4 +1,4 @@
-package bhg.sucks.activity;
+package bhg.sucks.activity.contract;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,6 +7,8 @@ import android.content.Intent;
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import bhg.sucks.activity.CreateKeepRuleActivity;
 
 /**
  * This contract ensures type safety, when a keep rule shall be created or edited.
