@@ -1,4 +1,4 @@
-package bhg.sucks.activity;
+package bhg.sucks.activity.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

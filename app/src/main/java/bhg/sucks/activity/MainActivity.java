@@ -6,30 +6,31 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.appcompat.widget.SwitchCompat;
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.zeugmasolutions.localehelper.LocaleAwareCompatActivity;
 
 import java.util.List;
-import java.util.Locale;
 
 import bhg.sucks.R;
-import bhg.sucks.converter.SpinnerConverter;
+import bhg.sucks.activity.adapter.KeepRulesAdapter;
+import bhg.sucks.activity.contract.KeepRuleContract;
 import bhg.sucks.dao.KeepRuleDAO;
 import bhg.sucks.helper.ExecuteAsRootBase;
 import bhg.sucks.model.KeepRule;
 import bhg.sucks.service.OverlayIconService;
 
-public class MainActivity extends LocaleAwareCompatActivity implements AdapterView.OnItemSelectedListener {
+public class MainActivity extends LocaleAwareCompatActivity {
 
     private static final int APP_PERMISSIONS = 1337;
 
@@ -37,6 +38,7 @@ public class MainActivity extends LocaleAwareCompatActivity implements AdapterVi
     private SharedPreferences sharedPref;
     private List<KeepRule> keepRules;
     private KeepRulesAdapter rvAdapter;
+
     private final ActivityResultLauncher<String> startCreateKeepRuleActivity = registerForActivityResult(new KeepRuleContract(), new ActivityResultCallback<String>() {
 
         @Override
@@ -65,24 +67,11 @@ public class MainActivity extends LocaleAwareCompatActivity implements AdapterVi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        MaterialToolbar toolbar = findViewById(R.id.topAppBarMain);
+        setSupportActionBar(toolbar);
+
         this.sharedPref = getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE);
         this.dao = new KeepRuleDAO(sharedPref);
-
-        final SwitchCompat switchKeepThreeStarArtifacts = findViewById(R.id.switchKeep3StarArtifacts);
-        switchKeepThreeStarArtifacts.setChecked(sharedPref.getBoolean(getString(R.string.keep_3_artifacts), false));
-        switchKeepThreeStarArtifacts.setOnCheckedChangeListener((btnView, isChecked) -> sharedPref.edit()
-                .putBoolean(getString(R.string.keep_3_artifacts), isChecked)
-                .apply());
-
-        Spinner langSpinner = findViewById(R.id.inpLang);
-        langSpinner.setSelection(SpinnerConverter.toInt(Locale.getDefault()), false);
-        langSpinner.setOnItemSelectedListener(this);
-
-        final SwitchCompat switchDebugMode = findViewById(R.id.switchDebugMode);
-        switchDebugMode.setChecked(sharedPref.getBoolean(getString(R.string.debug_mode), false));
-        switchDebugMode.setOnCheckedChangeListener((btnView, isChecked) -> sharedPref.edit()
-                .putBoolean(getString(R.string.debug_mode), isChecked)
-                .apply());
 
         final RecyclerView rvKeepRules = findViewById(R.id.rvKeepRules);
         this.keepRules = dao.getAll();
@@ -96,7 +85,7 @@ public class MainActivity extends LocaleAwareCompatActivity implements AdapterVi
         }
     }
 
-    public void addRule(View view) {
+    public void addRule(MenuItem mi) {
         startCreateKeepRuleActivity.launch(null);
     }
 
@@ -112,7 +101,7 @@ public class MainActivity extends LocaleAwareCompatActivity implements AdapterVi
         rvAdapter.notifyItemRemoved(deletedKeepRule.getPosition());
     }
 
-    public void startService(View view) {
+    public void startService(MenuItem mi) {
         if (Settings.canDrawOverlays(this)) {
             Intent intent = new Intent(this, OverlayIconService.class);
             startService(intent);
@@ -128,32 +117,27 @@ public class MainActivity extends LocaleAwareCompatActivity implements AdapterVi
         }
     }
 
+    public void settings(MenuItem mi) {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == APP_PERMISSIONS) {
             // Response to 'request for overlay permissions'
             if (Settings.canDrawOverlays(this)) {
-                startService(findViewById(R.id.btnStartService));
+                startService((MenuItem) null);
             }
         }
     }
 
-    public void exit(View view) {
-        finish();
+    @Override
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.top_app_bar_main, menu);
+        return true;
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
-        Locale lang = SpinnerConverter.toLocale(pos);
-        Locale oldVal = Locale.getDefault();
-        if (!oldVal.equals(lang)) {
-            updateLocale(lang);
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-        // empty by design
-    }
 }

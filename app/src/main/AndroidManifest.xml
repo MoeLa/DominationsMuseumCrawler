@@ -14,8 +14,7 @@
 
         <meta-data
             android:name="com.google.mlkit.vision.DEPENDENCIES"
-            android:value="ocr" />
-        <!-- To use multiple models: android:value="ocr,model2,model3" -->
+            android:value="ocr" /> <!-- To use multiple models: android:value="ocr,model2,model3" -->
         <service
             android:name=".service.OverlayIconService"
             android:enabled="true"
@@ -26,11 +25,16 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".activity.CreateKeepRuleActivity"
+            android:parentActivityName=".activity.MainActivity" />
+        <activity
+            android:name=".activity.SettingsActivity"
+            android:exported="false"
             android:parentActivityName=".activity.MainActivity" />
     </application>
 
