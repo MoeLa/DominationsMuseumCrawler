@@ -49,7 +49,7 @@ public class TestTappingThreadHelper {
     }
 
     @Test
-    public void testKeepingBecauseOfRule_Success() {
+    public void testKeepingBecauseOfRule_AllOptional_Success() {
         OcrHelper.Data data = OcrHelper.Data.builder()
                 .skills(Lists.newArrayList(
                         Skill.GuerrillaHitpoints,
@@ -70,7 +70,7 @@ public class TestTappingThreadHelper {
     }
 
     @Test
-    public void testKeepingBecauseOfRule_tooFewMatches() {
+    public void testKeepingBecauseOfRule_AllOptional_tooFewMatches() {
         OcrHelper.Data data = OcrHelper.Data.builder()
                 .skills(Lists.newArrayList(
                         Skill.GuerrillaHitpoints,
@@ -89,5 +89,119 @@ public class TestTappingThreadHelper {
         boolean actual = tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
         assertThat(actual, is(false));
     }
+
+    @Test
+    public void testKeepingBecauseOfRule_AllMandatory_Success() {
+        OcrHelper.Data data = OcrHelper.Data.builder()
+                .skills(Lists.newArrayList(
+                        Skill.GuerrillaHitpoints,
+                        Skill.GuerrillaHitpoints,
+                        Skill.FighterDamage,
+                        Skill.FighterDamage,
+                        Skill.APCDamage))
+                .build();
+        List<KeepRule> keepRules = Collections.singletonList(KeepRule.builder()
+                .category(Category.Weapon)
+                .amountMatches(AmountMatches.THREE_OF_FIVE)
+                .mandatorySkills(ImmutableMap.of(Category.Weapon,
+                        Lists.newArrayList(Skill.GuerrillaHitpoints, Skill.GuerrillaHitpoints, Skill.FighterDamage)))
+                .optionalSkills(Maps.newHashMap())
+                .build());
+
+        boolean actual = tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
+        assertThat(actual, is(true));
+    }
+
+    @Test
+    public void testKeepingBecauseOfRule_AllMandatory_tooFewMatches() {
+        OcrHelper.Data data = OcrHelper.Data.builder()
+                .skills(Lists.newArrayList(
+                        Skill.GuerrillaHitpoints,
+                        Skill.GuerrillaHitpoints,
+                        Skill.FighterDamage,
+                        Skill.FighterDamage,
+                        Skill.APCDamage))
+                .build();
+        List<KeepRule> keepRules = Collections.singletonList(KeepRule.builder()
+                .category(Category.Weapon)
+                .amountMatches(AmountMatches.THREE_OF_FIVE)
+                .mandatorySkills(ImmutableMap.of(Category.Weapon,
+                        Lists.newArrayList(Skill.GuerrillaHitpoints, Skill.FighterDamage)))
+                .optionalSkills(Maps.newHashMap())
+                .build());
+
+        boolean actual = tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
+        assertThat(actual, is(false));
+    }
+
+    @Test
+    public void testKeepingBecauseOfRule_Mix_Success() {
+        OcrHelper.Data data = OcrHelper.Data.builder()
+                .skills(Lists.newArrayList(
+                        Skill.GuerrillaHitpoints,
+                        Skill.GuerrillaHitpoints,
+                        Skill.FighterDamage,
+                        Skill.FighterDamage,
+                        Skill.APCDamage))
+                .build();
+        List<KeepRule> keepRules = Collections.singletonList(KeepRule.builder()
+                .category(Category.Weapon)
+                .amountMatches(AmountMatches.FIVE_OF_FIVE)
+                .mandatorySkills(ImmutableMap.of(Category.Weapon,
+                        Lists.newArrayList(Skill.GuerrillaHitpoints, Skill.GuerrillaHitpoints, Skill.FighterDamage)))
+                .optionalSkills(ImmutableMap.of(Category.Weapon,
+                        Lists.newArrayList(Skill.APCDamage, Skill.FighterDamage)))
+                .build());
+
+        boolean actual = tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
+        assertThat(actual, is(true));
+    }
+
+    @Test
+    public void testKeepingBecauseOfRule_Mix_tooFewMatches() {
+        OcrHelper.Data data = OcrHelper.Data.builder()
+                .skills(Lists.newArrayList(
+                        Skill.GuerrillaHitpoints,
+                        Skill.GuerrillaHitpoints,
+                        Skill.FighterDamage,
+                        Skill.FighterDamage,
+                        Skill.APCDamage))
+                .build();
+        List<KeepRule> keepRules = Collections.singletonList(KeepRule.builder()
+                .category(Category.Weapon)
+                .amountMatches(AmountMatches.FIVE_OF_FIVE)
+                .mandatorySkills(ImmutableMap.of(Category.Weapon,
+                        Lists.newArrayList(Skill.GuerrillaHitpoints, Skill.FighterDamage)))
+                .optionalSkills(ImmutableMap.of(Category.Weapon,
+                        Lists.newArrayList(Skill.GuerrillaHitpoints, Skill.FighterDamage)))
+                .build());
+
+        boolean actual = tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
+        assertThat(actual, is(false));
+    }
+
+    @Test
+    public void testKeepingBecauseOfRule_Mix_notAllMandatoryMatched() {
+        OcrHelper.Data data = OcrHelper.Data.builder()
+                .skills(Lists.newArrayList(
+                        Skill.GuerrillaHitpoints,
+                        Skill.GuerrillaHitpoints,
+                        Skill.FighterDamage,
+                        Skill.FighterDamage,
+                        Skill.APCDamage))
+                .build();
+        List<KeepRule> keepRules = Collections.singletonList(KeepRule.builder()
+                .category(Category.Weapon)
+                .amountMatches(AmountMatches.THREE_OF_FIVE)
+                .mandatorySkills(ImmutableMap.of(Category.Weapon,
+                        Lists.newArrayList(Skill.GuerrillaHitpoints, Skill.FighterDamage, Skill.BazookaDamage)))
+                .optionalSkills(ImmutableMap.of(Category.Weapon,
+                        Lists.newArrayList(Skill.GuerrillaHitpoints, Skill.FighterDamage)))
+                .build());
+
+        boolean actual = tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
+        assertThat(actual, is(false));
+    }
+
 
 }

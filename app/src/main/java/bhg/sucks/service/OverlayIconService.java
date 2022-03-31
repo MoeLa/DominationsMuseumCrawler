@@ -37,8 +37,6 @@ import bhg.sucks.thread.TappingThread;
  */
 public class OverlayIconService extends Service {
 
-    private static final String TAG = "MyService";
-
     private OverlayData overlayData;
 
     private boolean running = false;

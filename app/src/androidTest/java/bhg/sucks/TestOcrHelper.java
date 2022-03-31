@@ -3,24 +3,27 @@ package bhg.sucks;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.google.common.collect.Lists;
+import com.google.mlkit.vision.text.Text;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.List;
+
 import bhg.sucks.helper.OcrHelper;
 import bhg.sucks.model.Category;
 import bhg.sucks.model.Skill;
+import bhg.sucks.util.AndroidTestUtil;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -30,27 +33,29 @@ import bhg.sucks.model.Skill;
 @RunWith(AndroidJUnit4.class)
 public class TestOcrHelper {
 
+    private static final String TAG = TestOcrHelper.class.getName();
+
     private Context appContext;
     private OcrHelper ocrHelper;
+    private AndroidTestUtil util;
 
     @Before
     public void setup() {
         this.appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         this.ocrHelper = new OcrHelper(appContext);
+        this.util = new AndroidTestUtil(appContext, ocrHelper);
     }
 
     @Test
     public void testReceiveGermanStringResource() {
         String s = appContext.getResources().getString(R.string.AirDefenseDamage);
-        assertEquals("Luftabwehr-Schaden", s);
+        assertEquals("Not running in German => This test suite won't find nothing!", "Luftabwehr-Schaden", s);
     }
 
     @Test
-    public void testConvertScreenshot() {
-        Bitmap b = bitmapFrom(R.drawable.screenshot);
-        assertNotNull("Bitmap shall not be null", b);
-
-        OcrHelper.Data data = ocrHelper.convertItemScreenshot(b);
+    public void testConvertScreenshot() throws InterruptedException {
+        List<Text.TextBlock> textBlocks = util.resourceToTextBlocks(R.drawable.screenshot);
+        OcrHelper.Data data = ocrHelper.convertItemScreenshot(textBlocks);
 
         OcrHelper.Data expected = OcrHelper.Data.builder()
                 .category(Category.Jewelry)
@@ -62,11 +67,9 @@ public class TestOcrHelper {
     }
 
     @Test
-    public void testConvertScreenshot2() {
-        Bitmap b = bitmapFrom(R.drawable.screenshot2);
-        assertNotNull("Bitmap shall not be null", b);
-
-        OcrHelper.Data data = ocrHelper.convertItemScreenshot(b);
+    public void testConvertScreenshot2() throws InterruptedException {
+        List<Text.TextBlock> textBlocks = util.resourceToTextBlocks(R.drawable.screenshot2);
+        OcrHelper.Data data = ocrHelper.convertItemScreenshot(textBlocks);
 
         OcrHelper.Data expected = OcrHelper.Data.builder()
                 .category(Category.WarArmor)
@@ -78,11 +81,9 @@ public class TestOcrHelper {
     }
 
     @Test
-    public void testConvertScreenshot3() {
-        Bitmap b = bitmapFrom(R.drawable.screenshot3);
-        assertNotNull("Bitmap shall not be null", b);
-
-        OcrHelper.Data data = ocrHelper.convertItemScreenshot(b);
+    public void testConvertScreenshot3() throws InterruptedException {
+        List<Text.TextBlock> textBlocks = util.resourceToTextBlocks(R.drawable.screenshot3);
+        OcrHelper.Data data = ocrHelper.convertItemScreenshot(textBlocks);
 
         OcrHelper.Data expected = OcrHelper.Data.builder()
                 .category(Category.WarArmor)
@@ -94,11 +95,9 @@ public class TestOcrHelper {
     }
 
     @Test
-    public void testConvertScreenshot4() {
-        Bitmap b = bitmapFrom(R.drawable.screenshot4);
-        assertNotNull("Bitmap shall not be null", b);
-
-        OcrHelper.Data data = ocrHelper.convertItemScreenshot(b);
+    public void testConvertScreenshot4() throws InterruptedException {
+        List<Text.TextBlock> textBlocks = util.resourceToTextBlocks(R.drawable.screenshot4);
+        OcrHelper.Data data = ocrHelper.convertItemScreenshot(textBlocks);
 
         OcrHelper.Data expected = OcrHelper.Data.builder()
                 .category(Category.WarWeapon)
@@ -110,11 +109,9 @@ public class TestOcrHelper {
     }
 
     @Test
-    public void testConvertScreenshot5() {
-        Bitmap b = bitmapFrom(R.drawable.screenshot5);
-        assertNotNull("Bitmap shall not be null", b);
-
-        OcrHelper.Data data = ocrHelper.convertItemScreenshot(b);
+    public void testConvertScreenshot5() throws InterruptedException {
+        List<Text.TextBlock> textBlocks = util.resourceToTextBlocks(R.drawable.screenshot5);
+        OcrHelper.Data data = ocrHelper.convertItemScreenshot(textBlocks);
 
         OcrHelper.Data expected = OcrHelper.Data.builder()
                 .category(Category.WarEquipment)
@@ -126,47 +123,57 @@ public class TestOcrHelper {
     }
 
     @Test
-    public void testAnalyseScreenshot_CraftAnimation() {
-        Bitmap b = bitmapFrom(R.drawable.screenshot_no_buttons);
-        assertNotNull("Bitmap shall not be null", b);
+    public void testAnalyseScreenshot_CraftAnimation() throws InterruptedException {
+        List<Text.TextBlock> textBlocks = util.resourceToTextBlocks(R.drawable.screenshot_no_buttons);
+        OcrHelper.AnalysisResult ar = ocrHelper.toAnalyseResult(textBlocks);
 
-        OcrHelper.AnalysisResult ar = ocrHelper.analyseScreenshot(b);
         assertThat(ar.getScreen(), equalTo(OcrHelper.Screen.ARTIFACT_CRAFT_ANIMATION));
     }
 
     @Test
-    public void testAnalyseScreenshot_ConfirmButton() {
-        Bitmap b = bitmapFrom(R.drawable.screenshot_confirm_button);
-        assertNotNull("Bitmap shall not be null", b);
+    public void testAnalyseScreenshot_ConfirmButton() throws InterruptedException {
+        List<Text.TextBlock> textBlocks = util.resourceToTextBlocks(R.drawable.screenshot_confirm_button);
+        OcrHelper.AnalysisResult ar = ocrHelper.toAnalyseResult(textBlocks);
 
-        OcrHelper.AnalysisResult ar = ocrHelper.analyseScreenshot(b);
         assertThat(ar.getScreen(), equalTo(OcrHelper.Screen.ARTIFACT_DESTROY_DIALOG));
     }
 
     @Test
-    public void testAnalyseScreenshot_FullyLoaded() {
-        Bitmap b = bitmapFrom(R.drawable.screenshot_fully_loaded);
-        assertNotNull("Bitmap shall not be null", b);
+    public void testAnalyseScreenshot_FullyLoaded() throws InterruptedException {
+        List<Text.TextBlock> textBlocks = util.resourceToTextBlocks(R.drawable.screenshot_fully_loaded);
+        OcrHelper.AnalysisResult ar = ocrHelper.toAnalyseResult(textBlocks);
 
-        OcrHelper.AnalysisResult ar = ocrHelper.analyseScreenshot(b);
         assertThat(ar.getScreen(), equalTo(OcrHelper.Screen.ARTIFACT_FULLY_LOADED));
     }
 
     @Test
-    public void testBlubb() {
-        Bitmap b = bitmapFrom(R.drawable.test2);
-        assertNotNull("Bitmap shall not be null", b);
+    public void testBlubb() throws InterruptedException {
+//        List<Text.TextBlock> textBlocks = util.resourceToTextBlocks(R.drawable.test2);
+//
+//        OcrHelper.Data d = ocrHelper.convertItemScreenshot(textBlocks);
+        List<String> names = Lists.newArrayList();
+        names.add("before: " + Thread.currentThread().getId());
 
-        OcrHelper.Data d = ocrHelper.convertItemScreenshot(b);
-        System.out.println("Blubb");
+        Bitmap b = util.bitmapFrom(R.drawable.screenshot_fully_loaded);
+        ocrHelper.analyseScreenshot(b, text -> {
+            synchronized (names) {
+                names.add("success: " + Thread.currentThread().getId());
+            }
+        }, e -> {
+            synchronized (names) {
+                names.add("exception: " + Thread.currentThread().getId());
+            }
+        });
 
-    }
+        synchronized (names) {
+            names.add("after: " + Thread.currentThread().getId());
+        }
 
-    private Bitmap bitmapFrom(int redId) {
-        BitmapFactory.Options opts = new BitmapFactory.Options();
-        opts.inScaled = false;
+        while (names.size() < 3) {
+            Thread.sleep(500);
+        }
 
-        return BitmapFactory.decodeResource(appContext.getResources(), redId, opts);
+        Log.i("names", names.toString());
     }
 
 }

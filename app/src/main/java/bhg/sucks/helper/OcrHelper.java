@@ -6,20 +6,22 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Build;
 import android.util.Log;
-import android.util.SparseArray;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.util.Pair;
 
-import com.google.android.gms.vision.Frame;
-import com.google.android.gms.vision.text.TextBlock;
-import com.google.android.gms.vision.text.TextRecognizer;
+import com.google.android.gms.tasks.Task;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
+import com.google.mlkit.vision.common.InputImage;
+import com.google.mlkit.vision.text.Text;
+import com.google.mlkit.vision.text.TextRecognition;
+import com.google.mlkit.vision.text.TextRecognizer;
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
 
 import org.bitbucket.cowwoc.diffmatchpatch.DiffMatchPatch;
 
@@ -29,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -65,7 +68,7 @@ public class OcrHelper {
 
     public OcrHelper(Context context) {
         this.context = context;
-        this.textRecognizer = new TextRecognizer.Builder(context).build();
+        this.textRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
         this.diffMatchPatch = new DiffMatchPatch();
         this.gson = new Gson();
         this.categoryLookup = Arrays.stream(Category.values())
@@ -85,19 +88,18 @@ public class OcrHelper {
     /**
      * Tests, if the '5 Artifacts' button is visible.
      *
-     * @param bitmap Screenshot to scan
-     * @return A {@link Point} to click the button or <i>null</i>, if not found.
+     * @param bitmap      Screenshot to scan
+     * @param handlePoint A {@link Point} to click the button or <i>null</i>, if not found.
      */
-    public Point isFiveArtifactsAvailable(Bitmap bitmap) {
-        if (!textRecognizer.isOperational()) {
-            return null;
-        }
+    public void isFiveArtifactsAvailable(Bitmap bitmap, Consumer<Point> handlePoint) {
+        InputImage image = InputImage.fromBitmap(bitmap, 0);
+        Task<Text> result = textRecognizer.process(image)
+                .addOnSuccessListener(visionText -> {
+                    List<Text.TextBlock> textBlocks = visionText.getTextBlocks();
 
-        Frame frame = new Frame.Builder()
-                .setBitmap(bitmap)
-                .build();
-        SparseArray<TextBlock> textBlocks = textRecognizer.detect(frame);
-        return isFiveArtifactsAvailable(textBlocks);
+                    Point p = isFiveArtifactsAvailable(textBlocks);
+                    handlePoint.accept(p);
+                });
     }
 
     /**
@@ -106,11 +108,9 @@ public class OcrHelper {
      * @param textBlocks Detected text blocks
      * @return A {@link Point} to click the button or <i>null</i>, if not found.
      */
-    public Point isFiveArtifactsAvailable(SparseArray<TextBlock> textBlocks) {
-        for (int i = 0; i < textBlocks.size(); i++) {
-            TextBlock textBlock = textBlocks.valueAt(i);
-
-            if (textBlock.getValue().equals(fiveArtifactsButtonText)) {
+    public Point isFiveArtifactsAvailable(List<Text.TextBlock> textBlocks) {
+        for (Text.TextBlock textBlock : textBlocks) {
+            if (textBlock.getText().equals(fiveArtifactsButtonText)) {
                 return textBlock.getCornerPoints()[0]; // Top-left point of text should be fine here
             }
         }
@@ -121,19 +121,18 @@ public class OcrHelper {
     /**
      * Tests, if the 'sell' button is visible.
      *
-     * @param bitmap Screenshot to scan
-     * @return A {@link Point} to click 'sell' or <i>null</i>, if not found.
+     * @param bitmap      Screenshot to scan
+     * @param handlePoint A {@link Point} to click 'sell' or <i>null</i>, if not found.
      */
-    public Point isSellAvailable(Bitmap bitmap) {
-        if (!textRecognizer.isOperational()) {
-            return null;
-        }
+    public void isSellAvailable(Bitmap bitmap, Consumer<Point> handlePoint) {
+        InputImage image = InputImage.fromBitmap(bitmap, 0);
+        Task<Text> result = textRecognizer.process(image)
+                .addOnSuccessListener(visionText -> {
+                    List<Text.TextBlock> textBlocks = visionText.getTextBlocks();
 
-        Frame frame = new Frame.Builder()
-                .setBitmap(bitmap)
-                .build();
-        SparseArray<TextBlock> textBlocks = textRecognizer.detect(frame);
-        return isSellAvailable(textBlocks);
+                    Point p = isSellAvailable(textBlocks);
+                    handlePoint.accept(p);
+                });
     }
 
     /**
@@ -142,11 +141,9 @@ public class OcrHelper {
      * @param textBlocks Detected text blocks
      * @return A {@link Point} to click 'sell' or <i>null</i>, if not found.
      */
-    public Point isSellAvailable(SparseArray<TextBlock> textBlocks) {
-        for (int i = 0; i < textBlocks.size(); i++) {
-            TextBlock textBlock = textBlocks.valueAt(i);
-
-            if (textBlock.getValue().startsWith(sellButtonPrefix)) {
+    public Point isSellAvailable(List<Text.TextBlock> textBlocks) {
+        for (Text.TextBlock textBlock : textBlocks) {
+            if (textBlock.getText().startsWith(sellButtonPrefix)) {
                 return textBlock.getCornerPoints()[0]; // Top-left point of text should be fine here
             }
         }
@@ -157,19 +154,18 @@ public class OcrHelper {
     /**
      * Tests, if the 'Confirm' button is visible.
      *
-     * @param bitmap Screenshot to scan
-     * @return A {@link Point} to click the button or <i>null</i>, if not found.
+     * @param bitmap      Screenshot to scan
+     * @param handlePoint A {@link Point} to click the button or <i>null</i>, if not found.
      */
-    public Point isConfirmAvailable(Bitmap bitmap) {
-        if (!textRecognizer.isOperational()) {
-            return null;
-        }
+    public void isConfirmAvailable(Bitmap bitmap, Consumer<Point> handlePoint) {
+        InputImage image = InputImage.fromBitmap(bitmap, 0);
+        Task<Text> result = textRecognizer.process(image)
+                .addOnSuccessListener(visionText -> {
+                    List<Text.TextBlock> textBlocks = visionText.getTextBlocks();
 
-        Frame frame = new Frame.Builder()
-                .setBitmap(bitmap)
-                .build();
-        SparseArray<TextBlock> textBlocks = textRecognizer.detect(frame);
-        return isConfirmAvailable(textBlocks);
+                    Point p = isConfirmAvailable(textBlocks);
+                    handlePoint.accept(p);
+                });
     }
 
     /**
@@ -178,11 +174,9 @@ public class OcrHelper {
      * @param textBlocks Detected text blocks
      * @return A {@link Point} to click the button or <i>null</i>, if not found.
      */
-    public Point isConfirmAvailable(SparseArray<TextBlock> textBlocks) {
-        for (int i = 0; i < textBlocks.size(); i++) {
-            TextBlock textBlock = textBlocks.valueAt(i);
-
-            if (textBlock.getValue().equals(confirmButtonText)) {
+    public Point isConfirmAvailable(List<Text.TextBlock> textBlocks) {
+        for (Text.TextBlock textBlock : textBlocks) {
+            if (textBlock.getText().equals(confirmButtonText)) {
                 return textBlock.getCornerPoints()[0]; // Top-left point of text should be fine here
             }
         }
@@ -193,19 +187,18 @@ public class OcrHelper {
     /**
      * Tests, if the 'Continue' button is visible.
      *
-     * @param bitmap Screenshot to scan
-     * @return A {@link Point} to click the button or <i>null</i>, if not found.
+     * @param bitmap      Screenshot to scan
+     * @param handlePoint A {@link Point} to click the button or <i>null</i>, if not found.
      */
-    public Point isContinueAvailable(Bitmap bitmap) {
-        if (!textRecognizer.isOperational()) {
-            return null;
-        }
+    public void isContinueAvailable(Bitmap bitmap, Consumer<Point> handlePoint) {
+        InputImage image = InputImage.fromBitmap(bitmap, 0);
+        Task<Text> result = textRecognizer.process(image)
+                .addOnSuccessListener(visionText -> {
+                    List<Text.TextBlock> textBlocks = visionText.getTextBlocks();
 
-        Frame frame = new Frame.Builder()
-                .setBitmap(bitmap)
-                .build();
-        SparseArray<TextBlock> textBlocks = textRecognizer.detect(frame);
-        return isContinueAvailable(textBlocks);
+                    Point p = isContinueAvailable(textBlocks);
+                    handlePoint.accept(p);
+                });
     }
 
     /**
@@ -214,11 +207,9 @@ public class OcrHelper {
      * @param textBlocks Detected text blocks
      * @return A {@link Point} to click the button or <i>null</i>, if not found.
      */
-    public Point isContinueAvailable(SparseArray<TextBlock> textBlocks) {
-        for (int i = 0; i < textBlocks.size(); i++) {
-            TextBlock textBlock = textBlocks.valueAt(i);
-
-            if (textBlock.getValue().equals(continueButtonText)) {
+    public Point isContinueAvailable(List<Text.TextBlock> textBlocks) {
+        for (Text.TextBlock textBlock : textBlocks) {
+            if (textBlock.getText().equals(continueButtonText)) {
                 return textBlock.getCornerPoints()[0]; // Top-left point of text should be fine here
             }
         }
@@ -227,30 +218,32 @@ public class OcrHelper {
     }
 
     /**
-     * @param bitmap Screenshot of a museum item with its skills
-     * @return Data-Object with details about the item or <i>null</i>, if details couldn't be read
+     * @param bitmap     Screenshot of a museum item with its skills
+     * @param handleData Data-Object with details about the item or <i>null</i>, if details couldn't be read
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public Data convertItemScreenshot(Bitmap bitmap) {
-        if (!textRecognizer.isOperational()) {
-            Log.d(TAG, "TextRecognizer is not operational!");
-            return null;
-        }
-
+    public void convertItemScreenshot(Bitmap bitmap, Consumer<Data> handleData) {
         Stopwatch swDetectImage = Stopwatch.createStarted();
-        Frame frame = new Frame.Builder()
-                .setBitmap(bitmap)
-                .build();
-        SparseArray<TextBlock> textBlocks = textRecognizer.detect(frame); // Duration about 1.4s (emulator) and 220ms (OnePlus 5T)
-        swDetectImage.stop();
-        Log.d(TAG, "Detecting image in " + swDetectImage);
-        return convertItemScreenshot(textBlocks);
+        InputImage image = InputImage.fromBitmap(bitmap, 0);
+        Task<Text> result = textRecognizer.process(image)
+                .addOnSuccessListener(visionText -> {
+                    List<Text.TextBlock> textBlocks = visionText.getTextBlocks();
+
+                    Data d = convertItemScreenshot(textBlocks);
+
+                    swDetectImage.stop();
+                    // textRecognizer.detect(frame); // Duration about 1.4s (emulator) and 220ms (OnePlus 5T)
+                    Log.d(TAG, "Detecting/processing image in " + swDetectImage);
+
+                    handleData.accept(d);
+                });
+
     }
 
-    public Data convertItemScreenshot(SparseArray<TextBlock> textBlocks) {
+    public Data convertItemScreenshot(List<Text.TextBlock> textBlocks) {
         final List<String> texts = Lists.newArrayList();
-        for (int i = 0; i < textBlocks.size(); i++) {
-            texts.add(textBlocks.valueAt(i).getValue());
+        for (Text.TextBlock textBlock : textBlocks) {
+            texts.add(textBlock.getText());
         }
 
         Stopwatch swParsingTextBlocks = Stopwatch.createStarted();
@@ -515,26 +508,31 @@ public class OcrHelper {
             return LEVEL_COULD_NOT_BE_DETERMINED;
         }
 
-        if (sellForText.contains("25\n") || sellForText.contains("26\n") || sellForText.contains("27\n") || sellForText.contains("+30\n")) { // oder 26, 27, 30
-            return 1;
+        if (sellForText.contains("300\n") || sellForText.contains("315\n") || sellForText.contains("330\n") || sellForText.contains("360\n")) {
+            return 3;
         }
 
-        if (sellForText.contains("90\n") || sellForText.contains("94\n") || sellForText.contains("99\n") || sellForText.contains("108\n")) { // oder 94, 99, 108
+        if (sellForText.contains("90\n") || sellForText.contains("94\n") || sellForText.contains("99\n") || sellForText.contains("108\n")) {
             return 2;
         }
 
-        if (sellForText.contains("300\n") || sellForText.contains("315\n") || sellForText.contains("330\n") || sellForText.contains("360\n")) { // oder 315, 330, 360
-            return 3;
+        if (sellForText.contains("25\n") || sellForText.contains("26\n") || sellForText.contains("27\n") || sellForText.contains("30\n")) {
+            return 1;
         }
 
         return LEVEL_COULD_NOT_BE_DETERMINED;
     }
 
-    public AnalysisResult analyseScreenshot(Bitmap bitmap) {
-        Frame frame = new Frame.Builder()
-                .setBitmap(bitmap)
-                .build();
-        SparseArray<TextBlock> textBlocks = textRecognizer.detect(frame);
+    public void analyseScreenshot(Bitmap bitmap, Consumer<Text> handleSuccess, Consumer<Exception> handleFailure) {
+        Log.d(TAG, "analyseScreenshot > Send image through textRecognizer");
+        InputImage image = InputImage.fromBitmap(bitmap, 0);
+        textRecognizer.process(image)
+                .addOnSuccessListener(handleSuccess::accept)
+                .addOnFailureListener(handleFailure::accept);
+    }
+
+    public AnalysisResult toAnalyseResult(List<Text.TextBlock> textBlocks) {
+        Log.d(TAG, "toAnalyseResult > Create 'AnalysisResult'");
 
         Screen s;
         if (isConfirmAvailable(textBlocks) != null) {
@@ -545,8 +543,8 @@ public class OcrHelper {
             s = Screen.ARTIFACT_FULLY_LOADED;
         } else {
             final List<String> texts = Lists.newArrayList();
-            for (int i = 0; i < textBlocks.size(); i++) {
-                texts.add(textBlocks.valueAt(i).getValue());
+            for (Text.TextBlock textBlock : textBlocks) {
+                texts.add(textBlock.getText());
             }
 
             Pair<Integer, Category> pair = evaluateCategory(texts);
@@ -578,12 +576,15 @@ public class OcrHelper {
 
     }
 
+    /**
+     * Information about the current screen and its texts.
+     */
     @Getter
     @Builder
     public static class AnalysisResult {
 
-        private final Screen screen;
-        private final SparseArray<TextBlock> textBlocks;
+        private final OcrHelper.Screen screen;
+        private final List<Text.TextBlock> textBlocks;
 
     }
 

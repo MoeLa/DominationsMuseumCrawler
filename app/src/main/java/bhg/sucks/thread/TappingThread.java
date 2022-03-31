@@ -2,13 +2,13 @@ package bhg.sucks.thread;
 
 import android.graphics.Bitmap;
 import android.util.Log;
-import android.util.SparseArray;
 
 import androidx.annotation.VisibleForTesting;
 
-import com.google.android.gms.vision.text.TextBlock;
+import com.google.mlkit.vision.text.Text;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import bhg.sucks.helper.OcrHelper;
 import bhg.sucks.helper.ScreenshotHelper;
@@ -28,68 +28,166 @@ public class TappingThread extends Thread {
     private final TapHelper tapHelper;
     private final TappingThreadHelper tappingThreadHelper;
 
+    private final AtomicInteger counter;
+
     public TappingThread(Delegate d) {
         this.delegate = d;
         this.tapHelper = new TapHelper(d);
         this.tappingThreadHelper = new TappingThreadHelper();
+
+        this.counter = new AtomicInteger(0);
     }
 
     @Override
     public void run() {
-        int hurryAnimationCounter = 0;
+        runInternal();
+    }
 
-        while (delegate.isRunning()) {
-            Log.d(TAG, "run > Screenshot to analyse next step");
+    private void runInternal() {
+        if (delegate.isRunning()) {
+            Log.d(TAG, "runInternal > Take screenshot");
             Bitmap bitmap = delegate.getScreenshotHelper().takeScreenshot3();
-            OcrHelper.AnalysisResult ar = delegate.getOcrHelper().analyseScreenshot(bitmap);
+            delegate.getOcrHelper().analyseScreenshot(bitmap, this::onRecognizeSuccess, this::onRecognizeError);
+        } else {
+            Log.d(TAG, "runInternal > Thread not running anymore");
+        }
+    }
 
-            switch (ar.getScreen()) {
-                case ARTIFACT_CRAFTING_HOME:
-                    Log.d(TAG, "run > Tap '5 Artifacts'");
+    private void onRecognizeSuccess(Text text) {
+        Log.d(TAG, "onRecognizeSuccess > Analyse texts");
+        OcrHelper.AnalysisResult ar = delegate.getOcrHelper().toAnalyseResult(text.getTextBlocks());
+        analyzeResult(ar);
+    }
+
+    private void onRecognizeError(Exception e) {
+        Log.d(TAG, "onRecognizeError > An error occurred");
+        e.printStackTrace();
+    }
+
+    /**
+     * React on a screen that could be captured/read/parsed as wished and the corresponding action
+     * has been performed. Meaning: Continue by capturing the next screen.
+     */
+    private void done() {
+        counter.set(0);
+        runInternal();
+    }
+
+    /**
+     * React on a screen that somehow needs to be dismissed and recaptured: Increment the counter
+     * and try again. If the counter gets too high, try something else or abort the thread.
+     */
+    private void repeat(OcrHelper.Screen s) {
+        counter.incrementAndGet();
+
+        switch (s) {
+            case ARTIFACT_CRAFT_ANIMATION:
+                if (counter.get() < 3) {
+                    Log.d(TAG, "repeat > ARTIFACT_CRAFT_ANIMATION > Hurry animation");
+                    tapHelper.tapHurryAnimation();
+                } else if (counter.get() < 6) {
+                    Log.d(TAG, "repeat > ARTIFACT_CRAFT_ANIMATION > Tap '5 Artifacts'");
                     tapHelper.tapFiveArtifacts();
-                    break;
-                case ARTIFACT_CRAFT_ANIMATION:
-                    hurryAnimationCounter++;
-                    Log.d(TAG, "run > Hurry animation. Counter: " + hurryAnimationCounter);
-                    if (hurryAnimationCounter < 3) {
-                        boolean b = tapHelper.tapHurryAnimation();
-                        Log.d(TAG, "run > Hurry animation > result: " + b);
-                    } else {
-                        hurryAnimationCounter = 0;
-                        Log.d(TAG, "run > Try alternative: Tap '5 Artifacts'");
-                        tapHelper.tapFiveArtifacts();
-                    }
-                    break;
-                case ARTIFACT_FULLY_LOADED:
-                    if (keepArtifact(ar.getTextBlocks())) {
-                        Log.d(TAG, "run > Tap 'Continue'");
-                        tapHelper.tapContinue();
-                    } else {
-                        Log.d(TAG, "run > Sell artifact");
-                        tapHelper.tapSell();
-                        tapHelper.tapConfirm();
-                    }
-                    break;
-                case ARTIFACT_DESTROY_DIALOG:
-                    Log.d(TAG, "run > Tap 'Confirm'");
-                    tapHelper.tapConfirm();
-                    break;
-                default:
-                    Log.d(TAG, "run > Exiting loop, since screen could not be detected.");
+                } else {
+                    Log.d(TAG, "repeat > ARTIFACT_CRAFT_ANIMATION > Abort thread!");
                     delegate.setRunning(false);
-                    break;
-            }
+                    return;
+                }
+                break;
+            case ARTIFACT_FULLY_LOADED:
+                if (counter.get() < 3) {
+                    Log.d(TAG, "repeat > ARTIFACT_FULLY_LOADED > Try again! Counter: " + counter);
+                } else {
+                    Log.d(TAG, "repeat > ARTIFACT_FULLY_LOADED > Keep artifact! Counter: " + counter);
+                    tapHelper.tapContinue();
+
+                    done();
+                    return;
+                }
+                break;
+            case COULD_NOT_DETERMINE:
+                if (counter.get() < 3) {
+                    Log.d(TAG, "repeat > COULD_NOT_DETERMINE > Try again! Counter: " + counter);
+                } else {
+                    Log.d(TAG, "repeat > COULD_NOT_DETERMINE > Abort thread! Counter: " + counter);
+                    delegate.setRunning(false);
+                    return;
+                }
+            default:
+                // Nothing
+                break;
+        }
+
+        runInternal();
+    }
+
+    /**
+     * Decide on whether the screen which tap(s) to be made.
+     *
+     * @param ar {@link bhg.sucks.helper.OcrHelper.AnalysisResult} providing the current screen and its texts.
+     */
+    @VisibleForTesting
+    void analyzeResult(OcrHelper.AnalysisResult ar) {
+        switch (ar.getScreen()) {
+            case ARTIFACT_CRAFTING_HOME:
+                Log.d(TAG, "analyzeResult > ARTIFACT_CRAFTING_HOME > Tap '5 Artifacts'");
+                tapHelper.tapFiveArtifacts();
+
+                done();
+                break;
+            case ARTIFACT_CRAFT_ANIMATION:
+                Log.d(TAG, "analyzeResult > ARTIFACT_CRAFT_ANIMATION > Counter: " + counter);
+
+                repeat(OcrHelper.Screen.ARTIFACT_CRAFT_ANIMATION);
+                break;
+            case ARTIFACT_FULLY_LOADED:
+                Boolean keepArtifact = keepArtifact(ar.getTextBlocks());
+                if (keepArtifact == null) {
+                    Log.d(TAG, "analyzeResult > ARTIFACT_FULLY_LOADED > Repeat! Counter: " + counter);
+
+                    repeat(OcrHelper.Screen.ARTIFACT_FULLY_LOADED);
+                } else if (keepArtifact) {
+                    Log.d(TAG, "analyzeResult > ARTIFACT_FULLY_LOADED > Tap 'Continue'");
+                    tapHelper.tapContinue();
+
+                    done();
+                } else {
+                    Log.d(TAG, "analyzeResult > ARTIFACT_FULLY_LOADED > Sell artifact");
+                    tapHelper.tapSell();
+                    tapHelper.tapConfirm();
+
+                    done();
+                }
+                break;
+            case ARTIFACT_DESTROY_DIALOG:
+                Log.d(TAG, "analyzeResult > ARTIFACT_DESTROY_DIALOG > Tap 'Confirm'");
+                tapHelper.tapConfirm();
+
+                done();
+                break;
+            case COULD_NOT_DETERMINE: // Intentionally jump into default case
+            default:
+                if (counter.get() < 3) {
+                    Log.d(TAG, "analyzeResult > Screen could not be determined. Repeat! Counter: " + counter);
+                    repeat(OcrHelper.Screen.COULD_NOT_DETERMINE);
+                } else {
+                    Log.d(TAG, "analyzeResult > Screen could not be determined. Stop thread! Counter: " + counter);
+                    delegate.setRunning(false);
+                }
+                break;
         }
     }
 
     /**
-     * @return <i>true</i>, if the artifact should be kept meaning the 'continue' button should be tapped
+     * @return <i>true</i>, if the artifact should be kept meaning the 'continue' button should be tapped<br/>
+     * <i>false</i>, if the artifact should be dismissed meaning the 'sell' button should be tapped<br/>
+     * <i>null</i>, if the artifact's data was read completely meaning it should be read again
      */
     @VisibleForTesting
-    public boolean keepArtifact(SparseArray<TextBlock> textBlocks) {
+    public Boolean keepArtifact(List<Text.TextBlock> textBlocks) {
         if (!delegate.isRunning()) {
             // Quick exit, when user stopped crawling
-            return true;
+            return null;
         }
 
         List<KeepRule> keepRules = delegate.getKeepRules();
@@ -99,29 +197,14 @@ public class TappingThread extends Thread {
             return false;
         }
 
-        // First try with detected text blocks from parameter
         OcrHelper.Data data = delegate.getOcrHelper().convertItemScreenshot(textBlocks);
         if (data.isComplete()) {
             return (tappingThreadHelper.keepingBecauseOfLevel(data) && delegate.isKeepThreeStarArtifacts()) ||
                     tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
         }
 
-        // Some more tries with new screenshots, since animation might have blocked some text
-        for (int i = 0; i < 3; i++) {
-            Log.d(TAG, "keepArtifact > Screenshot for converting item");
-            Bitmap bitmap = delegate.getScreenshotHelper().takeScreenshot3();
-            data = delegate.getOcrHelper().convertItemScreenshot(bitmap);
-
-            if (data.isComplete()) {
-                return (tappingThreadHelper.keepingBecauseOfLevel(data) && delegate.isKeepThreeStarArtifacts()) ||
-                        tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
-            }
-            // else: Loop again
-            Log.d(TAG, "keepArtifact: Next try, neglecting " + data);
-        }
-
-        Log.d(TAG, "keepArtifact > Exiting after failing converting the screenshot three times");
-        return false;
+        Log.d(TAG, "keepArtifact > Data incomplete, try again => " + data);
+        return null;
     }
 
     /**

@@ -42,6 +42,11 @@ public class MainActivity extends LocaleAwareCompatActivity implements AdapterVi
         @Override
         public void onActivityResult(String keepRuleId) {
             KeepRule keepRule = dao.get(keepRuleId);
+            if (keepRule == null) {
+                // Happens, if back button is used
+                return;
+            }
+
             if (keepRule.getPosition() == keepRules.size()) {
                 // New rule created/added
                 keepRules.add(keepRule);
