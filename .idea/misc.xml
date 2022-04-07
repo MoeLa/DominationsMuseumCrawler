@@ -3,12 +3,24 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/layout/activity_create_keep_rule.xml" value="0.264" />
-        <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/layout/activity_main.xml" value="0.4" />
-        <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/layout/item_keep_rule.xml" value="0.4" />
+        <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/drawable/ic_add_black_24dp.xml" value="0.244" />
+        <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/drawable/ic_baseline_arrow_back_24.xml" value="0.244" />
+        <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.1355" />
+        <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/drawable/ic_play_arrow_black_24dp.xml" value="0.244" />
+        <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/drawable/ic_save_black_24dp.xml" value="0.244" />
+        <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/layout/activity_create_keep_rule.xml" value="0.4" />
+        <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/layout/activity_settings.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/layout/autocomplete_list_item.xml" value="0.1" />
+        <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/layout/categoy_list_item.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/layout/item_keep_rule.xml" value="0.264" />
         <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/layout/item_mandatory_skill.xml" value="0.536" />
         <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/layout/item_select_skill.xml" value="0.23981481481481481" />
-        <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/layout/item_skill.xml" value="0.6" />
+        <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/layout/item_skill.xml" value="0.264" />
+        <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/layout/lang_autocomplete_list_item.xml" value="0.16" />
+        <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/menu/top_app_bar.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/menu/top_app_bar_create_keep_rule.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Motte/AndroidStudioProjects/DominationsMuseumCrawler/app/src/main/res/menu/top_app_bar_main.xml" value="0.25416666666666665" />
       </map>
     </option>
   </component>

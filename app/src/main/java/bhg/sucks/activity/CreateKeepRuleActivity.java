@@ -5,15 +5,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Spinner;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -27,6 +32,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import bhg.sucks.R;
+import bhg.sucks.activity.adapter.SkillsAdapter;
+import bhg.sucks.activity.contract.KeepRuleContract;
 import bhg.sucks.converter.SpinnerConverter;
 import bhg.sucks.dao.KeepRuleDAO;
 import bhg.sucks.databinding.ActivityCreateKeepRuleBinding;
@@ -39,7 +46,7 @@ import bhg.sucks.model.Skill;
 /**
  * Activity to define a new {@link KeepRule} or update an existing one.
  */
-public class CreateKeepRuleActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class CreateKeepRuleActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private static final String TAG = "CreateKeepRuleActivity";
     private final Comparator<Skill> SKILL_COMPARATOR = Comparator.comparing(s -> getString(s.getResId()));
@@ -71,7 +78,7 @@ public class CreateKeepRuleActivity extends AppCompatActivity implements Adapter
         this.keepRule = Optional.ofNullable(intent.getStringExtra(KeepRuleContract.KEY))
                 .map(id -> dao.get(id))
                 .orElse(KeepRule.builder()
-                        .name("NewName")
+                        .name("")
                         .category(Category.Weapon)
                         .amountMatches(AmountMatches.FOUR_OF_FIVE)
                         .mandatorySkills(UIHelper.createEmptySkillsMap())
@@ -81,9 +88,29 @@ public class CreateKeepRuleActivity extends AppCompatActivity implements Adapter
         ActivityCreateKeepRuleBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_create_keep_rule);
         binding.setKeepRule(keepRule);
 
-        Spinner categorySpinner = findViewById(R.id.inpCategory);
-        categorySpinner.setSelection(SpinnerConverter.toInt(keepRule.getCategory()));
-        categorySpinner.setOnItemSelectedListener(this);
+        // Important: Do stuff like findViewById etc. AFTER initializing data binding!!!
+        MaterialToolbar toolbar = findViewById(R.id.topAppBarCreateKeepRule);
+        setSupportActionBar(toolbar);
+        if (intent.getStringExtra(KeepRuleContract.KEY) != null) {
+            toolbar.setTitle(R.string.edit_keep_rule);
+        }
+
+        String[] categories = getResources().getStringArray(R.array.array_categories);
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(this, R.layout.autocomplete_list_item, categories);
+        AutoCompleteTextView category = findViewById(R.id.categoryTextView);
+        category.setAdapter(categoryAdapter);
+        category.setText(categories[SpinnerConverter.toInt(keepRule.getCategory())], false);
+        category.setOnItemClickListener(this);
+
+        String[] amountMatchesArray = getResources().getStringArray(R.array.array_amount_matches);
+        ArrayAdapter<String> amountMatchesAdapter = new ArrayAdapter<>(this, R.layout.autocomplete_list_item, amountMatchesArray);
+        AutoCompleteTextView amountMatches = findViewById(R.id.amountMatchesTextView);
+        amountMatches.setAdapter(amountMatchesAdapter);
+        amountMatches.setText(amountMatchesArray[SpinnerConverter.toInt(keepRule.getAmountMatches())], false);
+        amountMatches.setOnItemClickListener((parent, view, position, id) -> {
+            AmountMatches newAmountMatches = SpinnerConverter.toAmountMatches(position);
+            keepRule.setAmountMatches(newAmountMatches);
+        });
 
         // Initializing the recycler views must happen after initializing data binding
         final RecyclerView rvMandatorySkills = findViewById(R.id.rvMandatorySkills);
@@ -95,6 +122,13 @@ public class CreateKeepRuleActivity extends AppCompatActivity implements Adapter
         rvOptionalSkills.setLayoutManager(new LinearLayoutManager(this));
         this.rvOptionalSkillsAdapter = new SkillsAdapter(keepRule, SkillsAdapter.SkillsAdapterKey.OPTIONAL);
         rvOptionalSkills.setAdapter(rvOptionalSkillsAdapter);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.top_app_bar_create_keep_rule, menu);
+        return true;
     }
 
     public void onAddMandatorySkillClicked(View view) {
@@ -194,7 +228,7 @@ public class CreateKeepRuleActivity extends AppCompatActivity implements Adapter
         }
     }
 
-    public void save(View view) {
+    public void save(MenuItem mi) {
         KeepRule ret;
         if (keepRule.getId() == null) {
             // Note: id and position are set in dao.create
@@ -220,13 +254,11 @@ public class CreateKeepRuleActivity extends AppCompatActivity implements Adapter
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Category oldCategory = keepRule.getCategory();
-        Category newCategory = SpinnerConverter.toCategory(position);
-
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         int amountOldMandatorySkills = keepRule.getMandatorySkillsOfCategory().size();
         int amountOldOptionalSkills = keepRule.getOptionalSkillsOfCategory().size();
 
+        Category newCategory = SpinnerConverter.toCategory(position);
         keepRule.setCategory(newCategory); // Setting new category in keep rule
 
         // Reset mandatory skills
@@ -238,11 +270,6 @@ public class CreateKeepRuleActivity extends AppCompatActivity implements Adapter
         rvOptionalSkillsAdapter.notifyItemRangeRemoved(0, amountOldOptionalSkills);
         int amountNewOptionalSkills = keepRule.getOptionalSkillsOfCategory().size();
         rvOptionalSkillsAdapter.notifyItemRangeInserted(0, amountNewOptionalSkills);
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-        // empty by design
     }
 
 }

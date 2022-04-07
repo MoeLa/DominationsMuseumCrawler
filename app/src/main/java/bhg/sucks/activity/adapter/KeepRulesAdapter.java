@@ -1,4 +1,4 @@
-package bhg.sucks.activity;
+package bhg.sucks.activity.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,6 +14,7 @@ import net.steamcrafted.materialiconlib.MaterialIconView;
 import java.util.List;
 
 import bhg.sucks.R;
+import bhg.sucks.activity.MainActivity;
 import bhg.sucks.model.KeepRule;
 
 /**

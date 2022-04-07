@@ -196,4 +196,11 @@
     <string name="optional_skills">Optional Skills</string>
     <string name="add_mandatory_skill">Add mandatory skill</string>
     <string name="add_optional_skill">Add optional skill</string>
+    <string name="language">Language</string>
+    <string name="create_keep_rule">Create new Keep Rule</string>
+    <string name="edit_keep_rule">Edit Keep Rule</string>
+    <string name="settings">Settings</string>
+    <string name="german" translatable="false">Deutsch</string>
+    <string name="english" translatable="false">English</string>
+    <string name="keep_rules">Keep Rules</string>
 </resources>

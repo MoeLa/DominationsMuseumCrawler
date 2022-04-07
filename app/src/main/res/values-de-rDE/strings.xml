@@ -174,4 +174,9 @@
     <string name="optional_skills">Optionale Eigenschaften</string>
     <string name="add_mandatory_skill">Pflichteigenschaft hinzufügen</string>
     <string name="add_optional_skill">Optionale Eigenschaft hinzufügen</string>
+    <string name="language">Sprache</string>
+    <string name="create_keep_rule">Erstelle neue Regel</string>
+    <string name="edit_keep_rule">Bearbeite Regel</string>
+    <string name="settings">Einstellungen</string>
+    <string name="keep_rules">"Behalte" Regeln</string>
 </resources>
