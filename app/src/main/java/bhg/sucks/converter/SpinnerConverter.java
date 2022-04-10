@@ -2,8 +2,6 @@ package bhg.sucks.converter;
 
 import androidx.databinding.InverseMethod;
 
-import java.util.Locale;
-
 import bhg.sucks.model.AmountMatches;
 import bhg.sucks.model.Category;
 
@@ -28,26 +26,6 @@ public class SpinnerConverter {
 
     public static AmountMatches toAmountMatches(int ordinal) {
         return AmountMatches.values()[ordinal];
-    }
-
-    @InverseMethod("toLocale")
-    public static int toInt(Locale lang) {
-        if (Locale.GERMANY.equals(lang)) {
-            return 1;
-        }
-
-        return 0;
-    }
-
-    public static Locale toLocale(int ordinal) {
-        switch (ordinal) {
-            case 0:
-                return Locale.US;
-            case 1:
-                return Locale.GERMANY;
-            default:
-                throw new RuntimeException("Unsupported ordinal " + ordinal);
-        }
     }
 
 }
