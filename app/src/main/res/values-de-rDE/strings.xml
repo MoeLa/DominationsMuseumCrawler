@@ -161,6 +161,7 @@
     <string name="AllEnemyDefensiveTowersDamage">Schaden aller feindlichen Verteidigungstürme</string>
     <string name="AllDefensiveTowersDamage">Schaden aller Verteidigungstürme</string>
     <string name="AllDefensiveTowersHitpoints">Trefferpunkte aller Verteidigungstürme</string>
+
     <string name="add_rule">Regel hinzufügen</string>
     <string name="edit_rule">Regel bearbeiten</string>
     <string name="delete_rule">Regel löschen</string>
@@ -178,5 +179,9 @@
     <string name="create_keep_rule">Erstelle neue Regel</string>
     <string name="edit_keep_rule">Bearbeite Regel</string>
     <string name="settings">Einstellungen</string>
-    <string name="keep_rules">"Behalte" Regeln</string>
+    <string name="keep_rules">Regeln</string>
+    <string name="no_root_permission">Keine Root-Rechte</string>
+    <string name="dismiss">GELESEN</string>
+    <string name="no_overlay_permissions">Keine Berechtigung, um über anderen Apps einzublenden</string>
+    <string name="open_settings">ÖFFNE EINSTELLUNGEN</string>
 </resources>

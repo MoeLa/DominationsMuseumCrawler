@@ -9,16 +9,16 @@ import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.MaterialToolbar;
-import com.zeugmasolutions.localehelper.LocaleAwareCompatActivity;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
@@ -30,37 +30,19 @@ import bhg.sucks.helper.ExecuteAsRootBase;
 import bhg.sucks.model.KeepRule;
 import bhg.sucks.service.OverlayIconService;
 
-public class MainActivity extends LocaleAwareCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
-    private static final int APP_PERMISSIONS = 1337;
-
+    private final ActivityResultLauncher<Intent> requestPermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            activityResult -> startServiceInternal(findViewById(R.id.topAppBarMain))
+    );
     private KeepRuleDAO dao;
-    private SharedPreferences sharedPref;
     private List<KeepRule> keepRules;
     private KeepRulesAdapter rvAdapter;
-
-    private final ActivityResultLauncher<String> startCreateKeepRuleActivity = registerForActivityResult(new KeepRuleContract(), new ActivityResultCallback<String>() {
-
-        @Override
-        public void onActivityResult(String keepRuleId) {
-            KeepRule keepRule = dao.get(keepRuleId);
-            if (keepRule == null) {
-                // Happens, if back button is used
-                return;
-            }
-
-            if (keepRule.getPosition() == keepRules.size()) {
-                // New rule created/added
-                keepRules.add(keepRule);
-                rvAdapter.notifyItemInserted(keepRule.getPosition());
-            } else {
-                // Rule updated
-                keepRules.set(keepRule.getPosition(), keepRule);
-                rvAdapter.notifyItemChanged(keepRule.getPosition());
-            }
-        }
-
-    });
+    private final ActivityResultLauncher<String> startCreateKeepRuleActivity = registerForActivityResult(
+            new KeepRuleContract(),
+            this::createKeepRuleResponse
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +52,7 @@ public class MainActivity extends LocaleAwareCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.topAppBarMain);
         setSupportActionBar(toolbar);
 
-        this.sharedPref = getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE);
         this.dao = new KeepRuleDAO(sharedPref);
 
         final RecyclerView rvKeepRules = findViewById(R.id.rvKeepRules);
@@ -81,12 +63,49 @@ public class MainActivity extends LocaleAwareCompatActivity {
 
         boolean rootEnabled = ExecuteAsRootBase.canRunRootCommands();
         if (!rootEnabled) {
-            Toast.makeText(this, "No root permissions", Toast.LENGTH_LONG).show();
+            Snackbar.make(rvKeepRules, R.string.no_root_permission, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.dismiss, v -> {
+                        // Intentionally left empty
+                    })
+                    .show();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.top_app_bar_main, menu);
+        return true;
     }
 
     public void addRule(MenuItem mi) {
         startCreateKeepRuleActivity.launch(null);
+    }
+
+    public void startService(MenuItem mi) {
+        startServiceInternal(findViewById(R.id.rvKeepRules));
+    }
+
+    public void startServiceInternal(View view) {
+        if (Settings.canDrawOverlays(this)) {
+            Intent intent = new Intent(this, OverlayIconService.class);
+            startService(intent);
+
+            finish();
+        } else {
+            Snackbar.make(view, R.string.no_overlay_permissions, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.open_settings, v -> {
+                        Intent myIntent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                        myIntent.setData(Uri.parse("package:" + getPackageName()));
+                        requestPermissionLauncher.launch(myIntent);
+                    })
+                    .show();
+        }
+    }
+
+    public void settings(MenuItem mi) {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     public void editRule(View view) {
@@ -101,43 +120,21 @@ public class MainActivity extends LocaleAwareCompatActivity {
         rvAdapter.notifyItemRemoved(deletedKeepRule.getPosition());
     }
 
-    public void startService(MenuItem mi) {
-        if (Settings.canDrawOverlays(this)) {
-            Intent intent = new Intent(this, OverlayIconService.class);
-            startService(intent);
+    private void createKeepRuleResponse(String keepRuleId) {
+        KeepRule keepRule = dao.get(keepRuleId);
+        if (keepRule == null) {
+            // Happens, if back button is used
+            return;
+        }
 
-            finish();
+        if (keepRule.getPosition() == keepRules.size()) {
+            // New rule created/added
+            keepRules.add(keepRule);
+            rvAdapter.notifyItemInserted(keepRule.getPosition());
         } else {
-            Toast.makeText(this, "No permission to draw overlays", Toast.LENGTH_LONG).show();
-
-            // Open android settings to request overlay permissions
-            Intent myIntent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-            myIntent.setData(Uri.parse("package:" + getPackageName()));
-            startActivityForResult(myIntent, APP_PERMISSIONS);
+            // Rule updated
+            keepRules.set(keepRule.getPosition(), keepRule);
+            rvAdapter.notifyItemChanged(keepRule.getPosition());
         }
     }
-
-    public void settings(MenuItem mi) {
-        Intent intent = new Intent(this, SettingsActivity.class);
-        startActivity(intent);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == APP_PERMISSIONS) {
-            // Response to 'request for overlay permissions'
-            if (Settings.canDrawOverlays(this)) {
-                startService((MenuItem) null);
-            }
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.top_app_bar_main, menu);
-        return true;
-    }
-
 }
