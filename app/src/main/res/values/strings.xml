@@ -192,15 +192,20 @@
     <string name="AllEnemyDefensiveTowersDamage">All Enemy Defensive Towers Damage</string>
     <string name="AllDefensiveTowersDamage">All Defensive Towers Damage</string>
     <string name="AllDefensiveTowersHitpoints">All Defensive Towers Hitpoints</string>
+
     <string name="mandatory_skills">Mandatory Skills</string>
     <string name="optional_skills">Optional Skills</string>
     <string name="add_mandatory_skill">Add mandatory skill</string>
     <string name="add_optional_skill">Add optional skill</string>
     <string name="language">Language</string>
-    <string name="create_keep_rule">Create new Keep Rule</string>
-    <string name="edit_keep_rule">Edit Keep Rule</string>
+    <string name="create_keep_rule">Create new Rule</string>
+    <string name="edit_keep_rule">Edit Rule</string>
     <string name="settings">Settings</string>
     <string name="german" translatable="false">Deutsch</string>
     <string name="english" translatable="false">English</string>
-    <string name="keep_rules">Keep Rules</string>
+    <string name="keep_rules">Rules</string>
+    <string name="no_root_permission">No root permissions</string>
+    <string name="dismiss">DISMISS</string>
+    <string name="no_overlay_permissions">No permission to display over other apps</string>
+    <string name="open_settings">OPEN SETTINGS</string>
 </resources>
