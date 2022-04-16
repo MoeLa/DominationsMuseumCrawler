@@ -14,6 +14,7 @@ import bhg.sucks.helper.OcrHelper;
 import bhg.sucks.helper.ScreenshotHelper;
 import bhg.sucks.helper.TapHelper;
 import bhg.sucks.model.KeepRule;
+import bhg.sucks.model.KeepThreeStarOption;
 
 /**
  * Thread, that performs the tapping steps in an infinite loop.
@@ -191,7 +192,7 @@ public class TappingThread extends Thread {
         }
 
         List<KeepRule> keepRules = delegate.getKeepRules();
-        if (!delegate.isKeepThreeStarArtifacts() && keepRules.isEmpty()) {
+        if (delegate.keepThreeStarOption() == KeepThreeStarOption.No && keepRules.isEmpty()) {
             // Quick exit, when no criteria to keep the artifact exists
             Log.d(TAG, "keepArtifact > Quick Exit");
             return false;
@@ -199,7 +200,7 @@ public class TappingThread extends Thread {
 
         OcrHelper.Data data = delegate.getOcrHelper().convertItemScreenshot(textBlocks);
         if (data.isComplete()) {
-            return (tappingThreadHelper.keepingBecauseOfLevel(data) && delegate.isKeepThreeStarArtifacts()) ||
+            return (tappingThreadHelper.keepingBecauseOfLevel(data, delegate.keepThreeStarOption())) ||
                     tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
         }
 
@@ -220,7 +221,7 @@ public class TappingThread extends Thread {
 
         void setRunning(boolean running);
 
-        boolean isKeepThreeStarArtifacts();
+        KeepThreeStarOption keepThreeStarOption();
 
         List<KeepRule> getKeepRules();
 

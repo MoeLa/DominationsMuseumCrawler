@@ -19,6 +19,10 @@
         <item>4 von 5</item>
         <item>5 von 5</item>
     </string-array>
+    <string name="keep_3_no">Nein</string>
+    <string name="keep_3_food_gold">Nur Nahrung/Gold</string>
+    <string name="keep_3_yes">Ja</string>
+
     <string name="InvadingGeneralsDamage">Invasions-Generäle-Schaden</string>
     <string name="InvadingBazookaDamage">Invasionsbazooka-Schaden</string>
     <string name="OilLooted">Erbeutetes Öl</string>

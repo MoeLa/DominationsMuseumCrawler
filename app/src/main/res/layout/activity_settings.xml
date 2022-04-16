@@ -17,6 +17,28 @@
         app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
         app:title="@string/settings" />
 
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/settingsDebugMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:minHeight="48dp"
+        android:text="@string/debug_mode"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settingsTopAppBar" />
+
+    <TextView
+        android:id="@+id/settingsLanguageHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/language"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settingsTopAppBar" />
+
     <RadioGroup
         android:id="@+id/settingsLanguageGroup"
         android:layout_width="wrap_content"
@@ -30,7 +52,6 @@
             android:id="@+id/settingsLanguageEnglish"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:checked="true"
             android:text="@string/english" />
 
         <RadioButton
@@ -41,36 +62,43 @@
     </RadioGroup>
 
     <TextView
-        android:id="@+id/settingsLanguageHeader"
+        android:id="@+id/settingsKeep3Header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/language"
+        android:text="@string/keep_3_artifacts"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settingsTopAppBar" />
+        app:layout_constraintTop_toBottomOf="@+id/settingsLanguageGroup" />
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/settingsDebugMode"
+    <RadioGroup
+        android:id="@+id/settingsKeep3Group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:minHeight="48dp"
-        android:text="@string/debug_mode"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settingsTopAppBar" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settingsKeep3Header">
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/settingsKeep3StarArtifacts"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:minHeight="48dp"
-        android:text="@string/keep_3_artifacts"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settingsDebugMode" />
+        <RadioButton
+            android:id="@+id/settingsKeep3No"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/keep_3_no" />
+
+        <RadioButton
+            android:id="@+id/settingsKeep3FoodGold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/keep_3_food_gold" />
+
+        <RadioButton
+            android:id="@+id/settingsKeep3Yes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/keep_3_yes" />
+
+    </RadioGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
