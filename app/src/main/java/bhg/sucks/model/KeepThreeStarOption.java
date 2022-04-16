@@ -2,7 +2,6 @@ package bhg.sucks.model;
 
 import lombok.Getter;
 
-@Getter
 public enum KeepThreeStarOption {
     No,
     OnlyFoodGold,
