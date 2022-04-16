@@ -58,7 +58,10 @@ Further, root is used to take the screenshots during crawling. There might by a 
 
 ### Why Should I Keep 3* Artifacts?
 I'm always short of Blueprints. To maximize the Blueprints outcome, you should upgrade each of the three skills to level 2 of any artifact before selling it. Thus, I implemented an option to keep those artifacts.
-Note: Upgrading and selling of those artifacts is not done by the crawler.
+
+Notes:
+* If you're short on oil, you can select to only keep artifacts, that can be upgraded with food and gold. Meaning: Three star war equiment is sold directly, while all other three star artifacts are kept.
+* Upgrading and selling of those artifacts is not done by the crawler.
 
 ### Known Bugs/Issues
  - Do not rotate the phone while the crawling is running. The app is not robust enough to handle that.

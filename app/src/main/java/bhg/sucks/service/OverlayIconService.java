@@ -27,6 +27,7 @@ import bhg.sucks.helper.ExecuteAsRootBase;
 import bhg.sucks.helper.OcrHelper;
 import bhg.sucks.helper.ScreenshotHelper;
 import bhg.sucks.model.KeepRule;
+import bhg.sucks.model.KeepThreeStarOption;
 import bhg.sucks.service.util.ContextUtils;
 import bhg.sucks.thread.TappingThread;
 
@@ -116,8 +117,9 @@ public class OverlayIconService extends Service {
             }
 
             @Override
-            public boolean isKeepThreeStarArtifacts() {
-                return sharedPref.getBoolean(getString(R.string.keep_3_artifacts), false);
+            public KeepThreeStarOption keepThreeStarOption() {
+                String savedString = sharedPref.getString(KeepThreeStarOption.SHARED_PREF_KEY, KeepThreeStarOption.No.name());
+                return KeepThreeStarOption.valueOf(savedString);
             }
 
             @Override

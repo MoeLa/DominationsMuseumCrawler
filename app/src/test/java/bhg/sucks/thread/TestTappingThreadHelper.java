@@ -17,6 +17,7 @@ import bhg.sucks.helper.OcrHelper;
 import bhg.sucks.model.AmountMatches;
 import bhg.sucks.model.Category;
 import bhg.sucks.model.KeepRule;
+import bhg.sucks.model.KeepThreeStarOption;
 import bhg.sucks.model.Skill;
 
 public class TestTappingThreadHelper {
@@ -34,8 +35,19 @@ public class TestTappingThreadHelper {
                 .level(3)
                 .build();
 
-        boolean actual = tappingThreadHelper.keepingBecauseOfLevel(data);
+        boolean actual = tappingThreadHelper.keepingBecauseOfLevel(data, KeepThreeStarOption.Yes);
         assertThat(actual, is(true));
+    }
+
+    @Test
+    public void testKeepingBecauseOfLevel_dismissOilArtifact() {
+        OcrHelper.Data data = OcrHelper.Data.builder()
+                .level(3)
+                .category(Category.WarEquipment)
+                .build();
+
+        boolean actual = tappingThreadHelper.keepingBecauseOfLevel(data, KeepThreeStarOption.OnlyFoodGold);
+        assertThat(actual, is(false));
     }
 
     @Test
@@ -44,7 +56,7 @@ public class TestTappingThreadHelper {
                 .level(2)
                 .build();
 
-        boolean actual = tappingThreadHelper.keepingBecauseOfLevel(data);
+        boolean actual = tappingThreadHelper.keepingBecauseOfLevel(data, KeepThreeStarOption.Yes);
         assertThat(actual, is(false));
     }
 

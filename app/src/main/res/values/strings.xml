@@ -44,6 +44,9 @@
         <item>English</item>
         <item>Deutsch</item>
     </string-array>
+    <string name="keep_3_no">No</string>
+    <string name="keep_3_food_gold">Only food/gold</string>
+    <string name="keep_3_yes">Yes</string>
 
     <!-- Weapon-->
     <string name="EnemyDefenderSpawnTime">Enemy Defender Spawn Time</string>

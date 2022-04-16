@@ -5,7 +5,9 @@ import java.util.List;
 
 import bhg.sucks.helper.OcrHelper;
 import bhg.sucks.model.KeepRule;
+import bhg.sucks.model.KeepThreeStarOption;
 import bhg.sucks.model.Skill;
+import bhg.sucks.model.UpgradeResource;
 
 /**
  * Encapsulates functionality that decides, if an item shall be kept.
@@ -17,8 +19,17 @@ public class TappingThreadHelper {
     /**
      * @return <i>true</i>, if data.level is &gt;=3
      */
-    boolean keepingBecauseOfLevel(OcrHelper.Data data) {
-        return data.getLevel() >= 3;
+    boolean keepingBecauseOfLevel(OcrHelper.Data data, KeepThreeStarOption keepThreeStarOption) {
+        if (keepThreeStarOption == KeepThreeStarOption.No) {
+            return false;
+        }
+
+        if (keepThreeStarOption == KeepThreeStarOption.Yes) {
+            return data.getLevel() >= 3;
+        }
+
+        // else: keepThreeStarOption == KeepThreeStarOptions.OnlyFoodGold
+        return data.getLevel() >= 3 && data.getCategory().getUpgradeResource() != UpgradeResource.Oil;
     }
 
     /**

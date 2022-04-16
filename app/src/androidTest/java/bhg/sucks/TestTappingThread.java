@@ -23,6 +23,7 @@ import bhg.sucks.helper.ScreenshotHelper;
 import bhg.sucks.helper.UIHelper;
 import bhg.sucks.model.AmountMatches;
 import bhg.sucks.model.KeepRule;
+import bhg.sucks.model.KeepThreeStarOption;
 import bhg.sucks.thread.TappingThread;
 import bhg.sucks.util.AndroidTestUtil;
 
@@ -41,13 +42,13 @@ public class TestTappingThread {
     }
 
     @Test
-    public void testKeepThreeStarArtifactSwitchOff() throws InterruptedException {
+    public void testKeepThreeStarArtifactOptionNo() throws InterruptedException {
         // Prepare
         List<Text.TextBlock> textBlocks = util.resourceToTextBlocks(R.drawable.screenshot4);
         OcrHelper.AnalysisResult ar = ocrHelper.toAnalyseResult(textBlocks);
 
         // Prepare - Create TappingThread with 'don't keep 3* artifacts'
-        TappingThread t = new TappingThread(createDelegate(false));
+        TappingThread t = new TappingThread(createDelegate(KeepThreeStarOption.No));
 
         // Execute
         boolean keep = t.keepArtifact(ar.getTextBlocks());
@@ -57,13 +58,13 @@ public class TestTappingThread {
     }
 
     @Test
-    public void testKeepThreeStarArtifactSwitchOn() throws InterruptedException {
+    public void testKeepThreeStarArtifactOptionFoodGold() throws InterruptedException {
         // Prepare
         List<Text.TextBlock> textBlocks = util.resourceToTextBlocks(R.drawable.screenshot4);
         OcrHelper.AnalysisResult ar = ocrHelper.toAnalyseResult(textBlocks);
 
         // Prepare - Create TappingThread with 'don't keep 3* artifacts'
-        TappingThread t = new TappingThread(createDelegate(true));
+        TappingThread t = new TappingThread(createDelegate(KeepThreeStarOption.OnlyFoodGold));
 
         // Execute
         boolean keep = t.keepArtifact(ar.getTextBlocks());
@@ -72,7 +73,23 @@ public class TestTappingThread {
         assertThat(keep, is(true));
     }
 
-    private TappingThread.Delegate createDelegate(boolean keepThreeStarArtifacts) {
+    @Test
+    public void testKeepThreeStarArtifactOptionYes() throws InterruptedException {
+        // Prepare
+        List<Text.TextBlock> textBlocks = util.resourceToTextBlocks(R.drawable.screenshot4);
+        OcrHelper.AnalysisResult ar = ocrHelper.toAnalyseResult(textBlocks);
+
+        // Prepare - Create TappingThread with 'don't keep 3* artifacts'
+        TappingThread t = new TappingThread(createDelegate(KeepThreeStarOption.Yes));
+
+        // Execute
+        boolean keep = t.keepArtifact(ar.getTextBlocks());
+
+        // Check
+        assertThat(keep, is(true));
+    }
+
+    private TappingThread.Delegate createDelegate(KeepThreeStarOption keepThreeStarOption) {
         return new TappingThread.Delegate() {
             @Override
             public ScreenshotHelper getScreenshotHelper() {
@@ -95,8 +112,8 @@ public class TestTappingThread {
             }
 
             @Override
-            public boolean isKeepThreeStarArtifacts() {
-                return keepThreeStarArtifacts;
+            public KeepThreeStarOption keepThreeStarOption() {
+                return keepThreeStarOption;
             }
 
             @Override
