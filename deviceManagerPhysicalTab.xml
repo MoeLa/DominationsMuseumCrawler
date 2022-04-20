@@ -12,6 +12,18 @@
         <target value="Android 11.0" />
         <api value="30" />
       </PhysicalDevice>
+      <PhysicalDevice>
+        <key>
+          <Key>
+            <type value="SERIAL_NUMBER" />
+            <value value="7dc7bdef" />
+          </Key>
+        </key>
+        <lastOnlineTime value="2022-04-20T20:19:35.690439700Z" />
+        <name value="Xiaomi Mi 9 SE" />
+        <target value="Android 10.0" />
+        <api value="29" />
+      </PhysicalDevice>
     </physicalDevices>
   </component>
 </application>
