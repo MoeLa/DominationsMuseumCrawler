@@ -508,15 +508,15 @@ public class OcrHelper {
             return LEVEL_COULD_NOT_BE_DETERMINED;
         }
 
-        if (sellForText.contains("300\n") || sellForText.contains("315\n") || sellForText.contains("330\n") || sellForText.contains("360\n")) {
+        if (sellForText.contains("300") || sellForText.contains("315") || sellForText.contains("330") || sellForText.contains("360")) {
             return 3;
         }
 
-        if (sellForText.contains("90\n") || sellForText.contains("94\n") || sellForText.contains("99\n") || sellForText.contains("108\n")) {
+        if (sellForText.contains("90") || sellForText.contains("94") || sellForText.contains("99") || sellForText.contains("108")) {
             return 2;
         }
 
-        if (sellForText.contains("25\n") || sellForText.contains("26\n") || sellForText.contains("27\n") || sellForText.contains("30\n")) {
+        if (sellForText.contains("25") || sellForText.contains("26") || sellForText.contains("27") || sellForText.contains("30")) {
             return 1;
         }
 
