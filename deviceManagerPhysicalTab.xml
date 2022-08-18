@@ -8,9 +8,9 @@
             <value value="4203deed" />
           </Key>
         </key>
-        <name value="OnePlus ONEPLUS A5010" />
-        <target value="Android API 32" />
-        <api value="32" />
+        <name value="Device" />
+        <target value="Android 1.0" />
+        <api value="1" />
       </PhysicalDevice>
       <PhysicalDevice>
         <key>
@@ -19,7 +19,6 @@
             <value value="7dc7bdef" />
           </Key>
         </key>
-        <lastOnlineTime value="2022-04-20T20:23:53.501267600Z" />
         <name value="Xiaomi Mi 9 SE" />
         <target value="Android 10.0" />
         <api value="29" />
