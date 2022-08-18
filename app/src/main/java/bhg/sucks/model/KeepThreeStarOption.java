@@ -1,6 +1,5 @@
 package bhg.sucks.model;
 
-import lombok.Getter;
 
 public enum KeepThreeStarOption {
     No,

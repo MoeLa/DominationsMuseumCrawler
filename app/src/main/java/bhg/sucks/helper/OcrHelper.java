@@ -38,10 +38,6 @@ import java.util.stream.Collectors;
 import bhg.sucks.R;
 import bhg.sucks.model.Category;
 import bhg.sucks.model.Skill;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Helper for reading the skills and level from an artifact's screenshot.
@@ -579,25 +575,67 @@ public class OcrHelper {
     /**
      * Information about the current screen and its texts.
      */
-    @Getter
-    @Builder
     public static class AnalysisResult {
 
-        private final OcrHelper.Screen screen;
-        private final List<Text.TextBlock> textBlocks;
+        private Screen screen;
+        private List<Text.TextBlock> textBlocks;
 
+        private AnalysisResult(Builder builder) {
+            screen = builder.screen;
+            textBlocks = builder.textBlocks;
+        }
+
+        public static Builder builder() {
+            return new Builder();
+        }
+
+        public Screen getScreen() {
+            return screen;
+        }
+
+        public List<Text.TextBlock> getTextBlocks() {
+            return textBlocks;
+        }
+
+        public static final class Builder {
+            private Screen screen;
+            private List<Text.TextBlock> textBlocks;
+
+            private Builder() {
+            }
+
+            public Builder screen(Screen val) {
+                screen = val;
+                return this;
+            }
+
+            public Builder textBlocks(List<Text.TextBlock> val) {
+                textBlocks = val;
+                return this;
+            }
+
+            public AnalysisResult build() {
+                return new AnalysisResult(this);
+            }
+        }
     }
 
 
-    @Getter
-    @Setter
-    @Builder
-    @EqualsAndHashCode
     public static class Data {
 
         private Category category;
         private List<Skill> skills;
         private int level;
+
+        private Data(Builder builder) {
+            setCategory(builder.category);
+            setSkills(builder.skills);
+            setLevel(builder.level);
+        }
+
+        public static Builder builder() {
+            return new Builder();
+        }
 
         /**
          * A {@link Data} is considered complete, if
@@ -622,6 +660,78 @@ public class OcrHelper {
                     ", skills=" + skills +
                     ", level=" + level +
                     '}';
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Data data = (Data) o;
+
+            if (level != data.level) return false;
+            if (category != data.category) return false;
+            return skills != null ? skills.equals(data.skills) : data.skills == null;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = category != null ? category.hashCode() : 0;
+            result = 31 * result + (skills != null ? skills.hashCode() : 0);
+            result = 31 * result + level;
+            return result;
+        }
+
+        public Category getCategory() {
+            return category;
+        }
+
+        public void setCategory(Category category) {
+            this.category = category;
+        }
+
+        public List<Skill> getSkills() {
+            return skills;
+        }
+
+        public void setSkills(List<Skill> skills) {
+            this.skills = skills;
+        }
+
+        public int getLevel() {
+            return level;
+        }
+
+        public void setLevel(int level) {
+            this.level = level;
+        }
+
+        public static final class Builder {
+            private Category category;
+            private List<Skill> skills;
+            private int level;
+
+            private Builder() {
+            }
+
+            public Builder category(Category val) {
+                category = val;
+                return this;
+            }
+
+            public Builder skills(List<Skill> val) {
+                skills = val;
+                return this;
+            }
+
+            public Builder level(int val) {
+                level = val;
+                return this;
+            }
+
+            public Data build() {
+                return new Data(this);
+            }
         }
     }
 
