@@ -3,9 +3,7 @@ package bhg.sucks.model;
 import android.content.Context;
 
 import bhg.sucks.R;
-import lombok.Getter;
 
-@Getter
 public enum Category {
 
     Weapon(UpgradeResource.Food),
@@ -27,5 +25,7 @@ public enum Category {
         return items[this.ordinal()];
     }
 
-
+    public UpgradeResource getUpgradeResource() {
+        return upgradeResource;
+    }
 }

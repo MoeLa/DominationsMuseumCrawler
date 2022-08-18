@@ -1,9 +1,7 @@
 package bhg.sucks.model;
 
 import bhg.sucks.R;
-import lombok.Getter;
 
-@Getter
 public enum Skill {
 
     EnemyDefenderSpawnTime(Category.Weapon, R.string.EnemyDefenderSpawnTime),
@@ -275,5 +273,13 @@ public enum Skill {
     Skill(Category category, int resId) {
         this.category = category;
         this.resId = resId;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public int getResId() {
+        return resId;
     }
 }
