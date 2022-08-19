@@ -9,7 +9,7 @@ Are you collecting more and more Mysterious Fragments? Are you too lazy to spend
 ### Prerequisites
  - An Android device <ins>with Root</ins>
  - Download and install:
- [![](https://img.shields.io/badge/Dominations%20Museum%20Crawler-v1.1.0-blue)](https://github.com/MoeLa/DominationsMuseumCrawler/releases/download/1.1.0/app-debug.apk)
+ [![](https://img.shields.io/badge/Dominations%20Museum%20Crawler-v1.1.2-blue)](https://github.com/MoeLa/DominationsMuseumCrawler/releases/download/1.1.2/app-debug.apk)
 
 ### How Does The Museum Crawler Work?
 The crawler automates the hard and repetitive work of tapping 'craft 5 artifacts' > hurring the animation > decide to keep/sell the item > repeat four times > start all over again.
