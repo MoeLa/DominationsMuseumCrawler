@@ -173,7 +173,7 @@ public class OcrHelper {
     public Point isConfirmAvailable(List<Text.TextBlock> textBlocks) {
         for (Text.TextBlock textBlock : textBlocks) {
             if (textBlock.getText().equals(confirmButtonText)) {
-                return textBlock.getCornerPoints()[0]; // Top-left point of text should be fine here
+                return textBlock.getCornerPoints()[2]; // Bottom-right point of text should be fine here
             }
         }
 
@@ -537,6 +537,9 @@ public class OcrHelper {
         } else if (isContinueAvailable(textBlocks) != null) {
             // The continue button is visible => Next step would be to sell/continue
             s = Screen.ARTIFACT_FULLY_LOADED;
+        } else if (isFiveArtifactsAvailable(textBlocks) != null) {
+            // '5 Artifacts' button is visible => Assume that we're at crafting home
+            s = Screen.ARTIFACT_CRAFTING_HOME;
         } else {
             final List<String> texts = Lists.newArrayList();
             for (Text.TextBlock textBlock : textBlocks) {
@@ -547,9 +550,6 @@ public class OcrHelper {
             if (pair.first < 4) {
                 // lev is good enough to assume, we're during a crafting animation
                 s = Screen.ARTIFACT_CRAFT_ANIMATION;
-            } else if (isFiveArtifactsAvailable(textBlocks) != null) {
-                // '5 Artifacts' button is visible => Assume that we're at crafting home
-                s = Screen.ARTIFACT_CRAFTING_HOME;
             } else {
                 // lev is too bad to assume, that we're during a crafting animation (where the category is already visible)
                 s = Screen.COULD_NOT_DETERMINE;
