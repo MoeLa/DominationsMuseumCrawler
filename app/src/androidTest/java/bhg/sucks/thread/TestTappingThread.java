@@ -1,4 +1,4 @@
-package bhg.sucks;
+package bhg.sucks.thread;
 
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -18,13 +18,13 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
+import bhg.sucks.R;
 import bhg.sucks.helper.OcrHelper;
 import bhg.sucks.helper.ScreenshotHelper;
 import bhg.sucks.helper.UIHelper;
 import bhg.sucks.model.AmountMatches;
 import bhg.sucks.model.KeepRule;
 import bhg.sucks.model.KeepThreeStarOption;
-import bhg.sucks.thread.TappingThread;
 import bhg.sucks.util.AndroidTestUtil;
 
 @RunWith(AndroidJUnit4.class)
@@ -39,6 +39,18 @@ public class TestTappingThread {
         this.appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         this.ocrHelper = new OcrHelper(appContext);
         this.util = new AndroidTestUtil(appContext, ocrHelper);
+    }
+
+    @Test
+    public void testCraftingHome() throws InterruptedException {
+        // Prepare
+        List<Text.TextBlock> textBlocks = util.resourceToTextBlocks(R.drawable.de_crafting_home);
+
+        // Execute
+        OcrHelper.AnalysisResult ar = ocrHelper.toAnalyseResult(textBlocks);
+
+        // Check
+        assertThat(ar.getScreen(), is(OcrHelper.Screen.ARTIFACT_CRAFTING_HOME));
     }
 
     @Test

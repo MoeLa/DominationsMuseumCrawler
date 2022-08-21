@@ -28,9 +28,9 @@ android {
     defaultConfig {
         applicationId "bhg.sucks.so.we.need.a.dominationsmuseumcrawler"
         minSdkVersion 24
-        targetSdkVersion 32
+        targetSdkVersion 33
         versionCode 1
-        versionName "1.1.1"
+        versionName "1.1.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

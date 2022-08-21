@@ -16,6 +16,8 @@ import java.util.List;
  */
 public abstract class ExecuteAsRootBase {
 
+    private static final String TAG = "ExecuteAsRootBase";
+
     /**
      * Tests, if root commands can be run.
      *
@@ -86,6 +88,7 @@ public abstract class ExecuteAsRootBase {
                 DataOutputStream os = new DataOutputStream(suProcess.getOutputStream());
 
                 // Execute commands that require root access
+                Log.d(TAG, "execute > " + commands);
                 for (String currCommand : commands) {
                     os.writeBytes(currCommand + "\n");
                     os.flush();
