@@ -4,10 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Point;
-import android.os.Build;
 import android.util.Log;
 
-import androidx.annotation.RequiresApi;
 import androidx.core.util.Pair;
 
 import com.google.android.gms.tasks.Task;
@@ -29,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -213,28 +212,28 @@ public class OcrHelper {
         return null;
     }
 
-    /**
-     * @param bitmap     Screenshot of a museum item with its skills
-     * @param handleData Data-Object with details about the item or <i>null</i>, if details couldn't be read
-     */
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public void convertItemScreenshot(Bitmap bitmap, Consumer<Data> handleData) {
-        Stopwatch swDetectImage = Stopwatch.createStarted();
-        InputImage image = InputImage.fromBitmap(bitmap, 0);
-        Task<Text> result = textRecognizer.process(image)
-                .addOnSuccessListener(visionText -> {
-                    List<Text.TextBlock> textBlocks = visionText.getTextBlocks();
-
-                    Data d = convertItemScreenshot(textBlocks);
-
-                    swDetectImage.stop();
-                    // textRecognizer.detect(frame); // Duration about 1.4s (emulator) and 220ms (OnePlus 5T)
-                    Log.d(TAG, "Detecting/processing image in " + swDetectImage);
-
-                    handleData.accept(d);
-                });
-
-    }
+//    /**
+//     * @param bitmap     Screenshot of a museum item with its skills
+//     * @param handleData Data-Object with details about the item or <i>null</i>, if details couldn't be read
+//     */
+//    @RequiresApi(api = Build.VERSION_CODES.N)
+//    public void convertItemScreenshot(Bitmap bitmap, Consumer<Data> handleData) {
+//        Stopwatch swDetectImage = Stopwatch.createStarted();
+//        InputImage image = InputImage.fromBitmap(bitmap, 0);
+//        Task<Text> result = textRecognizer.process(image)
+//                .addOnSuccessListener(visionText -> {
+//                    List<Text.TextBlock> textBlocks = visionText.getTextBlocks();
+//
+//                    Data d = convertItemScreenshot(textBlocks);
+//
+//                    swDetectImage.stop();
+//                    // textRecognizer.detect(frame); // Duration about 1.4s (emulator) and 220ms (OnePlus 5T)
+//                    Log.d(TAG, "Detecting/processing image in " + swDetectImage);
+//
+//                    handleData.accept(d);
+//                });
+//
+//    }
 
     public Data convertItemScreenshot(List<Text.TextBlock> textBlocks) {
         final List<String> texts = Lists.newArrayList();
@@ -267,7 +266,7 @@ public class OcrHelper {
      */
     private void persistSkill(Category cat, String skill) {
         boolean isDebugMode = context.getSharedPreferences(context.getString(R.string.app_name), Context.MODE_PRIVATE)
-                .getBoolean(context.getString(R.string.debug_mode), false);
+                .getBoolean(DebugHelper.DEBUG_MODE_KEY, false);
         if (!isDebugMode) {
             return;
         }
@@ -671,7 +670,7 @@ public class OcrHelper {
 
             if (level != data.level) return false;
             if (category != data.category) return false;
-            return skills != null ? skills.equals(data.skills) : data.skills == null;
+            return Objects.equals(skills, data.skills);
         }
 
         @Override
