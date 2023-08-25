@@ -19,6 +19,7 @@ import org.junit.runner.RunWith;
 import java.util.List;
 
 import bhg.sucks.R;
+import bhg.sucks.helper.DebugHelper;
 import bhg.sucks.helper.OcrHelper;
 import bhg.sucks.helper.ScreenshotHelper;
 import bhg.sucks.helper.UIHelper;
@@ -32,12 +33,14 @@ public class TestTappingThread {
 
     private Context appContext;
     private OcrHelper ocrHelper;
+    private DebugHelper debugHelper;
     private AndroidTestUtil util;
 
     @Before
     public void setup() {
         this.appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         this.ocrHelper = new OcrHelper(appContext);
+        this.debugHelper = new DebugHelper(appContext);
         this.util = new AndroidTestUtil(appContext, ocrHelper);
     }
 
@@ -114,6 +117,11 @@ public class TestTappingThread {
             }
 
             @Override
+            public DebugHelper getDebugHelper() {
+                return debugHelper;
+            }
+
+            @Override
             public boolean isRunning() {
                 return true;
             }
@@ -135,6 +143,11 @@ public class TestTappingThread {
                         .optionalSkills(UIHelper.createEmptySkillsMap())
                         .amountMatches(AmountMatches.FIVE_OF_FIVE)
                         .build());
+            }
+
+            @Override
+            public boolean isDebugMode() {
+                return false;
             }
         };
     }

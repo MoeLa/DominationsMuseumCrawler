@@ -211,4 +211,5 @@
     <string name="dismiss">DISMISS</string>
     <string name="no_overlay_permissions">No permission to display over other apps</string>
     <string name="open_settings">OPEN SETTINGS</string>
+    <string name="rulesthathit" translatable="false">rulesThatHit</string>
 </resources>
