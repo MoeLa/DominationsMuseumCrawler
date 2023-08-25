@@ -39,7 +39,7 @@ public class TappingThread extends Thread {
         this.delegate = d;
         this.tapHelper = new TapHelper(d);
         this.tappingThreadHelper = new TappingThreadHelper();
-        this.debugHelper = new DebugHelper();
+        this.debugHelper = d.getDebugHelper();
 
         this.counter = new AtomicInteger(0);
     }
@@ -224,8 +224,6 @@ public class TappingThread extends Thread {
         return null;
     }
 
-
-
     /**
      * Delegate providing functionality to {@link TappingThread}, that is delivered from the 'outside'.
      */
@@ -234,6 +232,8 @@ public class TappingThread extends Thread {
         ScreenshotHelper getScreenshotHelper();
 
         OcrHelper getOcrHelper();
+
+        DebugHelper getDebugHelper();
 
         boolean isRunning();
 
@@ -244,7 +244,6 @@ public class TappingThread extends Thread {
         List<KeepRule> getKeepRules();
 
         boolean isDebugMode();
-
     }
 
 }
