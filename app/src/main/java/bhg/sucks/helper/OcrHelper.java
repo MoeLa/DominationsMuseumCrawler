@@ -1,7 +1,6 @@
 package bhg.sucks.helper;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.util.Log;
@@ -13,8 +12,6 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
-import com.google.gson.Gson;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.text.Text;
 import com.google.mlkit.vision.text.TextRecognition;
@@ -28,10 +25,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import bhg.sucks.R;
@@ -57,15 +54,19 @@ public class OcrHelper {
     private final Context context;
     private final TextRecognizer textRecognizer;
     private final DiffMatchPatch diffMatchPatch;
-    private final Gson gson;
+    private final DebugHelper debugHelper;
+    private final boolean debugMode;
     private final Map<String, Category> categoryLookup;
     private final Multimap<Category, Skill> skillLookup;
 
-    public OcrHelper(Context context) {
+    private final Pattern newLinePattern = Pattern.compile("\\R");
+
+    public OcrHelper(Context context, DebugHelper debugHelper, boolean debugMode) {
         this.context = context;
         this.textRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
         this.diffMatchPatch = new DiffMatchPatch();
-        this.gson = new Gson();
+        this.debugHelper = debugHelper;
+        this.debugMode = debugMode;
         this.categoryLookup = Arrays.stream(Category.values())
                 .collect(Collectors.toMap(c -> c.getText(context), Function.identity()));
         this.skillLookup = HashMultimap.create();
@@ -265,9 +266,7 @@ public class OcrHelper {
      * </p>
      */
     private void persistSkill(Category cat, String skill) {
-        boolean isDebugMode = context.getSharedPreferences(context.getString(R.string.app_name), Context.MODE_PRIVATE)
-                .getBoolean(DebugHelper.DEBUG_MODE_KEY, false);
-        if (!isDebugMode) {
+        if (!debugMode) {
             return;
         }
 
@@ -276,64 +275,7 @@ public class OcrHelper {
             return;
         }
 
-//        if (cat.ordinal() <= 3) {
-        // Persist skill in shared prefs
-        Stopwatch swUpdatingSharedPrefs = Stopwatch.createStarted();
-        final String key = Optional.ofNullable(cat.getText(context))
-                .orElse(cat.toString());
-
-        SharedPreferences myPrefs = context.getSharedPreferences("skillTexts", Context.MODE_PRIVATE);
-        Set<String> skills = Sets.newTreeSet(Arrays.asList(gson.fromJson(myPrefs.getString(key, "[]"), String[].class)));
-        skills.add(skill);
-
-        String persistString = gson.toJson(skills);
-        myPrefs.edit()
-                .putString(key, persistString)
-                .apply();
-
-        swUpdatingSharedPrefs.stop();
-        Log.d(TAG, "Updating SharedPrefs (adding " + key + "/" + skill + ") in " + swUpdatingSharedPrefs);
-//        } else {
-        // War hall artifact => We're here because of a missing enum
-        // Assumption: There is a main hall enum with the same text (or wrong category in a war hall enum). Go, find it and write everything out.
-//            AtomicInteger countWrites = new AtomicInteger(0);
-//            skillLookup.entries().stream()
-//                    .filter(e -> e.getKey().ordinal() <= 3) // Only keep main hall categories
-//                    .map(e -> Pair.create(e, applyDiffAndLev(context.getString(e.getValue().getResId()), skill)))
-//                    .min(Comparator.comparing(p -> p.second))
-//                    .ifPresent(p -> {
-//                        String potSkillName = "War" + p.first.getValue().toString();
-//                        try {
-//                            Skill skill1 = Skill.valueOf(potSkillName);
-//                            Log.i(TAG, "Skill '" + potSkillName + "' already exists.");
-//                            return;
-//                        } catch (IllegalArgumentException e) {
-//                            // Skill doesn't exist yet => Write it to newSkillsEnums
-//                            File file = new File(context.getCacheDir(), "newSkillEnums.txt");
-//                            CharSink charSink = Files.asCharSink(file, Charset.defaultCharset(), FileWriteMode.APPEND);
-//
-//                            try {
-//                                String x = String.format("// No match for '%s' in %s. Probably add...%n%s%n",
-//                                        skill,
-//                                        cat,
-//                                        String.format("%s(Category.%s, R.string.%s),",
-//                                                potSkillName,
-//                                                cat,
-//                                                p.first.getValue())
-//                                );
-//                                charSink.write(x);
-//                                Log.w(TAG, x);
-//                                countWrites.incrementAndGet();
-//                            } catch (IOException ex) {
-//                                Log.e("Exception", "File write failed: " + p.first.toString());
-//                            }
-//                        }
-//                    });
-//            if (countWrites.get() == 0) {
-//                Log.e(TAG, String.format("No writes for %s/%s", cat, skill));
-//            }
-//        }
-
+        debugHelper.persistSkill(cat, skill);
     }
 
     private Pair<Integer, Category> evaluateCategory(List<String> texts) {
@@ -413,22 +355,42 @@ public class OcrHelper {
         while (idx < texts.size() && ret.size() < 5) {
             Stopwatch swFindSkill = Stopwatch.createStarted();
 
-            String text = texts.get(idx); // Get text
+            // Get the first/next text, assuming it is a skill
+            String text = texts.get(idx);
+
+            // Check for the text containing more than one skill
+            Matcher matcher = newLinePattern.matcher(text);
+            if (matcher.find()) {
+                // text contains a line break
+                String[] token = text.split(newLinePattern.pattern());
+
+                // Continue with first token (instead of whole text)..
+                text = token[0];
+                // ... and enqueue the rest after the current one
+                for (int j = token.length; j > 1; j--) {
+                    texts.add(idx + 1, token[j - 1]);
+                }
+            }
+
+            // Cut off the skill's percentage
             int idxOfLastLetter = lastLetterIn(text);
             if (idxOfLastLetter > 0) {
                 text = text.substring(0, idxOfLastLetter + 1); // Cut off chars beginning at last space
             }
 
+            // Determine (or at least guess) the skill
             Pair<Integer, Skill> bestGuess = Pair.create(Integer.MAX_VALUE, null);
             for (Skill s : availableSkills) {
                 String skillText = context.getString(s.getResId());
                 int lev = applyDiffAndLev(skillText, text);
                 if (lev == 0) {
+                    // Perfect match -> No need to search any further
                     bestGuess = Pair.create(lev, s);
                     break;
                 }
 
                 if (bestGuess.first > lev) {
+                    // Best match so far, but continue trying the other skills
                     bestGuess = Pair.create(lev, s);
                 }
             }
@@ -447,7 +409,7 @@ public class OcrHelper {
                         context.getString(bestGuess.second.getResId()),
                         swFindSkill
                 ));
-                persistSkill(category, text);
+                persistSkill(category, text); // On debug mode: Write text to a file
             } else {
                 // lev too bad => Probably no match => No adding to ret
                 Log.d(TAG, String.format("Evaluating skills. No Match for '%s' => lev = %s, bestGuess = '%s'. Duration %s",
@@ -456,7 +418,7 @@ public class OcrHelper {
                         bestGuess.second == null ? null : context.getString(bestGuess.second.getResId()),
                         swFindSkill
                 ));
-                persistSkill(category, text);
+                persistSkill(category, text); // On debug mode: Write text to a file
             }
 
             idx++;
@@ -576,8 +538,8 @@ public class OcrHelper {
      */
     public static class AnalysisResult {
 
-        private Screen screen;
-        private List<Text.TextBlock> textBlocks;
+        private final Screen screen;
+        private final List<Text.TextBlock> textBlocks;
 
         private AnalysisResult(Builder builder) {
             screen = builder.screen;

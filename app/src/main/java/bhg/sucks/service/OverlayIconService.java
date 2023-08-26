@@ -46,6 +46,7 @@ public class OverlayIconService extends Service {
     private ScreenshotHelper screenshotHelper;
     private OcrHelper ocrHelper;
     private DebugHelper debugHelper;
+    private boolean debugMode;
     private KeepRuleDAO dao;
     private SharedPreferences sharedPref;
 
@@ -64,9 +65,10 @@ public class OverlayIconService extends Service {
 
         ContextUtils ctx = ContextUtils.updateLocale(this, Locale.getDefault());
         this.screenshotHelper = new ScreenshotHelper(this);
-        this.ocrHelper = new OcrHelper(ctx);
         this.debugHelper = new DebugHelper(ctx);
         this.sharedPref = getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE);
+        this.debugMode = sharedPref.getBoolean(DebugHelper.DEBUG_MODE_KEY, false);
+        this.ocrHelper = new OcrHelper(ctx, debugHelper, debugMode);
         this.dao = new KeepRuleDAO(sharedPref);
     }
 
@@ -92,8 +94,6 @@ public class OverlayIconService extends Service {
         overlayData.imageIcon.setImageResource(R.mipmap.green_circle);
 
         TappingThread.Delegate d = new TappingThread.Delegate() {
-
-            private final boolean isDebugMode = sharedPref.getBoolean(DebugHelper.DEBUG_MODE_KEY, false);
 
             @Override
             public ScreenshotHelper getScreenshotHelper() {
@@ -139,7 +139,7 @@ public class OverlayIconService extends Service {
 
             @Override
             public boolean isDebugMode() {
-                return isDebugMode;
+                return debugMode;
             }
 
         };

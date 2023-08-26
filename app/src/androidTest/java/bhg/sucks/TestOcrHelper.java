@@ -20,6 +20,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
+import bhg.sucks.helper.DebugHelper;
 import bhg.sucks.helper.OcrHelper;
 import bhg.sucks.model.Category;
 import bhg.sucks.model.Skill;
@@ -42,7 +43,7 @@ public class TestOcrHelper {
     @Before
     public void setup() {
         this.appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        this.ocrHelper = new OcrHelper(appContext);
+        this.ocrHelper = new OcrHelper(appContext, new DebugHelper(appContext), false);
         this.util = new AndroidTestUtil(appContext, ocrHelper);
     }
 

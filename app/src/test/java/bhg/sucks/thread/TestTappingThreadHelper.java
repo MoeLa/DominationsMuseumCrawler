@@ -1,5 +1,7 @@
 package bhg.sucks.thread;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -12,6 +14,7 @@ import org.junit.Test;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import bhg.sucks.helper.OcrHelper;
 import bhg.sucks.model.AmountMatches;
@@ -77,8 +80,8 @@ public class TestTappingThreadHelper {
                 .optionalSkills(ImmutableMap.of(Category.Weapon, Lists.newArrayList(Skill.GuerrillaHitpoints, Skill.FighterDamage)))
                 .build());
 
-        boolean actual = tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
-        assertThat(actual, is(true));
+        Optional<KeepRule> actual = tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
+        assertThat(actual, isPresent());
     }
 
     @Test
@@ -98,8 +101,8 @@ public class TestTappingThreadHelper {
                 .optionalSkills(ImmutableMap.of(Category.Weapon, Lists.newArrayList(Skill.GuerrillaHitpoints, Skill.FighterDamage)))
                 .build());
 
-        boolean actual = tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
-        assertThat(actual, is(false));
+        Optional<KeepRule>  actual = tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
+        assertThat(actual, isEmpty());
     }
 
     @Test
@@ -120,8 +123,8 @@ public class TestTappingThreadHelper {
                 .optionalSkills(Maps.newHashMap())
                 .build());
 
-        boolean actual = tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
-        assertThat(actual, is(true));
+        Optional<KeepRule>  actual = tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
+        assertThat(actual, isPresent());
     }
 
     @Test
@@ -142,8 +145,8 @@ public class TestTappingThreadHelper {
                 .optionalSkills(Maps.newHashMap())
                 .build());
 
-        boolean actual = tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
-        assertThat(actual, is(false));
+        Optional<KeepRule>  actual = tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
+        assertThat(actual, isEmpty());
     }
 
     @Test
@@ -165,8 +168,8 @@ public class TestTappingThreadHelper {
                         Lists.newArrayList(Skill.APCDamage, Skill.FighterDamage)))
                 .build());
 
-        boolean actual = tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
-        assertThat(actual, is(true));
+        Optional<KeepRule>  actual = tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
+        assertThat(actual, isPresent());
     }
 
     @Test
@@ -188,8 +191,8 @@ public class TestTappingThreadHelper {
                         Lists.newArrayList(Skill.GuerrillaHitpoints, Skill.FighterDamage)))
                 .build());
 
-        boolean actual = tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
-        assertThat(actual, is(false));
+        Optional<KeepRule>  actual = tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
+        assertThat(actual, isEmpty());
     }
 
     @Test
@@ -211,8 +214,8 @@ public class TestTappingThreadHelper {
                         Lists.newArrayList(Skill.GuerrillaHitpoints, Skill.FighterDamage)))
                 .build());
 
-        boolean actual = tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
-        assertThat(actual, is(false));
+        Optional<KeepRule>  actual = tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
+        assertThat(actual, isEmpty());
     }
 
 
