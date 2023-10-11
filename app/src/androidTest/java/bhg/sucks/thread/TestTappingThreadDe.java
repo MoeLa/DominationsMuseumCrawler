@@ -3,6 +3,7 @@ package bhg.sucks.thread;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 
 import android.content.Context;
 
@@ -19,6 +20,7 @@ import org.junit.runner.RunWith;
 import java.util.List;
 
 import bhg.sucks.R;
+import bhg.sucks.helper.DebugHelper;
 import bhg.sucks.helper.OcrHelper;
 import bhg.sucks.helper.ScreenshotHelper;
 import bhg.sucks.helper.UIHelper;
@@ -28,17 +30,25 @@ import bhg.sucks.model.KeepThreeStarOption;
 import bhg.sucks.util.AndroidTestUtil;
 
 @RunWith(AndroidJUnit4.class)
-public class TestTappingThread {
+public class TestTappingThreadDe {
 
     private Context appContext;
     private OcrHelper ocrHelper;
+    private DebugHelper debugHelper;
     private AndroidTestUtil util;
 
     @Before
     public void setup() {
         this.appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        this.ocrHelper = new OcrHelper(appContext);
+        this.debugHelper = new DebugHelper(appContext);
+        this.ocrHelper = new OcrHelper(appContext, debugHelper, false);
         this.util = new AndroidTestUtil(appContext, ocrHelper);
+    }
+
+    @Test
+    public void testReceiveGermanStringResource() {
+        String s = appContext.getResources().getString(R.string.AirDefenseDamage);
+        assertEquals("Not running in German => This test suite won't find nothing!", "Luftabwehr-Schaden", s);
     }
 
     @Test
@@ -114,6 +124,11 @@ public class TestTappingThread {
             }
 
             @Override
+            public DebugHelper getDebugHelper() {
+                return debugHelper;
+            }
+
+            @Override
             public boolean isRunning() {
                 return true;
             }
@@ -135,6 +150,11 @@ public class TestTappingThread {
                         .optionalSkills(UIHelper.createEmptySkillsMap())
                         .amountMatches(AmountMatches.FIVE_OF_FIVE)
                         .build());
+            }
+
+            @Override
+            public boolean isDebugMode() {
+                return false;
             }
         };
     }

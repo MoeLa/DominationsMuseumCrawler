@@ -2,6 +2,7 @@ package bhg.sucks.thread;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import bhg.sucks.helper.OcrHelper;
 import bhg.sucks.model.KeepRule;
@@ -33,9 +34,9 @@ public class TappingThreadHelper {
     }
 
     /**
-     * @return <i>true</i>, if data.skills matches any keep rule
+     * @return <i>keepRule</i>, if data.skills matches any keep rule
      */
-    boolean keepingBecauseOfRule(OcrHelper.Data data, List<KeepRule> keepRules) {
+    Optional<KeepRule> keepingBecauseOfRule(OcrHelper.Data data, List<KeepRule> keepRules) {
         keepRuleIteration:
         for (KeepRule keepRule : keepRules) {
             int matches = 0;
@@ -60,15 +61,14 @@ public class TappingThreadHelper {
                 }
             }
 
-            // Step 3: Check, weather we have enough matches
+            // Step 3: Check, whether we have enough matches
             if (matches >= keepRule.getAmountMatches().ordinal() + 1) {
-                return true;
+                return Optional.of(keepRule);
             }
 
         }
 
-        return false;
+        return Optional.empty();
     }
-
 
 }

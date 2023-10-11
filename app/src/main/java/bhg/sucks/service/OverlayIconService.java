@@ -23,6 +23,7 @@ import java.util.Locale;
 import bhg.sucks.R;
 import bhg.sucks.activity.MainActivity;
 import bhg.sucks.dao.KeepRuleDAO;
+import bhg.sucks.helper.DebugHelper;
 import bhg.sucks.helper.ExecuteAsRootBase;
 import bhg.sucks.helper.OcrHelper;
 import bhg.sucks.helper.ScreenshotHelper;
@@ -44,6 +45,8 @@ public class OverlayIconService extends Service {
 
     private ScreenshotHelper screenshotHelper;
     private OcrHelper ocrHelper;
+    private DebugHelper debugHelper;
+    private boolean debugMode;
     private KeepRuleDAO dao;
     private SharedPreferences sharedPref;
 
@@ -62,8 +65,10 @@ public class OverlayIconService extends Service {
 
         ContextUtils ctx = ContextUtils.updateLocale(this, Locale.getDefault());
         this.screenshotHelper = new ScreenshotHelper(this);
-        this.ocrHelper = new OcrHelper(ctx);
+        this.debugHelper = new DebugHelper(ctx);
         this.sharedPref = getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE);
+        this.debugMode = sharedPref.getBoolean(DebugHelper.DEBUG_MODE_KEY, false);
+        this.ocrHelper = new OcrHelper(ctx, debugHelper, debugMode);
         this.dao = new KeepRuleDAO(sharedPref);
     }
 
@@ -101,6 +106,11 @@ public class OverlayIconService extends Service {
             }
 
             @Override
+            public DebugHelper getDebugHelper() {
+                return debugHelper;
+            }
+
+            @Override
             public boolean isRunning() {
                 return running;
             }
@@ -110,9 +120,9 @@ public class OverlayIconService extends Service {
                 OverlayIconService.this.running = running;
 
                 if (!running) {
-                    overlayData.imageIcon.post(() -> {
-                        overlayData.imageIcon.setImageResource(R.mipmap.orange_circle);
-                    });
+                    overlayData.imageIcon.post(() ->
+                            overlayData.imageIcon.setImageResource(R.mipmap.orange_circle)
+                    );
                 }
             }
 
@@ -125,6 +135,11 @@ public class OverlayIconService extends Service {
             @Override
             public List<KeepRule> getKeepRules() {
                 return dao.getAll();
+            }
+
+            @Override
+            public boolean isDebugMode() {
+                return debugMode;
             }
 
         };

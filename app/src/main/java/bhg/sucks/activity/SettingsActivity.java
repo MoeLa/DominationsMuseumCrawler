@@ -14,6 +14,7 @@ import com.zeugmasolutions.localehelper.LocaleAwareCompatActivity;
 import java.util.Locale;
 
 import bhg.sucks.R;
+import bhg.sucks.helper.DebugHelper;
 import bhg.sucks.model.KeepThreeStarOption;
 
 public class SettingsActivity extends LocaleAwareCompatActivity {
@@ -53,9 +54,9 @@ public class SettingsActivity extends LocaleAwareCompatActivity {
 
         // Init debug mode switch
         final SwitchCompat switchDebugMode = findViewById(R.id.settingsDebugMode);
-        switchDebugMode.setChecked(sharedPref.getBoolean(getString(R.string.debug_mode), false));
+        switchDebugMode.setChecked(sharedPref.getBoolean(DebugHelper.DEBUG_MODE_KEY, false));
         switchDebugMode.setOnCheckedChangeListener((btnView, isChecked) -> sharedPref.edit()
-                .putBoolean(getString(R.string.debug_mode), isChecked)
+                .putBoolean(DebugHelper.DEBUG_MODE_KEY, isChecked)
                 .apply());
 
         // Init 'keep three star artifact' options

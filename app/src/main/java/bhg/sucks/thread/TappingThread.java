@@ -8,8 +8,10 @@ import androidx.annotation.VisibleForTesting;
 import com.google.mlkit.vision.text.Text;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import bhg.sucks.helper.DebugHelper;
 import bhg.sucks.helper.OcrHelper;
 import bhg.sucks.helper.ScreenshotHelper;
 import bhg.sucks.helper.TapHelper;
@@ -29,12 +31,15 @@ public class TappingThread extends Thread {
     private final TapHelper tapHelper;
     private final TappingThreadHelper tappingThreadHelper;
 
+    private final DebugHelper debugHelper;
+
     private final AtomicInteger counter;
 
     public TappingThread(Delegate d) {
         this.delegate = d;
         this.tapHelper = new TapHelper(d);
         this.tappingThreadHelper = new TappingThreadHelper();
+        this.debugHelper = d.getDebugHelper();
 
         this.counter = new AtomicInteger(0);
     }
@@ -200,8 +205,19 @@ public class TappingThread extends Thread {
 
         OcrHelper.Data data = delegate.getOcrHelper().convertItemScreenshot(textBlocks);
         if (data.isComplete()) {
-            return (tappingThreadHelper.keepingBecauseOfLevel(data, delegate.keepThreeStarOption())) ||
-                    tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
+            if (tappingThreadHelper.keepingBecauseOfLevel(data, delegate.keepThreeStarOption())) {
+                return true;
+            }
+
+            Optional<KeepRule> reasonToKeep = tappingThreadHelper.keepingBecauseOfRule(data, keepRules);
+            if (reasonToKeep.isPresent()) {
+                if (delegate.isDebugMode()) {
+                    debugHelper.logKeepArtefact(data, reasonToKeep.get());
+                }
+                return true;
+            }
+
+            return false;
         }
 
         Log.d(TAG, "keepArtifact > Data incomplete, try again => " + data);
@@ -217,6 +233,8 @@ public class TappingThread extends Thread {
 
         OcrHelper getOcrHelper();
 
+        DebugHelper getDebugHelper();
+
         boolean isRunning();
 
         void setRunning(boolean running);
@@ -225,6 +243,7 @@ public class TappingThread extends Thread {
 
         List<KeepRule> getKeepRules();
 
+        boolean isDebugMode();
     }
 
 }

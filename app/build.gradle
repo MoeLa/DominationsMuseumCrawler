@@ -50,6 +50,7 @@ dependencies {
     implementation 'org.bitbucket.cowwoc:diff-match-patch:1.2'
     implementation 'com.zeugmasolutions.localehelper:locale-helper-android:1.5.1'
     implementation 'net.steamcrafted:materialiconlib:1.1.5'
+    testImplementation 'com.github.npathai:hamcrest-optional:2.0.0'
     annotationProcessor 'org.projectlombok:lombok:1.18.28'
 //    compileOnly 'org.projectlombok:lombok:1.18.24'
     testImplementation 'junit:junit:4.13.2'
