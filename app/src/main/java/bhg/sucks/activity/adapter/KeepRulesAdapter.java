@@ -23,7 +23,7 @@ import bhg.sucks.model.KeepRule;
 public class KeepRulesAdapter extends RecyclerView.Adapter<KeepRulesAdapter.ViewHolder> {
 
     private Context context;
-    private List<KeepRule> keepRules;
+    private final List<KeepRule> keepRules;
 
     public KeepRulesAdapter(List<KeepRule> keepRules) {
         this.keepRules = keepRules;
