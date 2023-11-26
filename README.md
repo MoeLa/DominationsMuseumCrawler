@@ -29,8 +29,8 @@ After having set up the crawler, you start the crafting, put your mobile aside f
  7. Open Dominations. Ensure, that Dominations runs on the same language as the Museum Crawler. If not, change either's language.
  8.  Switch into the Museum's Artifact Crafting screen. You should now see the button to start crafting five artifacts for 475 fragments and of course our red overlay icon.  
  Note: If the first craft is cheaper (since you've researched that skill in the Library), you have to tap that button manually before continuing to the next step.
- 8. Tap the red overlay icon. It should turn green and start crafting. Every item is sold directly. After the five items, 475 fragments are spent again to craft another round of artifacts.
- 9. Stop the process any time by pressing the green overlay icon. It should turn back to red.
+ 9. Tap the red overlay icon. It should turn green and start crafting. Every item is sold directly. After the five items, 475 fragments are spent again to craft another round of artifacts.
+ 10. Stop the process any time by pressing the green overlay icon. It should turn back to red.
 
 ### Second steps
 

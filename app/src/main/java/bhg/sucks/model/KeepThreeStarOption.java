@@ -6,6 +6,6 @@ public enum KeepThreeStarOption {
     OnlyFoodGold,
     Yes;
 
-    public static String SHARED_PREF_KEY = KeepThreeStarOption.class.getName();
+    public static final String SHARED_PREF_KEY = KeepThreeStarOption.class.getName();
 
 }
