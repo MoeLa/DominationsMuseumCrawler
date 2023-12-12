@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.os.LocaleListCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
-import com.zeugmasolutions.localehelper.LocaleAwareCompatActivity;
 
 import java.util.Locale;
 
@@ -17,7 +19,7 @@ import bhg.sucks.R;
 import bhg.sucks.helper.DebugHelper;
 import bhg.sucks.model.KeepThreeStarOption;
 
-public class SettingsActivity extends LocaleAwareCompatActivity {
+public class SettingsActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPref;
 
@@ -32,7 +34,7 @@ public class SettingsActivity extends LocaleAwareCompatActivity {
         this.sharedPref = getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE);
 
         // Init language
-        Locale l = Locale.getDefault();
+        Locale l = getResources().getConfiguration().getLocales().get(0);
         if (Locale.GERMANY.equals(l)) {
             RadioButton rbGerman = findViewById(R.id.settingsLanguageGerman);
             rbGerman.setChecked(true);
@@ -44,12 +46,13 @@ public class SettingsActivity extends LocaleAwareCompatActivity {
         // Set language change listener
         final RadioGroup languageGroup = findViewById(R.id.settingsLanguageGroup);
         languageGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            LocaleListCompat newLocale = AppCompatDelegate.getApplicationLocales();
             if (checkedId == R.id.settingsLanguageEnglish) {
-                updateLocale(Locale.US);
+                newLocale = LocaleListCompat.create(Locale.US);
             } else if (checkedId == R.id.settingsLanguageGerman) {
-                updateLocale(Locale.GERMANY);
+                newLocale = LocaleListCompat.create(Locale.GERMANY);
             }
-            recreate();
+            AppCompatDelegate.setApplicationLocales(newLocale);
         });
 
         // Init debug mode switch

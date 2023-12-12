@@ -13,12 +13,12 @@ import android.view.View;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
-import com.zeugmasolutions.localehelper.LocaleAwareCompatActivity;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ import bhg.sucks.helper.ExecuteAsRootBase;
 import bhg.sucks.model.KeepRule;
 import bhg.sucks.service.OverlayIconService;
 
-public class MainActivity extends LocaleAwareCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
     private final ActivityResultLauncher<Intent> requestPermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
