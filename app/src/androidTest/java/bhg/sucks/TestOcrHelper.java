@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.util.Log;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -145,6 +146,42 @@ public class TestOcrHelper {
         OcrHelper.AnalysisResult ar = ocrHelper.toAnalyseResult(textBlocks);
 
         assertThat(ar.getScreen(), equalTo(OcrHelper.Screen.ARTIFACT_FULLY_LOADED));
+    }
+
+    @Test
+    public void testIsSellAvailable() throws InterruptedException {
+        List<Text.TextBlock> textBlocks = util.resourceToTextBlocks(R.drawable.screenshot_fully_loaded);
+        Point actual = ocrHelper.isSellAvailable(textBlocks);
+
+        Point expected = new Point(851, 960);
+        assertThat(actual, equalTo(expected));
+    }
+
+    @Test
+    public void testIsContinueAvailable() throws InterruptedException {
+        List<Text.TextBlock> textBlocks = util.resourceToTextBlocks(R.drawable.screenshot_fully_loaded);
+        Point actual = ocrHelper.isContinueAvailable(textBlocks);
+
+        Point expected = new Point(1297, 958);
+        assertThat(actual, equalTo(expected));
+    }
+
+    @Test
+    public void testIsFiveArtifactsAvailable() throws InterruptedException {
+        List<Text.TextBlock> textBlocks = util.resourceToTextBlocks(R.drawable.de_crafting_home);
+        Point actual = ocrHelper.isFiveArtifactsAvailable(textBlocks);
+
+        Point expected = new Point(1529, 732);
+        assertThat(actual, equalTo(expected));
+    }
+
+    @Test
+    public void testIsConfirmAvailable() throws InterruptedException {
+        List<Text.TextBlock> textBlocks = util.resourceToTextBlocks(R.drawable.screenshot_confirm_button);
+        Point actual = ocrHelper.isConfirmAvailable(textBlocks);
+
+        Point expected = new Point(1306, 711);
+        assertThat(actual, equalTo(expected));
     }
 
     @Test

@@ -107,7 +107,7 @@ public class OcrHelper {
     public Point isFiveArtifactsAvailable(List<Text.TextBlock> textBlocks) {
         for (Text.TextBlock textBlock : textBlocks) {
             if (textBlock.getText().equals(fiveArtifactsButtonText)) {
-                return textBlock.getCornerPoints()[0]; // Top-left point of text should be fine here
+                return getCenterOf(textBlock.getCornerPoints());
             }
         }
 
@@ -140,7 +140,7 @@ public class OcrHelper {
     public Point isSellAvailable(List<Text.TextBlock> textBlocks) {
         for (Text.TextBlock textBlock : textBlocks) {
             if (textBlock.getText().startsWith(sellButtonPrefix)) {
-                return textBlock.getCornerPoints()[0]; // Top-left point of text should be fine here
+                return getCenterOf(textBlock.getCornerPoints());
             }
         }
 
@@ -173,7 +173,7 @@ public class OcrHelper {
     public Point isConfirmAvailable(List<Text.TextBlock> textBlocks) {
         for (Text.TextBlock textBlock : textBlocks) {
             if (textBlock.getText().equals(confirmButtonText)) {
-                return textBlock.getCornerPoints()[2]; // Bottom-right point of text should be fine here
+                return getCenterOf(textBlock.getCornerPoints());
             }
         }
 
@@ -206,11 +206,18 @@ public class OcrHelper {
     public Point isContinueAvailable(List<Text.TextBlock> textBlocks) {
         for (Text.TextBlock textBlock : textBlocks) {
             if (textBlock.getText().equals(continueButtonText)) {
-                return textBlock.getCornerPoints()[0]; // Top-left point of text should be fine here
+                return getCenterOf(textBlock.getCornerPoints());
             }
         }
 
         return null;
+    }
+
+    private Point getCenterOf(Point[] cornerPoints) {
+        Point res = new Point();
+        res.x = (cornerPoints[0].x + cornerPoints[1].x) / 2;
+        res.y = (cornerPoints[1].y + cornerPoints[2].y) / 2;
+        return res;
     }
 
 //    /**
