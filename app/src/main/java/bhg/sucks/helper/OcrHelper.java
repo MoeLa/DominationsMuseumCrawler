@@ -160,6 +160,10 @@ public class OcrHelper {
                     List<Text.TextBlock> textBlocks = visionText.getTextBlocks();
 
                     Point p = isConfirmAvailable(textBlocks);
+
+                    // Fix to not hit 'buy single artefact', but 'buy 5 artefacts'
+                    p.set(p.x + 50, p.y);
+
                     handlePoint.accept(p);
                 });
     }

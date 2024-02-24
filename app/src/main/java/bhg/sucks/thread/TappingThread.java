@@ -136,29 +136,29 @@ public class TappingThread extends Thread {
     void analyzeResult(OcrHelper.AnalysisResult ar) {
         switch (ar.getScreen()) {
             case ARTIFACT_CRAFTING_HOME:
-                Log.d(TAG, "analyzeResult > ARTIFACT_CRAFTING_HOME > Tap '5 Artifacts'");
+                Log.i(TAG, "analyzeResult > ARTIFACT_CRAFTING_HOME > Tap '5 Artifacts'");
                 tapHelper.tapFiveArtifacts();
 
                 done();
                 break;
             case ARTIFACT_CRAFT_ANIMATION:
-                Log.d(TAG, "analyzeResult > ARTIFACT_CRAFT_ANIMATION > Counter: " + counter);
+                Log.i(TAG, "analyzeResult > ARTIFACT_CRAFT_ANIMATION > Counter: " + counter);
 
                 repeat(OcrHelper.Screen.ARTIFACT_CRAFT_ANIMATION);
                 break;
             case ARTIFACT_FULLY_LOADED:
                 Boolean keepArtifact = keepArtifact(ar.getTextBlocks());
                 if (keepArtifact == null) {
-                    Log.d(TAG, "analyzeResult > ARTIFACT_FULLY_LOADED > Repeat! Counter: " + counter);
+                    Log.i(TAG, "analyzeResult > ARTIFACT_FULLY_LOADED > Repeat! Counter: " + counter);
 
                     repeat(OcrHelper.Screen.ARTIFACT_FULLY_LOADED);
                 } else if (keepArtifact) {
-                    Log.d(TAG, "analyzeResult > ARTIFACT_FULLY_LOADED > Tap 'Continue'");
+                    Log.i(TAG, "analyzeResult > ARTIFACT_FULLY_LOADED > Tap 'Continue'");
                     tapHelper.tapContinue();
 
                     done();
                 } else {
-                    Log.d(TAG, "analyzeResult > ARTIFACT_FULLY_LOADED > Sell artifact");
+                    Log.i(TAG, "analyzeResult > ARTIFACT_FULLY_LOADED > Sell artifact");
                     tapHelper.tapSell();
                     tapHelper.tapConfirm();
 
@@ -166,7 +166,7 @@ public class TappingThread extends Thread {
                 }
                 break;
             case ARTIFACT_DESTROY_DIALOG:
-                Log.d(TAG, "analyzeResult > ARTIFACT_DESTROY_DIALOG > Tap 'Confirm'");
+                Log.i(TAG, "analyzeResult > ARTIFACT_DESTROY_DIALOG > Tap 'Confirm'");
                 tapHelper.tapConfirm();
 
                 done();
@@ -174,10 +174,10 @@ public class TappingThread extends Thread {
             case COULD_NOT_DETERMINE: // Intentionally jump into default case
             default:
                 if (counter.get() < 3) {
-                    Log.d(TAG, "analyzeResult > Screen could not be determined. Repeat! Counter: " + counter);
+                    Log.i(TAG, "analyzeResult > Screen could not be determined. Repeat! Counter: " + counter);
                     repeat(OcrHelper.Screen.COULD_NOT_DETERMINE);
                 } else {
-                    Log.d(TAG, "analyzeResult > Screen could not be determined. Stop thread! Counter: " + counter);
+                    Log.i(TAG, "analyzeResult > Screen could not be determined. Stop thread! Counter: " + counter);
                     delegate.setRunning(false);
                 }
                 break;
