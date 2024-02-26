@@ -35,7 +35,7 @@ public class TapHelper {
     }
 
     /**
-     * Taps the button "5 Artifacts" and three more times to hurry the following animation.
+     * Taps the button "5 Artifacts" and four more times in the corner to hurry the following animation.
      */
     public void tapFiveArtifacts() {
         if (!delegate.isRunning()) {
@@ -119,7 +119,7 @@ public class TapHelper {
     }
 
     /**
-     * Taps the button "Confirm" and hurries the following animation.
+     * Taps the button "Confirm" and hurries the following animation by tapping three times in the corner.
      */
     public void tapConfirm() {
         if (!delegate.isRunning()) {
@@ -162,7 +162,7 @@ public class TapHelper {
     }
 
     /**
-     * Taps the button "Continue" and hurries the following animation.
+     * Taps the button "Continue" and hurries the following animation by tapping three times in the corner.
      */
     public void tapContinue() {
         if (!delegate.isRunning()) {
@@ -204,6 +204,9 @@ public class TapHelper {
         continueExecutor.execute();
     }
 
+    /**
+     * Hurries the animation by tapping three times in the corner.
+     */
     public boolean tapHurryAnimation() {
         if (!delegate.isRunning()) {
             return false;
