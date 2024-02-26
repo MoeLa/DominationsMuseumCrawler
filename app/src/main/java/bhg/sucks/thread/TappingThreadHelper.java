@@ -18,7 +18,15 @@ import bhg.sucks.model.UpgradeResource;
 public class TappingThreadHelper {
 
     /**
-     * @return <i>true</i>, if data.level is &gt;=3
+     * In the setting, the user can decide to
+     * <ol>
+     *     <li>not keep an artefact because of its level at all</li>
+     *     <li>keep all 3* artefacts, or</li>
+     *     <li>only keep 3* artefacts needing gold/food to upgrade.</li>
+     * </ol>
+     * Depending on that setting, an artefact is evaluated, if it should be kept because of its level.
+     *
+     * @return <i>true</i>, if an artefact should be kept because of its level
      */
     boolean keepingBecauseOfLevel(OcrHelper.Data data, KeepThreeStarOption keepThreeStarOption) {
         if (keepThreeStarOption == KeepThreeStarOption.No) {
@@ -34,7 +42,10 @@ public class TappingThreadHelper {
     }
 
     /**
-     * @return <i>keepRule</i>, if data.skills matches any keep rule
+     * Matches an artefact with all defined <i>keepRules</i>.
+     *
+     * @return <i>keepRule</i>, if data.skills matches that keep rule or<br/>
+     * an empty Optional, if no keep rule matched the artefact.
      */
     Optional<KeepRule> keepingBecauseOfRule(OcrHelper.Data data, List<KeepRule> keepRules) {
         keepRuleIteration:
